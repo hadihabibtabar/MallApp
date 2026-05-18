@@ -1,0 +1,32 @@
+﻿[
+  {
+    "id": "apparel",
+    "name": "پوشاک",
+    "floors": ["طبقه ۱", "طبقه ۲"],
+    "storeIds": ["coleen-store"]
+  },
+  {
+    "id": "shoes",
+    "name": "ورزشی",
+    "floors": ["طبقه ۲"],
+    "storeIds": ["hectaton-store"]
+  },
+  {
+    "id": "digital",
+    "name": "دیجیتال",
+    "floors": ["طبقه ۳"],
+    "storeIds": ["dandy-store"]
+  },
+  {
+    "id": "food",
+    "name": "غذا",
+    "floors": ["طبقه همکف","طبقه ۴"],
+    "storeIds": ["brioche-store", "hyperstar-store"]
+  },
+  {
+    "id": "beauty",
+    "name": "زیبایی",
+    "floors": ["طبقه ۱"],
+    "storeIds": ["gshock-store", "tanedorost-store"]
+  }
+]

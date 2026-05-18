@@ -1,0 +1,98 @@
+﻿[
+  {
+    "id": "brioche-store",
+    "name": "brioche",
+    "brand": "brioche",
+    "floor": "طبقه ۴",
+    "category": "غذا",
+    "locationHint": "بلوک A، کنار تراس سبز",
+    "description": "جدیدترین محصولات و آیتم‌های منتخب این فصل.",
+    "heroImage": "/images/stores/brioche.jpg",
+    "productIds": ["zara-1", "zara-2", "zara-3"],
+    "dealIds": ["zara-deal-1", "zara-deal-2"]
+  },
+  {
+    "id": "coleen-store",
+    "name": "coleen",
+    "brand": "coleen",
+    "floor": "طبقه ۳",
+    "category": "پوشاک",
+    "locationHint": "بلوک C، روبه‌روی پله برقی",
+    "description": "مدل‌های متنوع برای استفاده روزمره و اسپرت.",
+    "heroImage": "/images/stores/coleen.jpg",
+    "productIds": ["nike-1", "nike-2", "nike-3"],
+    "dealIds": ["nike-deal-1"]
+  },
+  {
+    "id": "dandy-store",
+    "name": "dandy",
+    "brand": "dandy",
+    "floor": "طبقه همکف",
+    "category": "پوشاک",
+    "locationHint": "بلوک D، کنار ورودی سمت راست",
+    "description": "گجت‌ها و محصولات دیجیتال محبوب روز.",
+    "heroImage": "/images/stores/dandy.jpg",
+    "productIds": ["food-1", "food-2"],
+    "dealIds": ["food-deal-1"]
+  },
+  {
+    "id": "gshock-store",
+    "name": "gshock",
+    "brand": "gshock",
+    "floor": "طبقه -۱",
+    "category": "ساعت",
+    "locationHint": "بلوک B، کنار فروشگاه hyperstar",
+    "description": "انتخاب‌های متنوع ساعت.",
+    "heroImage": "/images/stores/gshock.jpg",
+    "productIds": ["beauty-1", "beauty-2"],
+    "dealIds": ["beauty-deal-1"]
+  },
+  {
+    "id": "hectaton-store",
+    "name": "hectaton",
+    "brand": "hectaton",
+    "floor": "طبقه همکف",
+    "category": "ورزشی",
+    "locationHint": "ورودی اصلی، سمت چپ ",
+    "description": "جدید ترین کالکشن ورزشی",
+    "heroImage": "/images/stores/hectaton.jpg",
+    "productIds": ["digi-1", "digi-2", "digi-3"],
+    "dealIds": ["digi-deal-1"]
+  },
+  {
+    "id": "hyperstar-store",
+    "name": "hyperstar",
+    "brand": "hyperstar",
+    "floor": "طبقه -۱",
+    "category": "غذا",
+    "locationHint": "بلوک B، روبه‌روی پله برقی",
+    "description": "تازه ترین محصولات خوراکی با افر ویژه",
+    "heroImage": "/images/stores/hyperstar.jpg",
+    "productIds": ["mango-1", "mango-2"],
+    "dealIds": ["mango-deal-1"]
+  },
+  {
+    "id": "sanjaaq-store",
+    "name": "sanjaaq",
+    "brand": "sanjaaq",
+    "floor": "طبقه ۲",
+    "category": "طلا",
+    "locationHint": "بلوک C، کنار فروشگاه coleen",
+    "description": "جواهرات منتخب برای  خاص پسندان.",
+    "heroImage": "/images/stores/sanjaaq.jpg",
+    "productIds": ["adidas-1", "adidas-2"],
+    "dealIds": ["adidas-deal-1"]
+  },
+  {
+    "id": "tanedorost-store",
+    "name": "tanedorost",
+    "brand": "tanedorost",
+    "floor": "طبقه ۱",
+    "category": "پوشاک",
+    "locationHint": "بلوک A، کنار پله برقی",
+    "description": "سادگی در زیبایی",
+    "heroImage": "/images/stores/tanedorost.jpg",
+    "productIds": ["aroma-1", "aroma-2"],
+    "dealIds": ["aroma-deal-1"]
+  }
+]
