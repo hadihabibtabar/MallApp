@@ -26,15 +26,22 @@ export default function LandingPage() {
         </div>
 
         <div className="rounded-3xl border border-white/70 bg-white/85 p-6 shadow-soft ring-1 ring-slate-900/5">
-          <h1 className="text-3xl font-black leading-tight text-slate-900">به همیلا سنتر خوش آمدید</h1>
+          <h1 className="text-3xl font-black leading-tight text-slate-900">
+            به همیلا سنتر خوش آمدید
+          </h1>
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            تخفیف‌های لحظه‌ای و محصولات جدید فروشگاه‌ها را ببینید و سریع مسیر رسیدن را پیدا کنید.
+            تخفیف‌های لحظه‌ای و محصولات جدید فروشگاه‌ها را ببینید و سریع مسیر
+            رسیدن را پیدا کنید.
           </p>
         </div>
 
         <div className="rounded-3xl bg-gradient-to-l from-slate-900 to-slate-700 p-5 text-white shadow-soft">
-          <p className="text-sm font-bold text-white/95">در حال ورود به داشبورد...</p>
-          <p className="mt-2 text-xs leading-6 text-white/75">اگر انتقال خودکار انجام نشد، از دکمه زیر وارد شوید.</p>
+          <p className="text-sm font-bold text-white/95">
+            در حال ورود به داشبورد...
+          </p>
+          <p className="mt-2 text-xs leading-6 text-white/75">
+            اگر انتقال خودکار انجام نشد، از دکمه زیر وارد شوید.
+          </p>
         </div>
       </section>
 
@@ -44,6 +51,9 @@ export default function LandingPage() {
       >
         ورود به تخفیف‌ها
       </Link>
+      <div className="w-full text-center">
+        <p className="text-xs text-slate-400">V: MVP</p>
+      </div>
     </main>
   );
 }
