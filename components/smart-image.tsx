@@ -26,7 +26,6 @@ export function SmartImage({
       {...rest}
       src={currentSrc}
       alt={alt}
-      unoptimized
       onError={(event) => {
         if (currentSrc !== fallbackSrc) {
           setCurrentSrc(fallbackSrc);

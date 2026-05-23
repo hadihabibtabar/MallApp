@@ -1,4 +1,4 @@
-﻿import { PageTitle } from "@/components/page-title";
+import { PageTitle } from "@/components/page-title";
 import { StoresDirectory } from "@/components/stores-directory";
 import { categoryOptions, stores } from "@/lib/mock-data";
 

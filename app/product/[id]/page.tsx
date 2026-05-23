@@ -1,6 +1,7 @@
-﻿import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductOpenedTracker } from "@/components/analytics-trackers";
 import { SmartImage } from "@/components/smart-image";
+import { StoreNavigationLink } from "@/components/store-navigation-cta";
 import { discountedPrice, formatPrice, toPersianDigits } from "@/lib/format";
 import { getProductById, getStoreById } from "@/lib/mock-data";
 
@@ -26,6 +27,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4">
+      <ProductOpenedTracker productId={product.id} storeId={store.id} productDiscount={product.discount} />
+
       <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
         <div className="relative h-72 w-full">
           <SmartImage
@@ -66,12 +69,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      <Link
+      <StoreNavigationLink
         href={`/store/${store.id}#route`}
+        source="product_page"
+        storeId={store.id}
+        productId={product.id}
         className="block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-700"
       >
         رفتن به فروشگاه
-      </Link>
+      </StoreNavigationLink>
     </main>
   );
 }

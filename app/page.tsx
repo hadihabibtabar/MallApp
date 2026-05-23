@@ -3,11 +3,14 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { trackAppOpened } from "@/lib/posthog";
 
 export default function LandingPage() {
   const router = useRouter();
 
   useEffect(() => {
+    trackAppOpened({ source: "landing" });
+
     const timeoutId = setTimeout(() => {
       router.replace("/deals");
     }, 1700);
