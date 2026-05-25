@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { BackButton } from "@/components/back-button";
 import { PostHogProvider } from "@/components/posthog-provider";
 import "./globals.css";
 
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="fa" dir="rtl">
       <body className="antialiased">
         <PostHogProvider />
+        <BackButton />
         {children}
       </body>
     </html>
