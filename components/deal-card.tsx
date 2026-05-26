@@ -51,11 +51,11 @@ export function DealCard({ item }: DealCardProps) {
   }, [item.deal.expiresAt]);
 
   return (
-    <article className="rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm ring-1 ring-slate-900/5">
-      <div className="flex items-start gap-3">
+    <article className="rounded-2xl border border-slate-200/80 bg-white p-2.5 shadow-sm ring-1 ring-slate-900/5 sm:p-3">
+      <div className="flex items-start gap-2.5 sm:gap-3">
         <Link
           href={`/product/${item.product.id}`}
-          className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl"
+          className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl sm:h-28 sm:w-28"
           onClick={() => trackDealClicked(dealClickProperties)}
         >
           <SmartImage
@@ -64,41 +64,41 @@ export function DealCard({ item }: DealCardProps) {
             fill
             className="object-cover"
             fallbackSrc="/images/fallback-image.svg"
-            sizes="112px"
+            sizes="(min-width: 640px) 112px, 96px"
           />
-          <div className="absolute right-1.5 top-1.5 rounded-full bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
+          <div className="absolute right-1 top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm sm:right-1.5 sm:top-1.5 sm:px-2 sm:text-[10px]">
             %{toPersianDigits(item.deal.discount)}
           </div>
         </Link>
 
         <div className="min-w-0 flex-1">
-          <div className="mb-1 flex items-center justify-between gap-2 text-[10px]">
+          <div className="mb-0.5 flex items-center justify-between gap-1.5 text-[10px]">
             <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">{item.deal.tag}</span>
             <span className="rounded-full bg-orange-50 px-2 py-0.5 font-bold text-orange-700">{timeLabel}</span>
           </div>
 
-          <h3 className="line-clamp-2 text-base font-black leading-6 text-slate-900">
+          <h3 className="line-clamp-2 text-sm leading-5 text-slate-900 sm:text-base sm:leading-6">
             <Link href={`/product/${item.product.id}`} onClick={() => trackDealClicked(dealClickProperties)}>
               {item.product.name}
             </Link>
           </h3>
 
-          <div className="mt-2">
+          <div className="mt-1.5">
             <p className="text-[10px] font-semibold text-slate-400">قیمت بعد از تخفیف</p>
-            <div className="mt-0.5 flex items-center gap-2">
-              <p className="text-lg font-black text-slate-900">{formatPrice(newPrice)}</p>
+            <div className="mt-0.5 flex items-center gap-1.5">
+              <p className="text-base text-slate-900 sm:text-lg">{formatPrice(newPrice)}</p>
               <p className="text-[11px] text-slate-400 line-through">{formatPrice(oldPrice)}</p>
             </div>
           </div>
 
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <p className="line-clamp-1 text-[11px] text-slate-500">
+          <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+            <p className="line-clamp-1 min-w-0 text-[11px] text-slate-500">
               {item.store.name} · {item.store.floor}
             </p>
             <Link
               href={`/store/${item.store.id}`}
               onClick={() => trackDealClicked(dealClickProperties)}
-              className="rounded-lg bg-slate-900 px-2 py-1.5 text-[11px] font-semibold text-white transition hover:bg-slate-700"
+              className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[12px] font-semibold text-white transition hover:bg-slate-700 sm:text-[11px]"
             >
               مشاهده فروشگاه
             </Link>

@@ -13,7 +13,7 @@ export default function DealsPage() {
       <DealsViewedTracker dealCount={sortedDeals.length} />
 
       <header className="space-y-1">
-        <h1 className="text-xl font-black tracking-tight text-slate-900">تخفیف‌های داغ امروز</h1>
+        <h1 className="text-xl tracking-tight text-slate-900">تخفیف‌های داغ امروز</h1>
         {/* <p className="text-xs text-slate-600">نمایش فشرده برای دیدن تعداد بیشتر محصول قبل از اسکرول</p> */}
         <p className="text-xs text-slate-600">همیلاسنتر همراه شما در تجربه خرید بهتر🌱</p>
       </header>
