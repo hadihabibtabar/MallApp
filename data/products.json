@@ -3,7 +3,7 @@
     "id": "zara-1",
     "name": "کت لینن اورسایز",
     "price": 3890000,
-    "discount": 25,
+    "discount": 35,
     "image": "/images/products/coleen1.jpg",
     "storeId": "coleen-store",
     "isNew": true,
@@ -185,7 +185,7 @@
     "price": 1180000,
     "discount": 17,
     "image": "/images/products/tan2.jpg",
-     "storeId": "tanedorost-store",
+    "storeId": "tanedorost-store",
     "isNew": true,
     "description": "کد 145698"
   }
