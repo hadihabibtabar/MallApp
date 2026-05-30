@@ -5,7 +5,7 @@ import {
   trackCollectionViewed,
   trackDealsViewed,
   trackProductOpened,
-  trackStoreOpened
+  trackStoreOpened,
 } from "@/lib/posthog";
 
 interface DealsViewedTrackerProps {
@@ -16,7 +16,7 @@ export function DealsViewedTracker({ dealCount }: DealsViewedTrackerProps) {
   useEffect(() => {
     trackDealsViewed({
       source: "deals_tab",
-      deal_count: dealCount
+      deal_count: dealCount,
     });
   }, [dealCount]);
 
@@ -29,13 +29,17 @@ interface ProductOpenedTrackerProps {
   productDiscount: number;
 }
 
-export function ProductOpenedTracker({ productId, storeId, productDiscount }: ProductOpenedTrackerProps) {
+export function ProductOpenedTracker({
+  productId,
+  storeId,
+  productDiscount,
+}: ProductOpenedTrackerProps) {
   useEffect(() => {
     trackProductOpened({
       source: "product_page",
       product_id: productId,
       store_id: storeId,
-      product_discount: productDiscount
+      product_discount: productDiscount,
     });
   }, [productDiscount, productId, storeId]);
 
@@ -53,20 +57,20 @@ export function StoreOpenedTracker({
   storeId,
   storeCategory,
   storeFloor,
-  collectionSize
+  collectionSize,
 }: StoreOpenedTrackerProps) {
   useEffect(() => {
     trackStoreOpened({
       source: "store_page",
       store_id: storeId,
       store_category: storeCategory,
-      store_floor: storeFloor
+      store_floor: storeFloor,
     });
 
     trackCollectionViewed({
       source: "store_page",
       store_id: storeId,
-      collection_size: collectionSize
+      collection_size: collectionSize,
     });
   }, [collectionSize, storeCategory, storeFloor, storeId]);
 
