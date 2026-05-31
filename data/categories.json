@@ -1,38 +1,64 @@
-﻿[
+[
   {
     "id": "apparel",
     "name": "پوشاک",
-    "floors": ["طبقه ۱", "طبقه ۳"],
-    "storeIds": ["coleen-store", "dandy-store", "tanedorost-store"]
+    "floors": [
+      "طبقه ۱",
+      "طبقه ۳"
+    ],
+    "storeIds": [
+      "coleen-store",
+      "dandy-store",
+      "tanedorost-store"
+    ]
   },
   {
     "id": "shoes",
     "name": "ورزشی",
-    "floors": ["طبقه ۲", "طبقه همکف"],
-    "storeIds": ["hectaton-store"]
+    "floors": [
+      "طبقه ۲",
+      "طبقه همکف"
+    ],
+    "storeIds": [
+      "hectaton-store"
+    ]
   },
   {
     "id": "digital",
     "name": "دیجیتال",
-    "floors": ["طبقه ۲"],
+    "floors": [
+      "طبقه ۲"
+    ],
     "storeIds": []
   },
   {
     "id": "food",
     "name": "غذا",
-    "floors": ["طبقه همکف", "طبقه ۴"],
-    "storeIds": ["brioche-store", "hyperstar-store"]
+    "floors": [
+      "طبقه همکف",
+      "طبقه ۴"
+    ],
+    "storeIds": [
+      "brioche-store",
+      "hyperstar-store"
+    ]
   },
   {
     "id": "beauty",
     "name": "زیبایی",
-    "floors": ["طبقه ۱"],
+    "floors": [
+      "طبقه ۱"
+    ],
     "storeIds": []
   },
   {
     "id": "watch",
     "name": "ساعت",
-    "floors": ["طبقه -۱"],
-    "storeIds": ["gshock-store"]
+    "floors": [
+      "طبقه -۱"
+    ],
+    "storeIds": [
+      "gshock-store"
+    ]
   }
 ]

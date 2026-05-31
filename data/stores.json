@@ -1,4 +1,4 @@
-﻿[
+[
   {
     "id": "brioche-store",
     "name": "brioche",
@@ -8,8 +8,13 @@
     "locationHint": "بلوک A، کنار تراس سبز",
     "description": "جدیدترین محصولات و آیتم‌های منتخب این فصل.",
     "heroImage": "/images/stores/brioche.jpg",
-    "productIds": ["food-1", "food-2"],
-    "dealIds": ["food-deal-1"]
+    "productIds": [
+      "food-1",
+      "food-2"
+    ],
+    "dealIds": [
+      "food-deal-1"
+    ]
   },
   {
     "id": "coleen-store",
@@ -20,8 +25,15 @@
     "locationHint": "بلوک C، روبه‌روی پله برقی",
     "description": "مدل‌های متنوع برای استفاده روزمره و اسپرت.",
     "heroImage": "/images/stores/coleen.jpg",
-    "productIds": ["zara-1", "zara-2", "zara-3"],
-    "dealIds": ["zara-deal-1", "zara-deal-2"]
+    "productIds": [
+      "zara-1",
+      "zara-2",
+      "zara-3"
+    ],
+    "dealIds": [
+      "zara-deal-1",
+      "zara-deal-2"
+    ]
   },
   {
     "id": "dandy-store",
@@ -32,8 +44,14 @@
     "locationHint": "بلوک D، کنار ورودی سمت راست",
     "description": "خلاقیت در استایل",
     "heroImage": "/images/stores/dandy.jpg",
-    "productIds": ["digi-1", "digi-2", "digi-3"],
-    "dealIds": ["digi-deal-1"]
+    "productIds": [
+      "digi-1",
+      "digi-2",
+      "digi-3"
+    ],
+    "dealIds": [
+      "digi-deal-1"
+    ]
   },
   {
     "id": "gshock-store",
@@ -44,8 +62,13 @@
     "locationHint": "بلوک B، کنار فروشگاه hyperstar",
     "description": "انتخاب‌های متنوع ساعت.",
     "heroImage": "/images/stores/gshock.jpg",
-    "productIds": ["beauty-1", "beauty-2"],
-    "dealIds": ["beauty-deal-1"]
+    "productIds": [
+      "beauty-1",
+      "beauty-2"
+    ],
+    "dealIds": [
+      "beauty-deal-1"
+    ]
   },
   {
     "id": "hectaton-store",
@@ -56,8 +79,14 @@
     "locationHint": "ورودی اصلی، سمت چپ ",
     "description": "جدید ترین کالکشن ورزشی",
     "heroImage": "/images/stores/hectaton.jpg",
-    "productIds": ["nike-1", "nike-2", "nike-3"],
-    "dealIds": ["nike-deal-1"]
+    "productIds": [
+      "nike-1",
+      "nike-2",
+      "nike-3"
+    ],
+    "dealIds": [
+      "nike-deal-1"
+    ]
   },
   {
     "id": "hyperstar-store",
@@ -68,8 +97,13 @@
     "locationHint": "بلوک B، روبه‌روی پله برقی",
     "description": "تازه ترین محصولات خوراکی با آفر ویژه",
     "heroImage": "/images/stores/hyperstar.jpg",
-    "productIds": ["mango-1", "mango-2"],
-    "dealIds": ["mango-deal-1"]
+    "productIds": [
+      "mango-1",
+      "mango-2"
+    ],
+    "dealIds": [
+      "mango-deal-1"
+    ]
   },
   {
     "id": "sanjaaq-store",
@@ -80,8 +114,13 @@
     "locationHint": "بلوک C، کنار فروشگاه coleen",
     "description": "جواهرات منتخب برای  خاص پسندان.",
     "heroImage": "/images/stores/sanjaaq.jpg",
-    "productIds": ["adidas-1", "adidas-2"],
-    "dealIds": ["adidas-deal-1"]
+    "productIds": [
+      "adidas-1",
+      "adidas-2"
+    ],
+    "dealIds": [
+      "adidas-deal-1"
+    ]
   },
   {
     "id": "tanedorost-store",
@@ -92,7 +131,12 @@
     "locationHint": "بلوک A، کنار پله برقی",
     "description": "سادگی در زیبایی",
     "heroImage": "/images/stores/tanedorost.jpg",
-    "productIds": ["aroma-1", "aroma-2"],
-    "dealIds": ["aroma-deal-1"]
+    "productIds": [
+      "aroma-1",
+      "aroma-2"
+    ],
+    "dealIds": [
+      "aroma-deal-1"
+    ]
   }
 ]

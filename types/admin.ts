@@ -1,25 +1,16 @@
-export type StoreCategory =
-  | "پوشاک"
-  | "ورزشی"
-  | "دیجیتال"
-  | "غذا"
-  | "زیبایی"
-  | "ساعت"
-  | "طلا";
-
-export interface Category {
+export interface AdminCategory {
   id: string;
-  name: StoreCategory;
+  name: string;
   floors: string[];
   storeIds: string[];
 }
 
-export interface Store {
+export interface AdminStore {
   id: string;
   name: string;
   brand: string;
   floor: string;
-  category: StoreCategory;
+  category: string;
   locationHint: string;
   description: string;
   heroImage: string;
@@ -27,7 +18,7 @@ export interface Store {
   dealIds: string[];
 }
 
-export interface Product {
+export interface AdminProduct {
   id: string;
   name: string;
   price: number;
@@ -38,7 +29,7 @@ export interface Product {
   description: string;
 }
 
-export interface DealSeed {
+export interface AdminDeal {
   id: string;
   storeId: string;
   productId: string;
@@ -48,12 +39,9 @@ export interface DealSeed {
   tag: string;
 }
 
-export interface Deal extends DealSeed {
-  expiresAt: string;
-}
-
-export interface DealView {
-  deal: Deal;
-  store: Store;
-  product: Product;
+export interface AdminCatalog {
+  stores: AdminStore[];
+  products: AdminProduct[];
+  deals: AdminDeal[];
+  categories: AdminCategory[];
 }

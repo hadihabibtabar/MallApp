@@ -2,13 +2,13 @@
 
 import { useRouter, usePathname } from "next/navigation";
 
-const hiddenPaths = new Set(["/", "/deals", "/stores"]);
+const hiddenPaths = new Set(["/", "/deals", "/stores", "/Admin"]);
 
 export function BackButton() {
   const router = useRouter();
   const pathname = usePathname();
 
-  if (!pathname || hiddenPaths.has(pathname)) {
+  if (!pathname || hiddenPaths.has(pathname) || pathname.startsWith("/Admin/")) {
     return null;
   }
 

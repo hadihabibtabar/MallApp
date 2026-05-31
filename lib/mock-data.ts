@@ -57,4 +57,9 @@ export function getBrandStores(): Store[] {
   return [...stores].sort((a, b) => a.brand.localeCompare(b.brand));
 }
 
-export const categoryOptions: StoreCategory[] = ["پوشاک", "ورزشی", "دیجیتال", "غذا", "زیبایی"];
+export const categoryOptions: StoreCategory[] = Array.from(
+  new Set<StoreCategory>([
+    ...categories.map((category) => category.name),
+    ...stores.map((store) => store.category),
+  ]),
+);
