@@ -98,7 +98,7 @@ export function DealCard({ item }: DealCardProps) {
             <Link
               href={`/store/${item.store.id}`}
               onClick={() => trackDealClicked(dealClickProperties)}
-              className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[12px] font-semibold text-white transition hover:bg-slate-700 sm:text-[11px]"
+              className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[14px] font-semibold text-white transition hover:bg-slate-700 sm:text-[11px]"
             >
               مشاهده فروشگاه
             </Link>
