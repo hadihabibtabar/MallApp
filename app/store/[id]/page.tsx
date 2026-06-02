@@ -19,7 +19,12 @@ export default async function StorePage({ params }: StorePageProps) {
   }
 
   const products = getStoreProducts(store.id);
-
+const paymentIcons = {
+  digipay: "/images/digipay.png",
+  snapppay: "/images/snapppay.png",
+  tarapay: "/images/tarapay.png",
+};
+  const paymentMethods = store.paymentMethods ?? [];
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-5xl lg:px-8">
       <StoreOpenedTracker
@@ -46,10 +51,30 @@ export default async function StorePage({ params }: StorePageProps) {
             <p className="text-xs text-white/90 md:text-sm">{store.floor}</p>
           </div>
         </div>
-        <div className="space-y-3 p-4 md:p-6 md:space-y-4">
-          <p className="text-sm leading-7 text-slate-600 md:text-base md:leading-8">{store.description}</p>
-          <p className="rounded-2xl bg-slate-100 px-3 py-2 text-xs text-slate-700 md:text-sm">{store.locationHint}</p>
-        </div>
+<div className="space-y-3 p-4 md:p-6 md:space-y-4">
+  <div className="flex items-start justify-between gap-4">
+    <p className="flex-1 text-sm leading-7 text-slate-600 md:text-base md:leading-8">
+      {store.description}
+    </p>
+
+    {paymentMethods.length > 0 && (
+      <div className="flex shrink-0 items-center gap-2">
+        {paymentMethods.map((method) => (
+          <img
+            key={method}
+            src={paymentIcons[method]}
+            alt={method}
+            className="h-5 w-5 rounded-xl border border-slate-200 bg-white object-cover shadow-sm"
+          />
+        ))}
+      </div>
+    )}
+  </div>
+
+  <p className="rounded-2xl bg-slate-100 px-3 py-2 text-xs text-slate-700 md:text-sm">
+    {store.locationHint}
+  </p>
+</div>
       </section>
 
       <section className="space-y-3 md:space-y-4">

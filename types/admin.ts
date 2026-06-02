@@ -16,6 +16,7 @@ export interface AdminStore {
   heroImage: string;
   productIds: string[];
   dealIds: string[];
+   paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
 }
 
 export interface AdminProduct {
@@ -27,6 +28,7 @@ export interface AdminProduct {
   storeId: string;
   isNew: boolean;
   description: string;
+  paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
 }
 
 export interface AdminDeal {

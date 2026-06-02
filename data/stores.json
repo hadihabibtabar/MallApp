@@ -25,6 +25,8 @@
     "locationHint": "بلوک C، روبه‌روی پله برقی",
     "description": "مدل‌های متنوع برای استفاده روزمره و اسپرت.",
     "heroImage": "/images/stores/coleen.jpg",
+  "paymentMethods": ["digipay", "snapppay"],
+    
     "productIds": [
       "zara-1",
       "zara-2",
@@ -44,6 +46,7 @@
     "locationHint": "بلوک D، کنار ورودی سمت راست",
     "description": "خلاقیت در استایل",
     "heroImage": "/images/stores/dandy.jpg",
+        "paymentMethods": ["digipay"],
     "productIds": [
       "digi-1",
       "digi-2",
@@ -62,6 +65,7 @@
     "locationHint": "بلوک B، کنار فروشگاه hyperstar",
     "description": "انتخاب‌های متنوع ساعت.",
     "heroImage": "/images/stores/gshock.jpg",
+        "paymentMethods": ["digipay", "tarapay"],
     "productIds": [
       "beauty-1",
       "beauty-2"
@@ -114,6 +118,7 @@
     "locationHint": "بلوک C، کنار فروشگاه coleen",
     "description": "جواهرات منتخب برای  خاص پسندان.",
     "heroImage": "/images/stores/sanjaaq.jpg",
+        "paymentMethods": ["digipay"],
     "productIds": [
       "adidas-1",
       "adidas-2"
@@ -131,6 +136,7 @@
     "locationHint": "بلوک A، کنار پله برقی",
     "description": "سادگی در زیبایی",
     "heroImage": "/images/stores/tanedorost.jpg",
+        "paymentMethods": ["snapppay", "tarapay"],
     "productIds": [
       "aroma-1",
       "aroma-2"

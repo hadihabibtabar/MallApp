@@ -7,7 +7,8 @@
     "image": "/images/products/coleen1.jpg",
     "storeId": "coleen-store",
     "isNew": true,
-    "description": "کت سبک و خنک با فرم آزاد، مناسب استفاده روزانه."
+    "description": "کت سبک و خنک با فرم آزاد، مناسب استفاده روزانه.",
+    "paymentMethods": ["digipay", "snapppay"]
   },
   {
     "id": "zara-2",
@@ -17,7 +18,8 @@
     "image": "/images/products/coleen2.jpg",
     "storeId": "coleen-store",
     "isNew": true,
-    "description": "پارچه سبک با تن‌خور راحت برای استایل روزمره."
+    "description": "پارچه سبک با تن‌خور راحت برای استایل روزمره.",
+    "paymentMethods": ["digipay", "snapppay"]
   },
   {
     "id": "zara-3",
@@ -27,7 +29,8 @@
     "image": "/images/products/coleen3.jpg",
     "storeId": "coleen-store",
     "isNew": false,
-    "description": "پیراهن خنک و راحت با رنگ‌های ترند فصل."
+    "description": "پیراهن خنک و راحت با رنگ‌های ترند فصل.",
+    "paymentMethods": ["digipay", "snapppay"]
   },
   {
     "id": "nike-1",
@@ -77,7 +80,8 @@
     "image": "/images/products/dnd2.jpg",
     "storeId": "dandy-store",
     "isNew": true,
-    "description": "کیف طرح شازده کوچولو: همراهی منحصر به فرد برای بانوان خاص پسند"
+    "description": "کیف طرح شازده کوچولو: همراهی منحصر به فرد برای بانوان خاص پسند",
+    "paymentMethods": ["digipay"]
   },
   {
     "id": "digi-3",
@@ -87,7 +91,8 @@
     "image": "/images/products/dnd3.jpg",
     "storeId": "dandy-store",
     "isNew": false,
-    "description": "هودی زنانه دندی طرح آن شرلی | هودی Anne Shirley"
+    "description": "هودی زنانه دندی طرح آن شرلی | هودی Anne Shirley",
+        "paymentMethods": ["digipay"]
   },
   {
     "id": "beauty-1",
@@ -97,7 +102,8 @@
     "image": "/images/products/gsh1.jpg",
     "storeId": "gshock-store",
     "isNew": true,
-    "description": "ساعت مچی کاسیوساعت مچی کاسیو مدل CASIO-W-218H-4B "
+    "description": "ساعت مچی کاسیوساعت مچی کاسیو مدل CASIO-W-218H-4B ",
+    "paymentMethods": ["digipay", "tarapay"]
   },
   {
     "id": "beauty-2",
@@ -107,7 +113,8 @@
     "image": "/images/products/gsh2.jpg",
     "storeId": "gshock-store",
     "isNew": false,
-    "description": "ساعت مچی مردانه مدل CASIO-AE-1500WHX-3AVDF"
+    "description": "ساعت مچی مردانه مدل CASIO-AE-1500WHX-3AVDF",
+        "paymentMethods": ["digipay", "tarapay"]
   },
   {
     "id": "food-1",
@@ -157,7 +164,8 @@
     "image": "/images/products/san1.jpg",
     "storeId": "sanjaaq-store",
     "isNew": true,
-    "description": "1.46 گرم طلای 18 عیار"
+    "description": "1.46 گرم طلای 18 عیار",
+    "paymentMethods": ["digipay"]
   },
   {
     "id": "adidas-2",
@@ -167,7 +175,8 @@
     "image": "/images/products/san2.jpg",
     "storeId": "sanjaaq-store",
     "isNew": false,
-    "description": "2.4 گرم طلای 18 عیار"
+    "description": "2.4 گرم طلای 18 عیار",
+        "paymentMethods": ["digipay"]
   },
   {
     "id": "aroma-1",
@@ -177,7 +186,8 @@
     "image": "/images/products/tan1.jpg",
     "storeId": "tanedorost-store",
     "isNew": true,
-    "description": "کد 256987"
+    "description": "کد 256987",
+        "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "aroma-2",
@@ -188,5 +198,7 @@
     "storeId": "tanedorost-store",
     "isNew": true,
     "description": "کد 145698"
+    ,
+    "paymentMethods": ["snapppay", "tarapay"]
   }
 ]
