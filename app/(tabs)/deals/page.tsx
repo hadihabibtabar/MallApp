@@ -1,6 +1,6 @@
 import { DealsViewedTracker } from "@/components/analytics-trackers";
 import { DealsList } from "@/components/deals-list";
-import { getDealsView } from "@/lib/mock-data";
+import { getDealsView, products, stores } from "@/lib/mock-data";
 
 export default function DealsPage() {
   const deals = getDealsView();
@@ -27,7 +27,7 @@ export default function DealsPage() {
   </p>
 </header>
 
-      <DealsList deals={sortedDeals} />
+      <DealsList deals={sortedDeals} products={products} stores={stores} />
     </main>
   );
 }

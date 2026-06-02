@@ -69,13 +69,13 @@ export default async function StorePage({ params }: StorePageProps) {
         <p className="mt-2 text-sm leading-7 text-slate-600 md:text-base md:leading-8">
           به {store.floor} بروید، {store.locationHint}. تابلوهای راهنما تا جلوی فروشگاه شما را همراهی می‌کنند.
         </p>
-        <StoreNavigationButton
+        {/* <StoreNavigationButton
           source="store_page"
           storeId={store.id}
           className="mt-4 w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-700 md:py-4 md:text-base md:rounded-xl"
         >
           رفتن به فروشگاه
-        </StoreNavigationButton>
+        </StoreNavigationButton> */}
       </section>
     </main>
   );

@@ -41,9 +41,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
               sizes="(min-width: 1024px) 400px, (min-width: 768px) 300px, 420px"
               priority
             />
+             {product.discount !==null ?(
             <div className="absolute right-3 top-3 rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
               %{toPersianDigits(product.discount)} تخفیف
             </div>
+            ):null}
           </div>
         </section>
 
@@ -53,7 +55,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <p className="mt-3 text-sm leading-7 text-slate-600 md:text-base md:leading-8">{product.description}</p>
             <div className="mt-4 flex items-center gap-3 md:mt-5">
               <p className="text-lg font-black text-slate-900 md:text-2xl">{formatPrice(finalPrice)}</p>
+               {product.discount !==null ?(
               <p className="text-sm text-slate-400 line-through md:text-base">{formatPrice(product.price)}</p>
+              ):null}
             </div>
           </div>
 
@@ -72,7 +76,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </section>
 
-          <StoreNavigationLink
+          {/* <StoreNavigationLink
             href={`/store/${store.id}#route`}
             source="product_page"
             storeId={store.id}
@@ -80,7 +84,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             className="block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-700 md:rounded-xl md:py-4 md:text-base"
           >
             رفتن به فروشگاه
-          </StoreNavigationLink>
+          </StoreNavigationLink> */}
         </section>
       </div>
     </main>

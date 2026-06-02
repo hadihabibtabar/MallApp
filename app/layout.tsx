@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { BackButton } from "@/components/back-button";
+import { HomeButton } from "@/components/home-button";
 import { PostHogProvider } from "@/components/posthog-provider";
 import "./globals.css";
 
@@ -67,7 +68,12 @@ export default function RootLayout({
         className={`${iranYekan.variable} ${iranYekan.className} antialiased`}
       >
         <PostHogProvider />
-        <BackButton />
+
+        <div className="fixed top-4 right-3 z-50 flex flex-col gap-2 md:top-6 md:right-6">
+          <BackButton />
+          <HomeButton />
+        </div>
+
         {children}
       </body>
     </html>
