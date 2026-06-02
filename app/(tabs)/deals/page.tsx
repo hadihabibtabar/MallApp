@@ -14,15 +14,18 @@ export default function DealsPage() {
     <main className="space-y-3">
       <DealsViewedTracker dealCount={sortedDeals.length} />
 
-      <header className="space-y-1">
-        <h1 className="text-xl tracking-tight text-slate-900">
-          تخفیف‌های داغ امروز
-        </h1>
-        {/* <p className="text-xs text-slate-600">نمایش فشرده برای دیدن تعداد بیشتر محصول قبل از اسکرول</p> */}
-        <p className="text-xs text-slate-600">
-          همیلاسنتر همراه شما در تجربه خرید بهتر🌱
-        </p>
-      </header>
+     <header className="space-y-1 md:text-center md:max-w-2xl md:mx-auto">
+  <h1 className="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
+    تخفیف‌های داغ امروز
+  </h1>
+
+  <p className="text-xs text-slate-600 md:text-sm">
+    <span className="font-bold bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 bg-clip-text text-transparent">
+      همیلا سنتر
+    </span>
+    {" "}همراه شما در تجربه خرید بهتر🌱
+  </p>
+</header>
 
       <DealsList deals={sortedDeals} />
     </main>

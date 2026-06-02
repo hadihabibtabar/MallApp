@@ -117,13 +117,13 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3 xl:grid-cols-4">
         {filteredStores.map((store) => (
           <StoreCard key={store.id} store={store} />
         ))}
 
         {filteredStores.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3 xl:col-span-4">
             فروشگاهی با این فیلترها پیدا نشد.
           </div>
         )}

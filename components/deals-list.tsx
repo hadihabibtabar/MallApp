@@ -44,36 +44,53 @@ export function DealsList({ deals }: DealsListProps) {
 
   return (
     <>
-      {/* <section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5"> */}
-        {/* <label
-          htmlFor="deals-search"
-          className="mb-2 block text-xs font-bold text-slate-500"
-        >
-          جستجو در تخفیف‌ها و محصولات
-        </label> */}
-        <input
-          id="deals-search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
-          className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
-        />
-      {/* </section> */}
+<section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5 md:p-5">
+  
+  {/*Just Desktop  */}
+  <label
+    htmlFor="deals-search"
+    className="mb-2 hidden text-sm font-bold text-slate-500 md:block"
+  >
+    جستجو در تخفیف‌ها و محصولات
+  </label>
 
-      {/* <section className="rounded-2xl border border-rose-100 bg-gradient-to-l from-rose-50 to-orange-50 p-3 shadow-sm">
+  <input
+    id="deals-search"
+    value={query}
+    onChange={(event) => setQuery(event.target.value)}
+     placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
+    className="
+      h-12 md:h-14
+      w-full
+      rounded-xl
+      border border-slate-200
+      bg-slate-50
+      px-4 md:px-5
+      text-sm md:text-base
+      text-slate-900
+      outline-none
+      transition
+      focus:border-slate-400
+      focus:bg-white
+      md:shadow-sm
+    "
+  />
+</section>
+
+      {/* <section className="rounded-2xl border border-rose-100 bg-gradient-to-l from-rose-50 to-orange-50 p-3 shadow-sm md:p-4">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-slate-700">
+          <p className="text-xs font-bold text-slate-700 md:text-sm">
             {selectedTag === "همه" ? "مرتب‌شده بر اساس زمان پایان تخفیف" : `فیلتر تگ: ${selectedTag}`}
           </p>
-          <span className="rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-bold text-white">
+          <span className="rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-bold text-white md:text-xs">
             {toPersianDigits(urgentCount)} پیشنهاد فوری
           </span>
         </div>
       </section> */}
 
-      <section className="space-y-2">
+      <section className="space-y-2 md:space-y-3">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-slate-500">طبقه:</span>
+          <span className="text-[11px] font-bold text-slate-500 md:text-xs">طبقه:</span>
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setSelectedFloor("all")}
@@ -131,13 +148,13 @@ export function DealsList({ deals }: DealsListProps) {
         </div>
       </section>
 
-      <section className="space-y-2.5">
+      <section className="space-y-2.5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0 lg:grid-cols-3">
         {filteredDeals.map((item) => (
           <DealCard key={item.deal.id} item={item} />
         ))}
 
         {filteredDeals.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3">
             محصولی با فیلتر انتخابی پیدا نشد.
           </div>
         )}

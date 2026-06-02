@@ -26,58 +26,63 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const finalPrice = discountedPrice(product.price, product.discount);
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4">
+    <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-4xl lg:px-8">
       <ProductOpenedTracker productId={product.id} storeId={store.id} productDiscount={product.discount} />
 
-      <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
-        <div className="relative h-72 w-full">
-          <SmartImage
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-cover"
-            fallbackSrc="/images/fallback-image.svg"
-            sizes="420px"
-            priority
-          />
-          <div className="absolute right-3 top-3 rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white">
-            %{toPersianDigits(product.discount)} تخفیف
+      <div className="md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
+        <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
+          <div className="relative h-72 w-full md:h-96">
+            <SmartImage
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-cover"
+              fallbackSrc="/images/fallback-image.svg"
+              sizes="(min-width: 1024px) 400px, (min-width: 768px) 300px, 420px"
+              priority
+            />
+            <div className="absolute right-3 top-3 rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
+              %{toPersianDigits(product.discount)} تخفیف
+            </div>
           </div>
-        </div>
-        <div className="space-y-3 p-4">
-          <h1 className="text-xl font-black text-slate-900">{product.name}</h1>
-          <p className="text-sm leading-7 text-slate-600">{product.description}</p>
-          <div className="flex items-center gap-2">
-            <p className="text-lg font-black text-slate-900">{formatPrice(finalPrice)}</p>
-            <p className="text-sm text-slate-400 line-through">{formatPrice(product.price)}</p>
+        </section>
+
+        <section className="space-y-5">
+          <div className="rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5 p-4 md:p-6">
+            <h1 className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl">{product.name}</h1>
+            <p className="mt-3 text-sm leading-7 text-slate-600 md:text-base md:leading-8">{product.description}</p>
+            <div className="mt-4 flex items-center gap-3 md:mt-5">
+              <p className="text-lg font-black text-slate-900 md:text-2xl">{formatPrice(finalPrice)}</p>
+              <p className="text-sm text-slate-400 line-through md:text-base">{formatPrice(product.price)}</p>
+            </div>
           </div>
-        </div>
-      </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-900/5">
-        <h2 className="text-base font-extrabold text-slate-900">اطلاعات فروشگاه</h2>
-        <div className="mt-3 space-y-2 text-sm text-slate-600">
-          <p>
-            <span className="font-bold text-slate-800">فروشگاه:</span> {store.name}
-          </p>
-          <p>
-            <span className="font-bold text-slate-800">طبقه:</span> {store.floor}
-          </p>
-          <p>
-            <span className="font-bold text-slate-800">موقعیت:</span> {store.locationHint}
-          </p>
-        </div>
-      </section>
+          <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-900/5 md:p-6">
+            <h2 className="text-base font-extrabold text-slate-900 md:text-lg">اطلاعات فروشگاه</h2>
+            <div className="mt-3 space-y-2 text-sm text-slate-600 md:text-base">
+              <p>
+                <span className="font-bold text-slate-800">فروشگاه:</span> {store.name}
+              </p>
+              <p>
+                <span className="font-bold text-slate-800">طبقه:</span> {store.floor}
+              </p>
+              <p>
+                <span className="font-bold text-slate-800">موقعیت:</span> {store.locationHint}
+              </p>
+            </div>
+          </section>
 
-      <StoreNavigationLink
-        href={`/store/${store.id}#route`}
-        source="product_page"
-        storeId={store.id}
-        productId={product.id}
-        className="block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-700"
-      >
-        رفتن به فروشگاه
-      </StoreNavigationLink>
+          <StoreNavigationLink
+            href={`/store/${store.id}#route`}
+            source="product_page"
+            storeId={store.id}
+            productId={product.id}
+            className="block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-700 md:rounded-xl md:py-4 md:text-base"
+          >
+            رفتن به فروشگاه
+          </StoreNavigationLink>
+        </section>
+      </div>
     </main>
   );
 }
