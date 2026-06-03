@@ -16,9 +16,9 @@ export function ProductCard({
 }: ProductCardProps) {
   const finalPrice = discountedPrice(product.price, product.discount);
   const paymentIcons = {
-    digipay: "/images/digipay.png",
-    snapppay: "/images/snapppay.png",
-    tarapay: "/images/tarapay.png",
+    digipay: "/images/digipay.webp",
+    snapppay: "/images/snapppay.webp",
+    tarapay: "/images/tarapay.webp",
   };
   const paymentMethods = product.paymentMethods ?? [];
 

@@ -20,9 +20,9 @@ export default async function StorePage({ params }: StorePageProps) {
 
   const products = getStoreProducts(store.id);
 const paymentIcons = {
-  digipay: "/images/digipay.png",
-  snapppay: "/images/snapppay.png",
-  tarapay: "/images/tarapay.png",
+  digipay: "/images/digipay.webp",
+  snapppay: "/images/snapppay.webp",
+  tarapay: "/images/tarapay.webp",
 };
   const paymentMethods = store.paymentMethods ?? [];
   return (
@@ -64,7 +64,7 @@ const paymentIcons = {
             key={method}
             src={paymentIcons[method]}
             alt={method}
-            className="h-5 w-5 rounded-xl border border-slate-200 bg-white object-cover shadow-sm"
+            className="h-6 w-6 rounded-xl border border-slate-200 bg-white object-cover shadow-sm"
           />
         ))}
       </div>

@@ -11,9 +11,9 @@ interface DealCardProps {
   item: DealView;
 }
 const paymentIcons = {
-  digipay: "/images/digipay.png",
-  snapppay: "/images/snapppay.png",
-  tarapay: "/images/tarapay.png",
+  digipay: "/images/digipay.webp",
+  snapppay: "/images/snapppay.webp",
+  tarapay: "/images/tarapay.webp",
 };
 function formatCompactTime(expiresAt: string): string {
   const diffMs = new Date(expiresAt).getTime() - Date.now();
@@ -80,13 +80,14 @@ export function DealCard({ item }: DealCardProps) {
           </Link>
 
           <div className="mt-2 flex justify-center gap-1.5">
-            {item.product.paymentMethods?.map((method) => (
+            {item.product.paymentMethods?.map((method) => (<>
+               {/* {console.log(method, paymentIcons[method])} */}
               <img
                 key={method}
                 src={paymentIcons[method]}
                 alt={method}
                 className="h-5 w-5 rounded-lg border border-slate-200 object-cover"
-              />
+              /></>
             ))}
           </div>
         </div>
