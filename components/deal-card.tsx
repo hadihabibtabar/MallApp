@@ -80,14 +80,13 @@ export function DealCard({ item }: DealCardProps) {
           </Link>
 
           <div className="mt-2 flex justify-center gap-1.5">
-            {item.product.paymentMethods?.map((method) => (<>
-               {/* {console.log(method, paymentIcons[method])} */}
+            {item.product.paymentMethods?.map((method) => (
               <img
                 key={method}
                 src={paymentIcons[method]}
                 alt={method}
                 className="h-5 w-5 rounded-lg border border-slate-200 object-cover"
-              /></>
+              />
             ))}
           </div>
         </div>
