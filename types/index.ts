@@ -28,14 +28,16 @@ export interface Store {
    paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
 }
 
+export type PromotionType = "deal" | "collection" | "deal_and_collection";
+
 export interface Product {
   id: string;
   name: string;
   price: number;
-  discount: number;
   image: string;
   storeId: string;
-  isNew: boolean;
+  promotionType: PromotionType;
+  collectionName?: string;
   description: string;
   paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
 
@@ -46,17 +48,27 @@ export interface DealSeed {
   storeId: string;
   productId: string;
   title: string;
+  discountPercent: number;
+  startAt: string;
+  endAt: string;
+  priority: number;
+  repeatDaily: boolean;
+}
+
+export interface Deal extends DealSeed {
   discount: number;
+  expiresAt: string;
   expiresInHours: number;
   tag: string;
 }
 
-export interface Deal extends DealSeed {
-  expiresAt: string;
+export interface ProductView extends Product {
+  discount: number;
+  isNew: boolean;
 }
 
 export interface DealView {
   deal: Deal;
   store: Store;
-  product: Product;
+  product: ProductView;
 }
