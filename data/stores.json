@@ -9,7 +9,7 @@
     "description": "جدیدترین محصولات و آیتم‌های منتخب این فصل.",
     "heroImage": "/images/stores/brioche.webp",
     "productIds": ["food-1", "food-2"],
-    "dealIds": ["food-deal-1"]
+    "dealIds": ["deal-food-1", "deal-food-2"]
   },
   {
     "id": "coleen-store",
@@ -23,7 +23,7 @@
     "paymentMethods": ["digipay", "snapppay"],
 
     "productIds": ["zara-1", "zara-2", "zara-3"],
-    "dealIds": ["zara-deal-1", "zara-deal-2"]
+    "dealIds": ["deal-zara-1", "deal-zara-2", "deal-zara-3"]
   },
   {
     "id": "dandy-store",
@@ -36,7 +36,7 @@
     "heroImage": "/images/stores/dandy.webp",
     "paymentMethods": ["digipay"],
     "productIds": ["digi-1", "digi-2", "digi-3"],
-    "dealIds": ["digi-deal-1"]
+    "dealIds": ["deal-digi-1", "deal-digi-2", "deal-digi-3"]
   },
   {
     "id": "gshock-store",
@@ -49,7 +49,7 @@
     "heroImage": "/images/stores/gshock.webp",
     "paymentMethods": ["digipay", "tarapay"],
     "productIds": ["beauty-1", "beauty-2"],
-    "dealIds": ["beauty-deal-1"]
+    "dealIds": ["deal-beauty-1", "deal-beauty-2"]
   },
   {
     "id": "hectaton-store",
@@ -61,7 +61,7 @@
     "description": "جدید ترین کالکشن ورزشی",
     "heroImage": "/images/stores/hectaton.webp",
     "productIds": ["nike-1", "nike-2", "nike-3"],
-    "dealIds": ["nike-deal-1"]
+    "dealIds": ["deal-nike-1", "deal-nike-2", "deal-nike-3"]
   },
   {
     "id": "hyperstar-store",
@@ -73,7 +73,7 @@
     "description": "تازه ترین محصولات خوراکی با آفر ویژه",
     "heroImage": "/images/stores/hyperstar.webp",
     "productIds": ["mango-1", "mango-2"],
-    "dealIds": ["mango-deal-1"]
+    "dealIds": ["deal-mango-1", "deal-mango-2"]
   },
   {
     "id": "sanjaaq-store",
@@ -86,7 +86,7 @@
     "heroImage": "/images/stores/sanjaaq.webp",
     "paymentMethods": ["digipay"],
     "productIds": ["adidas-1", "adidas-2"],
-    "dealIds": ["adidas-deal-1"]
+    "dealIds": ["deal-adidas-1", "deal-adidas-2"]
   },
   {
     "id": "tanedorost-store",
@@ -99,6 +99,6 @@
     "heroImage": "/images/stores/tanedorost.webp",
     "paymentMethods": ["snapppay", "tarapay"],
     "productIds": ["aroma-1", "aroma-2"],
-    "dealIds": ["aroma-deal-1"]
+    "dealIds": ["deal-aroma-1", "deal-aroma-2"]
   }
 ]

@@ -10,16 +10,24 @@ import { SmartImage } from "@/components/smart-image";
 interface DealCardProps {
   item: DealView;
 }
+interface TimeBadgeState {
+  label: string;
+  isExpired: boolean;
+}
+
 const paymentIcons = {
   digipay: "/images/digipay.webp",
   snapppay: "/images/snapppay.webp",
   tarapay: "/images/tarapay.webp",
 };
-function formatCompactTime(expiresAt: string): string {
+function getTimeBadgeState(expiresAt: string): TimeBadgeState {
   const diffMs = new Date(expiresAt).getTime() - Date.now();
 
   if (diffMs <= 0) {
-    return "تمام‌شده";
+    return {
+      label: "تمام شده",
+      isExpired: true,
+    };
   }
 
   const totalSeconds = Math.floor(diffMs / 1000);
@@ -30,15 +38,21 @@ function formatCompactTime(expiresAt: string): string {
   const mm = String(minutes).padStart(2, "0");
   const ss = String(seconds).padStart(2, "0");
 
-  return toPersianDigits(`${hh}:${mm}:${ss}`);
+  return {
+    label: toPersianDigits(`${hh}:${mm}:${ss}`),
+    isExpired: false,
+  };
 }
 
 export function DealCard({ item }: DealCardProps) {
-  const [timeLabel, setTimeLabel] = useState(() =>
-    formatCompactTime(item.deal.expiresAt),
+  const [timeBadge, setTimeBadge] = useState(() =>
+    getTimeBadgeState(item.deal.expiresAt),
   );
   const oldPrice = item.product.price;
   const newPrice = discountedPrice(oldPrice, item.deal.discount);
+  const timeBadgeClassName = timeBadge.isExpired
+    ? "rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-500"
+    : "rounded-full bg-orange-50 px-2 py-0.5 font-bold text-orange-700";
   const dealClickProperties = {
     source: "deal_card" as const,
     deal_id: item.deal.id,
@@ -50,7 +64,7 @@ export function DealCard({ item }: DealCardProps) {
   };
 
   useEffect(() => {
-    const tick = () => setTimeLabel(formatCompactTime(item.deal.expiresAt));
+    const tick = () => setTimeBadge(getTimeBadgeState(item.deal.expiresAt));
     const intervalId = setInterval(tick, 1_000);
     tick();
     return () => clearInterval(intervalId);
@@ -94,10 +108,10 @@ export function DealCard({ item }: DealCardProps) {
         <div className="min-w-0 flex-1">
           <div className="mb-0.5 flex items-center justify-between gap-1.5 text-[10px]">
             <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">
-              {item.deal.tag}
+              {item.product.tag}
             </span>
-            <span className="rounded-full bg-orange-50 px-2 py-0.5 font-bold text-orange-700">
-              {timeLabel}
+            <span className={timeBadgeClassName}>
+              {timeBadge.label}
             </span>
           </div>
 
