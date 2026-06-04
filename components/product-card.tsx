@@ -40,10 +40,10 @@ export function ProductCard({
                 fallbackSrc="/images/fallback-image.svg"
                 sizes="(min-width: 640px) 112px, 96px"
               />
-
+{product.discount !==null ?(
               <div className="absolute right-1 top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
                 %{toPersianDigits(product.discount)}
-              </div>
+              </div> ):null}
             </Link>
 
             {/* PAYMENT METHODS (UNDER IMAGE) */}
@@ -65,7 +65,7 @@ export function ProductCard({
           <div className="min-w-0 flex-1">
             <div className="mb-0.5 flex items-center justify-between gap-1.5 text-[10px]">
               <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">
-                محصول
+             {product.tag}
               </span>
 
               {product.isNew && (
@@ -85,12 +85,14 @@ export function ProductCard({
               </p>
 
               <div className="mt-0.5 flex items-center gap-1.5">
+                  
                 <p className="text-base text-slate-900 sm:text-lg">
                   {formatPrice(finalPrice)}
                 </p>
+                {product.discount !==null ?(
                 <p className="text-[11px] text-slate-400 line-through">
                   {formatPrice(product.price)}
-                </p>
+                </p>):null}
               </div>
             </div>
 

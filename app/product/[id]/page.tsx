@@ -32,21 +32,33 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <div className="md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
           <div className="relative h-72 w-full md:h-96">
-            <SmartImage
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover"
-              fallbackSrc="/images/fallback-image.svg"
-              sizes="(min-width: 1024px) 400px, (min-width: 768px) 300px, 420px"
-              priority
-            />
-             {product.discount !==null ?(
-            <div className="absolute right-3 top-3 rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
-              %{toPersianDigits(product.discount)} تخفیف
-            </div>
-            ):null}
-          </div>
+  <SmartImage
+    src={product.image}
+    alt={product.name}
+    fill
+    className="object-cover"
+    fallbackSrc="/images/fallback-image.svg"
+    sizes="(min-width: 1024px) 400px, (min-width: 768px) 300px, 420px"
+    priority
+  />
+
+  {/* badges container */}
+  <div className="absolute right-3 top-3 flex flex-col gap-2 items-end">
+    
+    {product.discount !== null && (
+      <div className="rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
+        %{toPersianDigits(product.discount)} تخفیف
+      </div>
+    )}
+
+    {product.isNew && (
+      <span className="rounded-full bg-emerald-500 px-2 py-1 text-[11px] font-bold text-white">
+        کالکشن جدید
+      </span>
+    )}
+
+  </div>
+</div>
         </section>
 
         <section className="space-y-5">

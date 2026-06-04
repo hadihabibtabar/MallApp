@@ -1,26 +1,51 @@
 import categoriesData from "@/data/categories.json";
-import dealsData from "@/data/deals.json";
 import productsData from "@/data/products.json";
 import storesData from "@/data/stores.json";
 import type {
   Category,
   Deal,
-  DealSeed,
   DealView,
   Product,
   Store,
   StoreCategory
 } from "@/types";
 
-const toDealWithExpiry = (seed: DealSeed): Deal => {
-  const expiresAt = new Date(Date.now() + seed.expiresInHours * 60 * 60 * 1000).toISOString();
-  return { ...seed, expiresAt };
-};
+const DEFAULT_DEAL_EXPIRES_IN_HOURS = 1;
+const HOUR_MS = 60 * 60 * 1000;
 
 export const categories = categoriesData as Category[];
-export const stores = storesData as Store[];
 export const products = productsData as Product[];
-export const deals = (dealsData as DealSeed[]).map(toDealWithExpiry);
+export const stores = (storesData as Store[]).map((store) => ({
+  ...store,
+  productIds: products
+    .filter((product) => product.storeId === store.id)
+    .map((product) => product.id),
+  dealIds: products
+    .filter((product) => product.storeId === store.id && product.discount > 0)
+    .map((product) => `deal-${product.id}`),
+}));
+
+const toProductDeal = (
+  product: Product,
+  expiresInHours = DEFAULT_DEAL_EXPIRES_IN_HOURS,
+): Deal => {
+  const store = getStoreById(product.storeId);
+
+  return {
+    id: `deal-${product.id}`,
+    storeId: product.storeId,
+    productId: product.id,
+    title: product.name,
+    discount: product.discount,
+    expiresInHours,
+    tag: store?.category ?? "",
+    expiresAt: new Date(Date.now() + expiresInHours * HOUR_MS).toISOString(),
+  };
+};
+
+export const deals = products
+  .filter((product) => product.discount > 0)
+  .map((product) => toProductDeal(product));
 
 export function getStoreById(storeId: string): Store | undefined {
   return stores.find((store) => store.id === storeId);

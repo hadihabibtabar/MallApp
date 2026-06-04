@@ -3,10 +3,11 @@
     "id": "zara-1",
     "name": "کت لینن اورسایز",
     "price": 3890000,
-    "discount": 35,
+    "discount": null,
     "image": "/images/products/coleen1.webp",
     "storeId": "coleen-store",
     "isNew": true,
+    "tag": "کت زنانه",
     "description": "کت سبک و خنک با فرم آزاد، مناسب استفاده روزانه.",
     "paymentMethods": ["digipay", "snapppay"]
   },
@@ -18,6 +19,7 @@
     "image": "/images/products/coleen2.webp",
     "storeId": "coleen-store",
     "isNew": true,
+    "tag": "شلوار زنانه",
     "description": "پارچه سبک با تن‌خور راحت برای استایل روزمره.",
     "paymentMethods": ["digipay", "snapppay"]
   },
@@ -29,6 +31,7 @@
     "image": "/images/products/coleen3.webp",
     "storeId": "coleen-store",
     "isNew": false,
+    "tag": "پیراهن زنانه",
     "description": "پیراهن خنک و راحت با رنگ‌های ترند فصل.",
     "paymentMethods": ["digipay", "snapppay"]
   },
@@ -40,6 +43,7 @@
     "image": "/images/products/hec1.webp",
     "storeId": "hectaton-store",
     "isNew": true,
+    "tag": "کفش ورزشی",
     "description": "کفش رانینگ سبک با جذب ضربه بالا."
   },
   {
@@ -50,6 +54,7 @@
     "image": "/images/products/hec3.webp",
     "storeId": "hectaton-store",
     "isNew": false,
+    "tag": "هوذی",
     "description": "مناسب تمرین و استایل خیابانی در همه فصل‌ها."
   },
   {
@@ -60,6 +65,7 @@
     "image": "/images/products/hec2.webp",
     "storeId": "hectaton-store",
     "isNew": true,
+    "tag": "شلوار ورزشی",
     "description": "شلوار سبک برای باشگاه و استفاده روزانه."
   },
   {
@@ -70,6 +76,7 @@
     "image": "/images/products/dnd1.webp",
     "storeId": "dandy-store",
     "isNew": true,
+    "tag": "بوت زنانه",
     "description": "بوت دندی طرح Harry Potter"
   },
   {
@@ -80,6 +87,7 @@
     "image": "/images/products/dnd2.webp",
     "storeId": "dandy-store",
     "isNew": true,
+    "tag": "کیف",
     "description": "کیف طرح شازده کوچولو: همراهی منحصر به فرد برای بانوان خاص پسند",
     "paymentMethods": ["digipay"]
   },
@@ -91,6 +99,7 @@
     "image": "/images/products/dnd3.webp",
     "storeId": "dandy-store",
     "isNew": false,
+    "tag": "هودی زنانه",
     "description": "هودی زنانه دندی طرح آن شرلی | هودی Anne Shirley",
         "paymentMethods": ["digipay"]
   },
@@ -102,6 +111,7 @@
     "image": "/images/products/gsh1.webp",
     "storeId": "gshock-store",
     "isNew": true,
+    "tag": "ساعت",
     "description": "ساعت مچی کاسیوساعت مچی کاسیو مدل CASIO-W-218H-4B ",
     "paymentMethods": ["digipay", "tarapay"]
   },
@@ -113,6 +123,7 @@
     "image": "/images/products/gsh2.webp",
     "storeId": "gshock-store",
     "isNew": false,
+    "tag": "ساعت",
     "description": "ساعت مچی مردانه مدل CASIO-AE-1500WHX-3AVDF",
         "paymentMethods": ["digipay", "tarapay"]
   },
@@ -124,6 +135,7 @@
     "image": "/images/products/berio1.webp",
     "storeId": "brioche-store",
     "isNew": true,
+    "tag": "کافه",
     "description": "کروسان بادام زمینی تازه با کرم بادام زمینی"
   },
   {
@@ -134,6 +146,7 @@
     "image": "/images/products/berio2.webp",
     "storeId": "brioche-store",
     "isNew": true,
+    "tag": "کافه",
     "description": "ترکیب میوه و پروتئین برای شروع پرانرژی روز."
   },
   {
@@ -144,6 +157,7 @@
     "image": "/images/products/hyp1.webp",
     "storeId": "hyperstar-store",
     "isNew": false,
+    "tag": "غذا",
     "description": "پنیر صبحانه کاله 350 گرمی"
   },
   {
@@ -154,6 +168,7 @@
     "image": "/images/products/hyp2.webp",
     "storeId": "hyperstar-store",
     "isNew": false,
+    "tag": "غذا",
     "description": "بهترین کیفیت در هایپپر همیلا سنتر"
   },
   {
@@ -164,6 +179,7 @@
     "image": "/images/products/san1.webp",
     "storeId": "sanjaaq-store",
     "isNew": true,
+    "tag": "طلا",
     "description": "1.46 گرم طلای 18 عیار",
     "paymentMethods": ["digipay"]
   },
@@ -175,6 +191,7 @@
     "image": "/images/products/san2.webp",
     "storeId": "sanjaaq-store",
     "isNew": false,
+    "tag": "طلا",
     "description": "2.4 گرم طلای 18 عیار",
         "paymentMethods": ["digipay"]
   },
@@ -186,6 +203,7 @@
     "image": "/images/products/tan1.webp",
     "storeId": "tanedorost-store",
     "isNew": true,
+    "tag": "پیراهن",
     "description": "کد 256987",
         "paymentMethods": ["snapppay", "tarapay"]
   },
@@ -197,8 +215,8 @@
     "image": "/images/products/tan2.webp",
     "storeId": "tanedorost-store",
     "isNew": true,
-    "description": "کد 145698"
-    ,
+    "tag": "شلوار",
+    "description": "کد 145698",
     "paymentMethods": ["snapppay", "tarapay"]
   }
 ]

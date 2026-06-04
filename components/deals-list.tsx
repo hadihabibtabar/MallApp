@@ -1,17 +1,27 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { DealsViewedTracker } from "@/components/analytics-trackers";
 import { DealCard } from "@/components/deal-card";
 import { ProductCard } from "@/components/product-card";
-import { toPersianDigits } from "@/lib/format";
-import { FLOOR_LEVELS, getFloorLabel, parseStoreFloorToLevel } from "@/lib/floor-filter";
+import {
+  FLOOR_LEVELS,
+  getFloorLabel,
+  parseStoreFloorToLevel,
+} from "@/lib/floor-filter";
 import type { FloorFilterValue } from "@/lib/floor-filter";
-import type { DealView, Product, Store } from "@/types";
+import type { Deal, DealView, Product, Store } from "@/types";
 
 interface DealsListProps {
-  deals: DealView[];
   products: Product[];
   stores: Store[];
+}
+
+interface StoredDeal {
+  productId: string;
+  startedAt: string;
+  expiresAt: string;
+  hideAt: string;
 }
 
 type ProductSearchResult =
@@ -25,24 +35,314 @@ type ProductSearchResult =
       store: Store;
     };
 
+const STORAGE_KEY = "hamilia-active-deals-v1";
+const TARGET_DEAL_COUNT = 5;
+const HIDE_AFTER_EXPIRED_MS = 5 * 60 * 1000;
+const HOUR_MS = 60 * 60 * 1000;
+const MIN_DEAL_HOURS = 1;
+const MAX_DEAL_HOURS = 5;
+const SELECTION_START_HOUR = 8;
+const SELECTION_END_HOUR = 23;
+
 function matchesSearch(value: string | undefined, query: string): boolean {
   return value?.toLowerCase().includes(query) ?? false;
 }
 
-export function DealsList({ deals, products, stores }: DealsListProps) {
+function isDiscountedProduct(product: Product): boolean {
+  return Number(product.discount) > 0;
+}
+
+function isSelectionWindowOpen(now: Date): boolean {
+  const hour = now.getHours();
+  return hour >= SELECTION_START_HOUR && hour < SELECTION_END_HOUR;
+}
+
+function getTime(value: string): number | null {
+  const time = new Date(value).getTime();
+  return Number.isFinite(time) ? time : null;
+}
+
+function compareDealsByExpiryStatus(
+  firstExpiresAt: string,
+  secondExpiresAt: string,
+  nowMs: number,
+): number {
+  const firstExpiresAtMs = getTime(firstExpiresAt) ?? 0;
+  const secondExpiresAtMs = getTime(secondExpiresAt) ?? 0;
+  const firstIsExpired = firstExpiresAtMs <= nowMs;
+  const secondIsExpired = secondExpiresAtMs <= nowMs;
+
+  if (firstIsExpired !== secondIsExpired) {
+    return firstIsExpired ? 1 : -1;
+  }
+
+  return firstExpiresAtMs - secondExpiresAtMs;
+}
+
+function isStoredDeal(value: unknown): value is StoredDeal {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const deal = value as StoredDeal;
+
+  return (
+    typeof deal.productId === "string" &&
+    typeof deal.startedAt === "string" &&
+    typeof deal.expiresAt === "string" &&
+    typeof deal.hideAt === "string" &&
+    getTime(deal.startedAt) !== null &&
+    getTime(deal.expiresAt) !== null &&
+    getTime(deal.hideAt) !== null
+  );
+}
+
+function readStoredDeals(): StoredDeal[] {
+  if (typeof window === "undefined") {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
+    return Array.isArray(parsed) ? parsed.filter(isStoredDeal) : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistStoredDeals(deals: StoredDeal[]) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(deals));
+}
+
+function getRandomDealHours(): number {
+  return (
+    Math.floor(Math.random() * (MAX_DEAL_HOURS - MIN_DEAL_HOURS + 1)) +
+    MIN_DEAL_HOURS
+  );
+}
+
+function shuffleProducts(products: Product[]): Product[] {
+  return products
+    .map((product) => ({ product, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map((item) => item.product);
+}
+
+function createStoredDeal(product: Product, now: Date): StoredDeal {
+  const durationHours = getRandomDealHours();
+  const startedAtMs = now.getTime();
+  const expiresAtMs = startedAtMs + durationHours * HOUR_MS;
+
+  return {
+    productId: product.id,
+    startedAt: new Date(startedAtMs).toISOString(),
+    expiresAt: new Date(expiresAtMs).toISOString(),
+    hideAt: new Date(expiresAtMs + HIDE_AFTER_EXPIRED_MS).toISOString(),
+  };
+}
+
+function syncStoredDeals(
+  currentDeals: StoredDeal[],
+  products: Product[],
+  storeById: Map<string, Store>,
+  now: Date,
+): StoredDeal[] {
+  const nowMs = now.getTime();
+  const discountedProducts = products.filter(
+    (product) => isDiscountedProduct(product) && storeById.has(product.storeId),
+  );
+  const discountedById = new Map(
+    discountedProducts.map((product) => [product.id, product]),
+  );
+  const targetCount = Math.min(TARGET_DEAL_COUNT, discountedProducts.length);
+  const seenProductIds = new Set<string>();
+  const visibleDeals = currentDeals
+    .filter((deal) => {
+      if (
+        seenProductIds.has(deal.productId) ||
+        !discountedById.has(deal.productId)
+      ) {
+        return false;
+      }
+
+      const hideAtMs = getTime(deal.hideAt);
+
+      if (hideAtMs === null || hideAtMs <= nowMs) {
+        return false;
+      }
+
+      seenProductIds.add(deal.productId);
+      return true;
+    })
+    .sort((a, b) =>
+      compareDealsByExpiryStatus(a.expiresAt, b.expiresAt, nowMs),
+    )
+    .slice(0, targetCount);
+
+  if (visibleDeals.length >= targetCount || !isSelectionWindowOpen(now)) {
+    return visibleDeals;
+  }
+
+  const visibleProductIds = new Set(visibleDeals.map((deal) => deal.productId));
+  const candidates = shuffleProducts(
+    discountedProducts.filter((product) => !visibleProductIds.has(product.id)),
+  );
+  const nextDeals = [...visibleDeals];
+
+  while (nextDeals.length < targetCount && candidates.length > 0) {
+    const product = candidates.shift();
+
+    if (product) {
+      nextDeals.push(createStoredDeal(product, now));
+    }
+  }
+
+  return nextDeals.sort((a, b) =>
+    compareDealsByExpiryStatus(a.expiresAt, b.expiresAt, nowMs),
+  );
+}
+
+function toDealView(
+  storedDeal: StoredDeal,
+  productById: Map<string, Product>,
+  storeById: Map<string, Store>,
+): DealView | null {
+  const product = productById.get(storedDeal.productId);
+
+  if (!product || !isDiscountedProduct(product)) {
+    return null;
+  }
+
+  const store = storeById.get(product.storeId);
+  const startedAtMs = getTime(storedDeal.startedAt);
+  const expiresAtMs = getTime(storedDeal.expiresAt);
+
+  if (!store || startedAtMs === null || expiresAtMs === null) {
+    return null;
+  }
+
+  const expiresInHours = Math.max(
+    MIN_DEAL_HOURS,
+    Math.round((expiresAtMs - startedAtMs) / HOUR_MS),
+  );
+  const deal: Deal = {
+    id: `deal-${product.id}-${startedAtMs}`,
+    storeId: product.storeId,
+    productId: product.id,
+    title: product.name,
+    discount: product.discount,
+    expiresInHours,
+    tag: store.category,
+    expiresAt: storedDeal.expiresAt,
+  };
+
+  return { deal, store, product };
+}
+
+function NightDealsMessage() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-sky-50 p-5 text-center shadow-sm ring-1 ring-amber-100 md:col-span-2 md:p-7 lg:col-span-3">
+      <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-amber-200 bg-white text-sm font-black text-amber-700 shadow-sm">
+        ۸:۰۰
+        <span className="absolute -left-2 -top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-bold text-white">
+          Zzz
+        </span>
+      </div>
+      <p className="text-base font-extrabold text-slate-900 md:text-lg">
+        ما و کیف پولت فعلاً آتش‌بس اعلام کردیم.🚀
+      </p>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-slate-600">
+       💸 وسوسه‌ها از ساعت ۸ صبح شیفتشون شروع میشه!
+      </p>
+    </div>
+  );
+}
+
+export function DealsList({ products, stores }: DealsListProps) {
   const [query, setQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string>("همه");
   const [selectedFloor, setSelectedFloor] = useState<FloorFilterValue>("all");
+  const [storedDeals, setStoredDeals] = useState<StoredDeal[]>([]);
+  const [hasLoadedDeals, setHasLoadedDeals] = useState(false);
+  const [isDealSelectionClosed, setIsDealSelectionClosed] = useState(false);
+  const [sortNowMs, setSortNowMs] = useState(() => Date.now());
   const normalizedQuery = query.trim().toLowerCase();
   const isSearching = normalizedQuery.length > 0;
-
-  const tags = useMemo(() => {
-    return Array.from(new Set(deals.map((item) => item.deal.tag))).filter(Boolean);
-  }, [deals]);
 
   const storeById = useMemo(() => {
     return new Map(stores.map((store) => [store.id, store]));
   }, [stores]);
+
+  const productById = useMemo(() => {
+    return new Map(products.map((product) => [product.id, product]));
+  }, [products]);
+
+  useEffect(() => {
+    const refreshDeals = () => {
+      const now = new Date();
+      setSortNowMs(now.getTime());
+
+      setIsDealSelectionClosed(!isSelectionWindowOpen(now));
+      setStoredDeals((currentDeals) => {
+        const sourceDeals =
+          currentDeals.length > 0 ? currentDeals : readStoredDeals();
+        const nextDeals = syncStoredDeals(
+          sourceDeals,
+          products,
+          storeById,
+          now,
+        );
+
+        persistStoredDeals(nextDeals);
+
+        return nextDeals;
+      });
+      setHasLoadedDeals(true);
+    };
+
+    refreshDeals();
+
+    const intervalId = window.setInterval(refreshDeals, 30_000);
+
+    return () => window.clearInterval(intervalId);
+  }, [products, storeById]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setSortNowMs(Date.now());
+    }, 1_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const deals = useMemo(() => {
+    return storedDeals
+      .map((storedDeal) => toDealView(storedDeal, productById, storeById))
+      .filter((item): item is DealView => Boolean(item))
+      .sort((a, b) =>
+        compareDealsByExpiryStatus(
+          a.deal.expiresAt,
+          b.deal.expiresAt,
+          sortNowMs,
+        ),
+      );
+  }, [productById, sortNowMs, storeById, storedDeals]);
+
+  const tags = useMemo(() => {
+    return Array.from(new Set(deals.map((item) => item.deal.tag))).filter(
+      Boolean,
+    );
+  }, [deals]);
+
+  useEffect(() => {
+    if (selectedTag !== "همه" && !tags.includes(selectedTag)) {
+      setSelectedTag("همه");
+    }
+  }, [selectedTag, tags]);
 
   const dealByProductId = useMemo(() => {
     const dealMap = new Map<string, DealView>();
@@ -112,34 +412,37 @@ export function DealsList({ deals, products, stores }: DealsListProps) {
     });
 
     return results;
-  }, [dealByProductId, isSearching, normalizedQuery, products, selectedFloor, storeById]);
-
-  const urgentCount = useMemo(() => {
-    const now = Date.now();
-    return filteredDeals.filter((item) => {
-      const diff = new Date(item.deal.expiresAt).getTime() - now;
-      return diff > 0 && diff < 4 * 60 * 60 * 1000;
-    }).length;
-  }, [filteredDeals]);
+  }, [
+    dealByProductId,
+    isSearching,
+    normalizedQuery,
+    products,
+    selectedFloor,
+    storeById,
+  ]);
+  const hasNoResults = isSearching
+    ? productSearchResults.length === 0
+    : hasLoadedDeals && filteredDeals.length === 0;
 
   return (
     <>
-<section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5 md:p-5">
-  
-  {/*Just Desktop  */}
-  <label
-    htmlFor="deals-search"
-    className="mb-2 hidden text-sm font-bold text-slate-500 md:block"
-  >
-    جستجو در تخفیف‌ها و محصولات
-  </label>
+      <DealsViewedTracker dealCount={deals.length} />
 
-  <input
-    id="deals-search"
-    value={query}
-    onChange={(event) => setQuery(event.target.value)}
-     placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
-    className="
+      <section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5 md:p-5">
+        {/*Just Desktop  */}
+        <label
+          htmlFor="deals-search"
+          className="mb-2 hidden text-sm font-bold text-slate-500 md:block"
+        >
+          جستجو در تخفیف‌ها و محصولات
+        </label>
+
+        <input
+          id="deals-search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
+          className="
       h-12 md:h-14
       w-full
       rounded-xl
@@ -154,8 +457,8 @@ export function DealsList({ deals, products, stores }: DealsListProps) {
       focus:bg-white
       md:shadow-sm
     "
-  />
-</section>
+        />
+      </section>
 
       {/* <section className="rounded-2xl border border-rose-100 bg-gradient-to-l from-rose-50 to-orange-50 p-3 shadow-sm md:p-4">
         <div className="flex items-center justify-between">
@@ -170,7 +473,9 @@ export function DealsList({ deals, products, stores }: DealsListProps) {
 
       <section className="space-y-2 md:space-y-3">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-slate-500 md:text-xs">طبقه:</span>
+          <span className="text-[11px] font-bold text-slate-500 md:text-xs">
+            طبقه:
+          </span>
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => setSelectedFloor("all")}
@@ -234,7 +539,10 @@ export function DealsList({ deals, products, stores }: DealsListProps) {
         {isSearching
           ? productSearchResults.map((result) =>
               result.type === "deal" ? (
-                <DealCard key={`deal-${result.item.deal.id}`} item={result.item} />
+                <DealCard
+                  key={`deal-${result.item.deal.id}`}
+                  item={result.item}
+                />
               ) : (
                 <ProductCard
                   key={`product-${result.product.id}`}
@@ -244,9 +552,13 @@ export function DealsList({ deals, products, stores }: DealsListProps) {
                 />
               ),
             )
-          : filteredDeals.map((item) => <DealCard key={item.deal.id} item={item} />)}
+          : filteredDeals.map((item) => (
+              <DealCard key={item.deal.id} item={item} />
+            ))}
 
-        {(isSearching ? productSearchResults.length === 0 : filteredDeals.length === 0) && (
+        {hasNoResults && isDealSelectionClosed && <NightDealsMessage />}
+
+        {hasNoResults && !isDealSelectionClosed && (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3">
             محصولی با فیلتر انتخابی پیدا نشد.
           </div>

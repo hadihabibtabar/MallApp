@@ -29,6 +29,7 @@ export interface Store {
 }
 
 export interface Product {
+  [x: string]: ReactNode;
   id: string;
   name: string;
   price: number;

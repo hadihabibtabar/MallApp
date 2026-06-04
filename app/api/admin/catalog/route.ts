@@ -18,7 +18,6 @@ const dataDir = path.join(process.cwd(), "data");
 const dataFiles = {
   stores: "stores.json",
   products: "products.json",
-  deals: "deals.json",
   categories: "categories.json",
 } as const;
 
@@ -38,7 +37,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function ensureArray<T>(value: unknown, key: CatalogKey): T[] {
+function ensureArray<T>(value: unknown, key: string): T[] {
   if (!Array.isArray(value)) {
     throw new Error(`Invalid "${key}" payload.`);
   }
@@ -74,6 +73,26 @@ function assertUniqueIds(items: Array<{ id: string }>, label: string) {
 
     seen.add(item.id);
   }
+}
+
+function createProductDeals(products: AdminProduct[], stores: AdminStore[]): AdminDeal[] {
+  const storeById = new Map(stores.map((store) => [store.id, store]));
+
+  return products
+    .filter((product) => Number(product.discount) > 0 && storeById.has(product.storeId))
+    .map((product) => {
+      const store = storeById.get(product.storeId);
+
+      return {
+        id: `deal-${product.id}`,
+        storeId: product.storeId,
+        productId: product.id,
+        title: product.name,
+        discount: Number(product.discount) || 0,
+        expiresInHours: 1,
+        tag: store?.category || "",
+      };
+    });
 }
 
 function normalizeStoreRelations(
@@ -136,13 +155,10 @@ function normalizeCatalog(payload: unknown): AdminCatalog {
       isNew: Boolean(product.isNew),
     }),
   );
-  const deals = ensureArray<AdminDeal>(payload.deals, "deals").map((deal) => ({
-    ...deal,
-    discount: Number(deal.discount) || 0,
-    expiresInHours: Number(deal.expiresInHours) || 0,
-  }));
+  const storeSeeds = ensureArray<AdminStore>(payload.stores, "stores");
+  const deals = createProductDeals(products, storeSeeds);
   const stores = normalizeStoreRelations(
-    ensureArray<AdminStore>(payload.stores, "stores"),
+    storeSeeds,
     products,
     deals,
   );
@@ -164,12 +180,14 @@ function normalizeCatalog(payload: unknown): AdminCatalog {
 }
 
 async function readCatalog(): Promise<AdminCatalog> {
-  const [stores, products, deals, categories] = await Promise.all([
+  const [storeSeeds, products, categorySeeds] = await Promise.all([
     readJsonFile<AdminStore[]>("stores"),
     readJsonFile<AdminProduct[]>("products"),
-    readJsonFile<AdminDeal[]>("deals"),
     readJsonFile<AdminCategory[]>("categories"),
   ]);
+  const deals = createProductDeals(products, storeSeeds);
+  const stores = normalizeStoreRelations(storeSeeds, products, deals);
+  const categories = normalizeCategoryRelations(categorySeeds, stores);
 
   return { stores, products, deals, categories };
 }
@@ -204,7 +222,6 @@ export async function PUT(request: NextRequest) {
     await Promise.all([
       writeJsonFile("stores", catalog.stores),
       writeJsonFile("products", catalog.products),
-      writeJsonFile("deals", catalog.deals),
       writeJsonFile("categories", catalog.categories),
     ]);
 
