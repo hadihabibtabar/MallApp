@@ -6,7 +6,8 @@
     "discount": 35,
     "image": "/images/products/coleen1.webp",
     "storeId": "coleen-store",
-    "isNew": true,
+    "promotionType": "collection",
+    "collectionName": "Summer 2026",
     "description": "کت سبک و خنک با فرم آزاد، مناسب استفاده روزانه.",
     "paymentMethods": ["digipay", "snapppay"]
   },
@@ -17,7 +18,8 @@
     "discount": 15,
     "image": "/images/products/coleen2.webp",
     "storeId": "coleen-store",
-    "isNew": true,
+        "promotionType": "collection",
+    "collectionName": "Summer 2026",
     "description": "پارچه سبک با تن‌خور راحت برای استایل روزمره.",
     "paymentMethods": ["digipay", "snapppay"]
   },
@@ -28,7 +30,7 @@
     "discount": 10,
     "image": "/images/products/coleen3.webp",
     "storeId": "coleen-store",
-    "isNew": false,
+  "promotionType": "deal",
     "description": "پیراهن خنک و راحت با رنگ‌های ترند فصل.",
     "paymentMethods": ["digipay", "snapppay"]
   },
@@ -39,7 +41,8 @@
     "discount": 30,
     "image": "/images/products/hec1.webp",
     "storeId": "hectaton-store",
-    "isNew": true,
+    "promotionType": "deal_and_collection",
+    "collectionName": "Breakfast Specials",
     "description": "کفش رانینگ سبک با جذب ضربه بالا."
   },
   {
@@ -49,7 +52,7 @@
     "discount": 20,
     "image": "/images/products/hec3.webp",
     "storeId": "hectaton-store",
-    "isNew": false,
+  "promotionType": "deal",
     "description": "مناسب تمرین و استایل خیابانی در همه فصل‌ها."
   },
   {
@@ -59,7 +62,8 @@
     "discount": 15,
     "image": "/images/products/hec2.webp",
     "storeId": "hectaton-store",
-    "isNew": true,
+    "promotionType": "deal_and_collection",
+    "collectionName": "Summer 2026",
     "description": "شلوار سبک برای باشگاه و استفاده روزانه."
   },
   {
@@ -69,7 +73,7 @@
     "discount": 18,
     "image": "/images/products/dnd1.webp",
     "storeId": "dandy-store",
-    "isNew": true,
+  "promotionType": "deal",
     "description": "بوت دندی طرح Harry Potter"
   },
   {
@@ -79,7 +83,8 @@
     "discount": 22,
     "image": "/images/products/dnd2.webp",
     "storeId": "dandy-store",
-    "isNew": true,
+    "promotionType": "deal_and_collection",
+    "collectionName": "Summer 2026",
     "description": "کیف طرح شازده کوچولو: همراهی منحصر به فرد برای بانوان خاص پسند",
     "paymentMethods": ["digipay"]
   },
@@ -90,7 +95,8 @@
     "discount": 12,
     "image": "/images/products/dnd3.webp",
     "storeId": "dandy-store",
-    "isNew": false,
+    "promotionType": "collection",
+    "collectionName": "Summer 2026",
     "description": "هودی زنانه دندی طرح آن شرلی | هودی Anne Shirley",
         "paymentMethods": ["digipay"]
   },
@@ -101,7 +107,7 @@
     "discount": 28,
     "image": "/images/products/gsh1.webp",
     "storeId": "gshock-store",
-    "isNew": true,
+  "promotionType": "deal",
     "description": "ساعت مچی کاسیوساعت مچی کاسیو مدل CASIO-W-218H-4B ",
     "paymentMethods": ["digipay", "tarapay"]
   },
@@ -112,7 +118,8 @@
     "discount": 15,
     "image": "/images/products/gsh2.webp",
     "storeId": "gshock-store",
-    "isNew": false,
+    "promotionType": "collection",
+    "collectionName": "Summer 2026",
     "description": "ساعت مچی مردانه مدل CASIO-AE-1500WHX-3AVDF",
         "paymentMethods": ["digipay", "tarapay"]
   },
@@ -123,7 +130,7 @@
     "discount": 20,
     "image": "/images/products/berio1.webp",
     "storeId": "brioche-store",
-    "isNew": true,
+  "promotionType": "deal",
     "description": "کروسان بادام زمینی تازه با کرم بادام زمینی"
   },
   {
@@ -133,7 +140,8 @@
     "discount": 10,
     "image": "/images/products/berio2.webp",
     "storeId": "brioche-store",
-    "isNew": true,
+    "promotionType": "collection",
+    "collectionName": "Breakfast Specials",
     "description": "ترکیب میوه و پروتئین برای شروع پرانرژی روز."
   },
   {
@@ -143,7 +151,7 @@
     "discount": 18,
     "image": "/images/products/hyp1.webp",
     "storeId": "hyperstar-store",
-    "isNew": false,
+  "promotionType": "deal",
     "description": "پنیر صبحانه کاله 350 گرمی"
   },
   {
@@ -153,7 +161,8 @@
     "discount": 12,
     "image": "/images/products/hyp2.webp",
     "storeId": "hyperstar-store",
-    "isNew": false,
+    "promotionType": "deal_and_collection",
+    "collectionName": "Breakfast Specials",
     "description": "بهترین کیفیت در هایپپر همیلا سنتر"
   },
   {
@@ -163,7 +172,7 @@
     "discount": 26,
     "image": "/images/products/san1.webp",
     "storeId": "sanjaaq-store",
-    "isNew": true,
+  "promotionType": "deal",
     "description": "1.46 گرم طلای 18 عیار",
     "paymentMethods": ["digipay"]
   },
@@ -174,7 +183,7 @@
     "discount": 14,
     "image": "/images/products/san2.webp",
     "storeId": "sanjaaq-store",
-    "isNew": false,
+  "promotionType": "deal",
     "description": "2.4 گرم طلای 18 عیار",
         "paymentMethods": ["digipay"]
   },
@@ -185,7 +194,8 @@
     "discount": 20,
     "image": "/images/products/tan1.webp",
     "storeId": "tanedorost-store",
-    "isNew": true,
+    "promotionType": "deal_and_collection",
+    "collectionName": "Breakfast Specials",
     "description": "کد 256987",
         "paymentMethods": ["snapppay", "tarapay"]
   },
@@ -196,7 +206,7 @@
     "discount": 17,
     "image": "/images/products/tan2.webp",
     "storeId": "tanedorost-store",
-    "isNew": true,
+  "promotionType": "deal",
     "description": "کد 145698"
     ,
     "paymentMethods": ["snapppay", "tarapay"]

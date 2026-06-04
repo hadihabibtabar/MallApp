@@ -1,18 +1,19 @@
 import { DealsViewedTracker } from "@/components/analytics-trackers";
+import { DealsRankingDebugPanel } from "@/components/deals-ranking-debug-panel";
 import { DealsList } from "@/components/deals-list";
-import { getDealsView, products, stores } from "@/lib/mock-data";
+import { getRankedDeals } from "@/lib/content-engine/deals";
+import { products, stores } from "@/lib/mock-data";
+
+export const dynamic = "force-dynamic";
 
 export default function DealsPage() {
-  const deals = getDealsView();
-  const sortedDeals = [...deals].sort(
-    (a, b) =>
-      new Date(a.deal.expiresAt).getTime() -
-      new Date(b.deal.expiresAt).getTime(),
-  );
+  const now = new Date();
+  const rankedDeals = getRankedDeals(now);
 
   return (
     <main className="space-y-3">
-      <DealsViewedTracker dealCount={sortedDeals.length} />
+      <DealsViewedTracker dealCount={rankedDeals.length} />
+      <DealsRankingDebugPanel now={now} rankedDeals={rankedDeals} />
 
      <header className="space-y-1 md:text-center md:max-w-2xl md:mx-auto">
   <h1 className="text-xl font-bold tracking-tight text-slate-900 md:text-2xl">
@@ -27,7 +28,7 @@ export default function DealsPage() {
   </p>
 </header>
 
-      <DealsList deals={sortedDeals} products={products} stores={stores} />
+      <DealsList deals={rankedDeals} products={products} stores={stores} />
     </main>
   );
 }

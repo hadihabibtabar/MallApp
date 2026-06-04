@@ -6,11 +6,11 @@ import { ProductCard } from "@/components/product-card";
 import { toPersianDigits } from "@/lib/format";
 import { FLOOR_LEVELS, getFloorLabel, parseStoreFloorToLevel } from "@/lib/floor-filter";
 import type { FloorFilterValue } from "@/lib/floor-filter";
-import type { DealView, Product, Store } from "@/types";
+import type { DealView, ProductView, Store } from "@/types";
 
 interface DealsListProps {
   deals: DealView[];
-  products: Product[];
+  products: ProductView[];
   stores: Store[];
 }
 
@@ -21,7 +21,7 @@ type ProductSearchResult =
     }
   | {
       type: "product";
-      product: Product;
+      product: ProductView;
       store: Store;
     };
 

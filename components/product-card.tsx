@@ -1,10 +1,10 @@
 ﻿import Link from "next/link";
-import type { Product, Store } from "@/types";
+import type { ProductView, Store } from "@/types";
 import { discountedPrice, formatPrice, toPersianDigits } from "@/lib/format";
 import { SmartImage } from "@/components/smart-image";
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductView;
   store?: Store;
   variant?: "grid" | "compact";
 }
