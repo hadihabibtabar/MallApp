@@ -29,14 +29,14 @@ export interface Store {
 }
 
 export interface Product {
-  [x: string]: ReactNode;
   id: string;
   name: string;
   price: number;
-  discount: number;
+  discount: number | null;
   image: string;
   storeId: string;
   isNew: boolean;
+  tag: string;
   description: string;
   paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
 

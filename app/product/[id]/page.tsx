@@ -27,7 +27,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-4xl lg:px-8">
-      <ProductOpenedTracker productId={product.id} storeId={store.id} productDiscount={product.discount} />
+      <ProductOpenedTracker
+        productId={product.id}
+        storeId={store.id}
+        productDiscount={product.discount ?? undefined}
+      />
 
       <div className="md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">

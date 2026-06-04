@@ -26,7 +26,7 @@ export function DealsViewedTracker({ dealCount }: DealsViewedTrackerProps) {
 interface ProductOpenedTrackerProps {
   productId: string;
   storeId: string;
-  productDiscount: number;
+  productDiscount?: number;
 }
 
 export function ProductOpenedTracker({

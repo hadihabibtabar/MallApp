@@ -31,6 +31,10 @@ export function formatRemainingTime(expiresAt: string): string {
   return `فقط تا ${toPersianDigits(hours)} ساعت و ${toPersianDigits(minutes)} دقیقه دیگر`;
 }
 
-export function discountedPrice(price: number, discount: number): number {
+export function discountedPrice(price: number, discount: number | null): number {
+  if (!discount) {
+    return price;
+  }
+
   return Math.round(price * ((100 - discount) / 100));
 }

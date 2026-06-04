@@ -35,6 +35,8 @@ type ProductSearchResult =
       store: Store;
     };
 
+type DiscountedProduct = Product & { discount: number };
+
 const STORAGE_KEY = "hamilia-active-deals-v1";
 const TARGET_DEAL_COUNT = 5;
 const HIDE_AFTER_EXPIRED_MS = 5 * 60 * 1000;
@@ -48,8 +50,8 @@ function matchesSearch(value: string | undefined, query: string): boolean {
   return value?.toLowerCase().includes(query) ?? false;
 }
 
-function isDiscountedProduct(product: Product): boolean {
-  return Number(product.discount) > 0;
+function isDiscountedProduct(product: Product): product is DiscountedProduct {
+  return typeof product.discount === "number" && product.discount > 0;
 }
 
 function isSelectionWindowOpen(now: Date): boolean {

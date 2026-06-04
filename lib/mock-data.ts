@@ -13,6 +13,12 @@ import type {
 const DEFAULT_DEAL_EXPIRES_IN_HOURS = 1;
 const HOUR_MS = 60 * 60 * 1000;
 
+type DiscountedProduct = Product & { discount: number };
+
+function isDiscountedProduct(product: Product): product is DiscountedProduct {
+  return typeof product.discount === "number" && product.discount > 0;
+}
+
 export const categories = categoriesData as Category[];
 export const products = productsData as Product[];
 export const stores = (storesData as Store[]).map((store) => ({
@@ -21,12 +27,14 @@ export const stores = (storesData as Store[]).map((store) => ({
     .filter((product) => product.storeId === store.id)
     .map((product) => product.id),
   dealIds: products
-    .filter((product) => product.storeId === store.id && product.discount > 0)
+    .filter(
+      (product) => product.storeId === store.id && isDiscountedProduct(product),
+    )
     .map((product) => `deal-${product.id}`),
 }));
 
 const toProductDeal = (
-  product: Product,
+  product: DiscountedProduct,
   expiresInHours = DEFAULT_DEAL_EXPIRES_IN_HOURS,
 ): Deal => {
   const store = getStoreById(product.storeId);
@@ -44,7 +52,7 @@ const toProductDeal = (
 };
 
 export const deals = products
-  .filter((product) => product.discount > 0)
+  .filter(isDiscountedProduct)
   .map((product) => toProductDeal(product));
 
 export function getStoreById(storeId: string): Store | undefined {
