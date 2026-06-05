@@ -103,7 +103,7 @@ export function ProductCard({
 
               <Link
                 href={`/product/${product.id}`}
-                className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[11px] font-semibold text-white transition hover:bg-slate-700"
+                className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[14px] font-semibold text-white transition hover:bg-slate-700 sm:text-[11px]"
               >
                 مشاهده محصول
               </Link>

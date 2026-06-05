@@ -92,7 +92,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
           </section>
 
-          {/* <StoreNavigationLink
+          <StoreNavigationLink
             href={`/store/${store.id}#route`}
             source="product_page"
             storeId={store.id}
@@ -100,7 +100,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             className="block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-700 md:rounded-xl md:py-4 md:text-base"
           >
             رفتن به فروشگاه
-          </StoreNavigationLink> */}
+          </StoreNavigationLink>
         </section>
       </div>
     </main>
