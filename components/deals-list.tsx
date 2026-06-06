@@ -39,13 +39,17 @@ type ProductSearchResult =
 type DiscountedProduct = Product & { discount: number };
 
 const STORAGE_KEY = "hamilia-active-deals-v1";
-const TARGET_DEAL_COUNT = 5;
+const TARGET_DEAL_COUNT = 10;
 const HIDE_AFTER_EXPIRED_MS = 5 * 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_DEAL_HOURS = 1;
 const MAX_DEAL_HOURS = 5;
 const SELECTION_START_HOUR = 8;
 const SELECTION_END_HOUR = 23;
+const BREAKFAST_TAG = "صبحانه";
+const FOOD_TAG = "غذا";
+const BOOSTED_TAG_WEIGHT = 6;
+const BOOSTED_TAG_TARGET_SHARE = 0.6;
 
 function matchesSearch(value: string | undefined, query: string): boolean {
   return value?.toLowerCase().includes(query) ?? false;
@@ -58,6 +62,24 @@ function isDiscountedProduct(product: Product): product is DiscountedProduct {
 function isSelectionWindowOpen(now: Date): boolean {
   const hour = now.getHours();
   return hour >= SELECTION_START_HOUR && hour < SELECTION_END_HOUR;
+}
+
+function getBoostedDealTag(now: Date): string | null {
+  const hour = now.getHours();
+
+  if (hour >= 8 && hour < 11) {
+    return BREAKFAST_TAG;
+  }
+
+  if ((hour >= 11 && hour < 14) || (hour >= 20 && hour < 23)) {
+    return FOOD_TAG;
+  }
+
+  return null;
+}
+
+function hasProductTag(product: Product, tag: string): boolean {
+  return product.tag.trim() === tag;
 }
 
 function getTime(value: string): number | null {
@@ -128,9 +150,26 @@ function getRandomDealHours(): number {
   );
 }
 
-function shuffleProducts(products: Product[]): Product[] {
+function getProductSelectionWeight(
+  product: Product,
+  boostedTag: string | null,
+): number {
+  return boostedTag && hasProductTag(product, boostedTag)
+    ? BOOSTED_TAG_WEIGHT
+    : 1;
+}
+
+function shuffleProducts(
+  products: Product[],
+  boostedTag: string | null = null,
+): Product[] {
   return products
-    .map((product) => ({ product, sort: Math.random() }))
+    .map((product) => ({
+      product,
+      sort:
+        -Math.log(Math.max(Math.random(), Number.EPSILON)) /
+        getProductSelectionWeight(product, boostedTag),
+    }))
     .sort((a, b) => a.sort - b.sort)
     .map((item) => item.product);
 }
@@ -148,6 +187,25 @@ function createStoredDeal(product: Product, now: Date): StoredDeal {
   };
 }
 
+function getBoostedDealTargetCount(
+  targetCount: number,
+  discountedProducts: Product[],
+  boostedTag: string | null,
+): number {
+  if (!boostedTag) {
+    return 0;
+  }
+
+  const boostedProductCount = discountedProducts.filter((product) =>
+    hasProductTag(product, boostedTag),
+  ).length;
+
+  return Math.min(
+    boostedProductCount,
+    Math.ceil(targetCount * BOOSTED_TAG_TARGET_SHARE),
+  );
+}
+
 function syncStoredDeals(
   currentDeals: StoredDeal[],
   products: Product[],
@@ -163,7 +221,7 @@ function syncStoredDeals(
   );
   const targetCount = Math.min(TARGET_DEAL_COUNT, discountedProducts.length);
   const seenProductIds = new Set<string>();
-  const visibleDeals = currentDeals
+  let visibleDeals = currentDeals
     .filter((deal) => {
       if (
         seenProductIds.has(deal.productId) ||
@@ -186,13 +244,87 @@ function syncStoredDeals(
     )
     .slice(0, targetCount);
 
-  if (visibleDeals.length >= targetCount || !isSelectionWindowOpen(now)) {
+  if (!isSelectionWindowOpen(now)) {
     return visibleDeals;
   }
 
+  const boostedTag = getBoostedDealTag(now);
   const visibleProductIds = new Set(visibleDeals.map((deal) => deal.productId));
+  const boostedTargetCount = getBoostedDealTargetCount(
+    targetCount,
+    discountedProducts,
+    boostedTag,
+  );
+
+  if (boostedTag && boostedTargetCount > 0) {
+    const visibleBoostedCount = visibleDeals.filter((deal) => {
+      const product = discountedById.get(deal.productId);
+      return product ? hasProductTag(product, boostedTag) : false;
+    }).length;
+    const boostedCandidates = shuffleProducts(
+      discountedProducts.filter(
+        (product) =>
+          hasProductTag(product, boostedTag) &&
+          !visibleProductIds.has(product.id),
+      ),
+      boostedTag,
+    );
+    const replaceableIndexes = visibleDeals
+      .map((deal, index) => {
+        const product = discountedById.get(deal.productId);
+        return product && hasProductTag(product, boostedTag) ? null : index;
+      })
+      .filter((index): index is number => index !== null)
+      .reverse();
+    const neededBoostedCount = Math.max(
+      0,
+      boostedTargetCount - visibleBoostedCount,
+    );
+
+    for (
+      let index = 0;
+      index < neededBoostedCount && boostedCandidates.length > 0;
+      index += 1
+    ) {
+      const product = boostedCandidates.shift();
+
+      if (!product) {
+        break;
+      }
+
+      const storedDeal = createStoredDeal(product, now);
+
+      if (visibleDeals.length < targetCount) {
+        visibleDeals.push(storedDeal);
+      } else {
+        const replaceableIndex = replaceableIndexes.shift();
+
+        if (replaceableIndex === undefined) {
+          break;
+        }
+
+        const replacedDeal = visibleDeals[replaceableIndex];
+
+        if (replacedDeal) {
+          visibleProductIds.delete(replacedDeal.productId);
+        }
+
+        visibleDeals[replaceableIndex] = storedDeal;
+      }
+
+      visibleProductIds.add(product.id);
+    }
+  }
+
+  if (visibleDeals.length >= targetCount) {
+    return visibleDeals.sort((a, b) =>
+      compareDealsByExpiryStatus(a.expiresAt, b.expiresAt, nowMs),
+    );
+  }
+
   const candidates = shuffleProducts(
     discountedProducts.filter((product) => !visibleProductIds.has(product.id)),
+    boostedTag,
   );
   const nextDeals = [...visibleDeals];
 
