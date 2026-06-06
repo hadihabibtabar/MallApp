@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { DealsViewedTracker } from "@/components/analytics-trackers";
 import { DealCard } from "@/components/deal-card";
 import { ProductCard } from "@/components/product-card";
@@ -9,6 +9,7 @@ import {
   getFloorLabel,
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
+import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Deal, DealView, Product, Store } from "@/types";
 
@@ -426,6 +427,31 @@ export function DealsList({ products, stores }: DealsListProps) {
     ? productSearchResults.length === 0
     : hasLoadedDeals && filteredDeals.length === 0;
 
+  useEffect(() => {
+    trackSearchIntent({
+      search_query: query,
+      results_count: productSearchResults.length,
+      has_results: productSearchResults.length > 0,
+    });
+  }, [productSearchResults.length, query]);
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const searchQuery = query.trim();
+
+    if (!searchQuery) {
+      return;
+    }
+
+    trackSearchPerformed({
+      search_query: searchQuery,
+      results_count: productSearchResults.length,
+      search_type: "submit",
+      has_results: productSearchResults.length > 0,
+    });
+  };
+
   return (
     <>
       <DealsViewedTracker dealCount={deals.length} />
@@ -439,17 +465,20 @@ export function DealsList({ products, stores }: DealsListProps) {
           جستجو در تخفیف‌ها و محصولات
         </label>
 
-        <input
-          id="deals-search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
-          className="
+        <form className="relative" onSubmit={handleSearchSubmit}>
+          <input
+            id="deals-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
+            className="
       h-12 md:h-14
       w-full
       rounded-xl
       border border-slate-200
       bg-slate-50
+      py-0
       px-4 md:px-5
       text-sm md:text-base
       text-slate-900
@@ -459,7 +488,8 @@ export function DealsList({ products, stores }: DealsListProps) {
       focus:bg-white
       md:shadow-sm
     "
-        />
+          />
+        </form>
       </section>
 
       {/* <section className="rounded-2xl border border-rose-100 bg-gradient-to-l from-rose-50 to-orange-50 p-3 shadow-sm md:p-4">

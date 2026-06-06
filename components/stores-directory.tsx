@@ -1,12 +1,13 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { StoreCard } from "@/components/store-card";
 import {
   FLOOR_LEVELS,
   getFloorLabel,
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
+import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Store, StoreCategory } from "@/types";
 
@@ -37,6 +38,31 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
     });
   }, [query, selectedCategory, selectedFloor, stores]);
 
+  useEffect(() => {
+    trackSearchIntent({
+      search_query: query,
+      results_count: filteredStores.length,
+      has_results: filteredStores.length > 0,
+    });
+  }, [filteredStores.length, query]);
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const searchQuery = query.trim();
+
+    if (!searchQuery) {
+      return;
+    }
+
+    trackSearchPerformed({
+      search_query: searchQuery,
+      results_count: filteredStores.length,
+      search_type: "submit",
+      has_results: filteredStores.length > 0,
+    });
+  };
+
   return (
     <section className="space-y-4">
       <div className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5">
@@ -46,13 +72,16 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
         >
           جستجو بین فروشگاه‌ها
         </label>
-        <input
-          id="store-search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="مثلا dandy یا sanjaaq"
-          className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400"
-        />
+        <form className="relative" onSubmit={handleSearchSubmit}>
+          <input
+            id="store-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="مثلا dandy یا sanjaaq"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-0 text-sm text-slate-900 outline-none transition focus:border-slate-400"
+          />
+        </form>
       </div>
 
       <div className="space-y-2">
