@@ -60,6 +60,12 @@ function isSelectionWindowOpen(now: Date): boolean {
   return hour >= SELECTION_START_HOUR && hour < SELECTION_END_HOUR;
 }
 
+function getSelectionWindowEnd(now: Date): Date {
+  const end = new Date(now);
+  end.setHours(SELECTION_END_HOUR, 0, 0, 0);
+  return end;
+}
+
 function getTime(value: string): number | null {
   const time = new Date(value).getTime();
   return Number.isFinite(time) ? time : null;
@@ -138,7 +144,10 @@ function shuffleProducts(products: Product[]): Product[] {
 function createStoredDeal(product: Product, now: Date): StoredDeal {
   const durationHours = getRandomDealHours();
   const startedAtMs = now.getTime();
-  const expiresAtMs = startedAtMs + durationHours * HOUR_MS;
+  const expiresAtMs = Math.min(
+    startedAtMs + durationHours * HOUR_MS,
+    getSelectionWindowEnd(now).getTime(),
+  );
 
   return {
     productId: product.id,
@@ -155,6 +164,11 @@ function syncStoredDeals(
   now: Date,
 ): StoredDeal[] {
   const nowMs = now.getTime();
+
+  if (!isSelectionWindowOpen(now)) {
+    return [];
+  }
+
   const discountedProducts = products.filter(
     (product) => isDiscountedProduct(product) && storeById.has(product.storeId),
   );
@@ -186,7 +200,7 @@ function syncStoredDeals(
     )
     .slice(0, targetCount);
 
-  if (visibleDeals.length >= targetCount || !isSelectionWindowOpen(now)) {
+  if (visibleDeals.length >= targetCount) {
     return visibleDeals;
   }
 
