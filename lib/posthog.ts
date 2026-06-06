@@ -7,20 +7,38 @@ const POSTHOG_API_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.p
 const SEARCH_INTENT_DEBOUNCE_MS = 600;
 const SEARCH_DEDUPLICATION_MS = 5_000;
 const MIN_REALTIME_SEARCH_LENGTH = 3;
+const APP_OPENED_SESSION_STORAGE_KEY = "mall_app:app_opened_tracked";
 
 let hasInitialized = false;
+let hasTrackedAppOpen = false;
 let searchIntentTimer: number | null = null;
 let lastTrackedQuery = "";
 let lastTrackedTimestamp = 0;
 let lastTrackedSearchType: AnalyticsSearchType | undefined;
 
+export type AnalyticsQrSource =
+  | "entrance"
+  | "foodcourt"
+  | "elevator"
+  | "parking"
+  | "unknown";
+
+const QR_SOURCE_MAP: Record<string, AnalyticsQrSource> = {
+  entrance: "entrance",
+  foodcourt: "foodcourt",
+  elevator: "elevator",
+  coldelevator: "elevator",
+  warmelevator: "elevator",
+  parking: "parking",
+};
+
 type AnalyticsSource =
+  | AnalyticsQrSource
   | "landing"
   | "deals_tab"
   | "deal_card"
   | "product_page"
-  | "store_page"
-  | "unknown";
+  | "store_page";
 
 export type AnalyticsSearchType = "realtime" | "submit";
 
@@ -43,6 +61,11 @@ export interface AnalyticsEventProperties {
   cta?: string;
 }
 
+export interface AppOpenedEventProperties
+  extends Omit<AnalyticsEventProperties, "source"> {
+  source?: AnalyticsQrSource;
+}
+
 function canUsePostHog() {
   return typeof window !== "undefined" && Boolean(POSTHOG_KEY);
 }
@@ -62,6 +85,50 @@ function ensureInitialized() {
   }
 
   return true;
+}
+
+function hasTrackedAppOpenedThisSession() {
+  if (hasTrackedAppOpen) {
+    return true;
+  }
+
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    return (
+      window.sessionStorage.getItem(APP_OPENED_SESSION_STORAGE_KEY) === "true"
+    );
+  } catch {
+    return false;
+  }
+}
+
+function markAppOpenedTracked() {
+  hasTrackedAppOpen = true;
+
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.sessionStorage.setItem(APP_OPENED_SESSION_STORAGE_KEY, "true");
+  } catch {
+    // Some browsers can deny sessionStorage; the in-memory flag still dedupes.
+  }
+}
+
+export function normalizeAppOpenSource(
+  source: string | null | undefined,
+): AnalyticsQrSource {
+  const normalizedSource = source?.trim().toLowerCase();
+
+  if (!normalizedSource) {
+    return "unknown";
+  }
+
+  return QR_SOURCE_MAP[normalizedSource] ?? "unknown";
 }
 
 function captureEvent(event: string, properties: AnalyticsEventProperties = {}) {
@@ -101,8 +168,17 @@ export function initPostHog() {
   ensureInitialized();
 }
 
-export function trackAppOpened(properties: AnalyticsEventProperties = {}) {
-  captureEvent("app_opened", properties);
+export function trackAppOpened(properties: AppOpenedEventProperties = {}) {
+  if (hasTrackedAppOpenedThisSession()) {
+    return;
+  }
+
+  markAppOpenedTracked();
+
+  captureEvent("app_opened", {
+    ...properties,
+    source: normalizeAppOpenSource(properties.source),
+  });
 }
 
 export function trackDealsViewed(properties: AnalyticsEventProperties = {}) {
