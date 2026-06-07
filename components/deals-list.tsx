@@ -1,16 +1,12 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { DealsViewedTracker } from "@/components/analytics-trackers";
 import { DealCard } from "@/components/deal-card";
 import { ProductCard } from "@/components/product-card";
-import {
-  FLOOR_LEVELS,
-  getFloorLabel,
-  parseStoreFloorToLevel,
-} from "@/lib/floor-filter";
+import { SmartImage } from "@/components/smart-image";
 import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
-import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Deal, DealView, Product, Store } from "@/types";
 
 interface DealsListProps {
@@ -25,6 +21,11 @@ interface StoredDeal {
   hideAt: string;
 }
 
+interface ProductStoreItem {
+  product: Product;
+  store: Store;
+}
+
 type ProductSearchResult =
   | {
       type: "deal";
@@ -37,18 +38,50 @@ type ProductSearchResult =
     };
 
 type DiscountedProduct = Product & { discount: number };
+type FeedProduct = Product & {
+  category?: string;
+  createdAt?: string;
+  isNewCollection?: boolean;
+};
+type FeedStore = Store & {
+  featuredScore?: number;
+  type?: string;
+};
 
 const STORAGE_KEY = "hamilia-active-deals-v1";
 const TARGET_DEAL_COUNT = 5;
 const HIDE_AFTER_EXPIRED_MS = 5 * 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
 const MIN_DEAL_HOURS = 1;
 const MAX_DEAL_HOURS = 5;
 const SELECTION_START_HOUR = 8;
 const SELECTION_END_HOUR = 23;
+const SUGGESTED_LIMIT = 6;
+const COLLECTION_LIMIT = 8;
+const FEATURED_STORES_LIMIT = 4;
+const NEW_COLLECTION_WINDOW_MS = 21 * DAY_MS;
+
+const foodIntentKeywords = [
+  "food",
+  "cafe",
+  "coffee",
+  "brioche",
+  "hyperstar",
+  "غذا",
+  "کافه",
+  "قهوه",
+  "خوراک",
+  "نوشیدنی",
+  "صبحانه",
+];
 
 function matchesSearch(value: string | undefined, query: string): boolean {
   return value?.toLowerCase().includes(query) ?? false;
+}
+
+function normalizeText(value: string | undefined): string {
+  return value?.toLowerCase() ?? "";
 }
 
 function isDiscountedProduct(product: Product): product is DiscountedProduct {
@@ -71,6 +104,16 @@ function getTime(value: string): number | null {
   return Number.isFinite(time) ? time : null;
 }
 
+function stableHash(value: string): number {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) % 10_000;
+  }
+
+  return hash;
+}
+
 function compareDealsByExpiryStatus(
   firstExpiresAt: string,
   secondExpiresAt: string,
@@ -86,6 +129,21 @@ function compareDealsByExpiryStatus(
   }
 
   return firstExpiresAtMs - secondExpiresAtMs;
+}
+
+function compareActiveDealPriority(
+  first: DealView,
+  second: DealView,
+): number {
+  const discountDifference = second.deal.discount - first.deal.discount;
+
+  if (discountDifference !== 0) {
+    return discountDifference;
+  }
+
+  return (
+    (getTime(first.deal.expiresAt) ?? 0) - (getTime(second.deal.expiresAt) ?? 0)
+  );
 }
 
 function isStoredDeal(value: unknown): value is StoredDeal {
@@ -260,29 +318,228 @@ function toDealView(
   return { deal, store, product };
 }
 
+function toProductStoreItems(
+  products: Product[],
+  storeById: Map<string, Store>,
+): ProductStoreItem[] {
+  return products
+    .map((product) => {
+      const store = storeById.get(product.storeId);
+      return store ? { product, store } : null;
+    })
+    .filter((item): item is ProductStoreItem => Boolean(item));
+}
+
+function isFoodIntentItem({ product, store }: ProductStoreItem): boolean {
+  const feedProduct = product as FeedProduct;
+  const feedStore = store as FeedStore;
+  const searchableText = [
+    product.id,
+    product.name,
+    product.tag,
+    product.description,
+    feedProduct.category,
+    store.id,
+    store.name,
+    store.brand,
+    store.category,
+    feedStore.type,
+  ]
+    .map(normalizeText)
+    .join(" ");
+
+  return foodIntentKeywords.some((keyword) => searchableText.includes(keyword));
+}
+
+function isFreshCollectionItem(item: ProductStoreItem, nowMs: number): boolean {
+  const feedProduct = item.product as FeedProduct;
+
+  if (feedProduct.isNewCollection || item.product.isNew) {
+    return true;
+  }
+
+  if (!feedProduct.createdAt) {
+    return false;
+  }
+
+  const createdAtMs = getTime(feedProduct.createdAt);
+
+  return (
+    createdAtMs !== null &&
+    createdAtMs <= nowMs &&
+    nowMs - createdAtMs <= NEW_COLLECTION_WINDOW_MS
+  );
+}
+
+function rotateItems<T>(items: T[], seed: number): T[] {
+  if (items.length <= 1) {
+    return items;
+  }
+
+  const offset = Math.abs(seed) % items.length;
+  return [...items.slice(offset), ...items.slice(0, offset)];
+}
+
+function scoreFeaturedStore(store: Store): number {
+  const feedStore = store as FeedStore;
+
+  if (typeof feedStore.featuredScore === "number") {
+    return feedStore.featuredScore;
+  }
+
+  return (
+    stableHash(store.id) +
+    store.productIds.length * 23 +
+    store.dealIds.length * 17
+  );
+}
+
 function NightDealsMessage() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-sky-50 p-5 text-center shadow-sm ring-1 ring-amber-100 md:col-span-2 md:p-7 lg:col-span-3">
-      <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-amber-200 bg-white text-sm font-black text-amber-700 shadow-sm">
+    <div className="rounded-2xl border border-amber-200 bg-amber-50/80 p-5 text-center shadow-sm ring-1 ring-amber-100 md:col-span-2 lg:col-span-3">
+      <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full border border-amber-200 bg-white text-sm font-black text-amber-700 shadow-sm">
         ۸:۰۰
-        <span className="absolute -left-2 -top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-bold text-white">
-          Zzz
-        </span>
       </div>
-      <p className="text-base font-extrabold text-slate-900 md:text-lg">
-        ما و کیف پولت فعلاً آتش‌بس اعلام کردیم.🚀
+      <p className="text-sm font-extrabold text-slate-900 md:text-base">
+        تخفیف‌های فعال از ساعت ۸ صبح دوباره تازه می‌شوند.
       </p>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-slate-600">
-       💸 وسوسه‌ها از ساعت ۸ صبح شیفتشون شروع میشه!
+      <p className="mx-auto mt-1 max-w-sm text-xs leading-6 text-slate-600 md:text-sm">
+        تا آن موقع پیشنهادهای غذا، کالکشن‌ها و فروشگاه‌های منتخب پایین صفحه آماده‌اند.
       </p>
+    </div>
+  );
+}
+
+function FeedSection({
+  title,
+  children,
+  className = "",
+}: {
+  title: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`space-y-3 ${className}`}>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-base font-extrabold text-slate-950 md:text-lg">
+          {title}
+        </h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function HorizontalRail({ children }: { children: ReactNode }) {
+  return (
+    <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 pt-1 md:mx-0 md:px-0">
+      {children}
+    </div>
+  );
+}
+
+function FeedProductTile({
+  product,
+  store,
+  href,
+  ctaLabel,
+  badgeLabel,
+}: {
+  product: Product;
+  store: Store;
+  href: string;
+  ctaLabel: string;
+  badgeLabel?: string;
+}) {
+  return (
+    <article className="flex w-40 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm ring-1 ring-slate-900/5 md:w-48">
+      <Link href={href} className="relative block aspect-[4/3] overflow-hidden">
+        <SmartImage
+          src={product.image}
+          alt={product.name}
+          fill
+          className="object-cover"
+          fallbackSrc="/images/fallback-image.svg"
+          sizes="(min-width: 768px) 192px, 160px"
+        />
+        {badgeLabel ? (
+          <span className="absolute right-2 top-2 rounded-full bg-white/95 px-2 py-1 text-[10px] font-bold text-slate-700 shadow-sm">
+            {badgeLabel}
+          </span>
+        ) : null}
+      </Link>
+
+      <div className="flex flex-1 flex-col p-3">
+        <Link
+          href={href}
+          className="line-clamp-2 min-h-10 text-sm font-bold leading-5 text-slate-950"
+        >
+          {product.name}
+        </Link>
+        <p className="mt-1 line-clamp-1 text-xs font-semibold text-slate-500">
+          {store.name}
+        </p>
+        <p className="line-clamp-1 text-[11px] text-slate-400">{store.floor}</p>
+        <Link
+          href={href}
+          className="mt-3 inline-flex h-9 items-center justify-center rounded-xl bg-slate-900 px-3 text-xs font-bold text-white transition hover:bg-slate-700"
+        >
+          {ctaLabel}
+        </Link>
+      </div>
+    </article>
+  );
+}
+
+function FeaturedStoreTile({ store }: { store: Store }) {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm ring-1 ring-slate-900/5">
+      <Link
+        href={`/store/${store.id}`}
+        className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 p-3 md:grid-cols-1 md:gap-0 md:p-0"
+      >
+        <div className="relative h-24 overflow-hidden rounded-xl md:h-36 md:rounded-b-none md:rounded-t-2xl">
+          <SmartImage
+            src={store.heroImage}
+            alt={store.name}
+            fill
+            className="object-cover"
+            fallbackSrc="/images/fallback-image.svg"
+            sizes="(min-width: 768px) 260px, 104px"
+          />
+        </div>
+        <div className="flex min-w-0 flex-col justify-between md:p-3">
+          <div className="min-w-0">
+            <h3 className="line-clamp-1 text-sm font-extrabold text-slate-950 md:text-base">
+              {store.name}
+            </h3>
+            <p className="mt-1 line-clamp-1 text-xs font-semibold text-slate-500">
+              {store.category}
+            </p>
+            <p className="mt-1 line-clamp-1 text-[11px] text-slate-400">
+              {store.floor} · {store.locationHint}
+            </p>
+          </div>
+          <span className="mt-3 inline-flex h-9 items-center justify-center rounded-xl bg-slate-900 px-3 text-xs font-bold text-white md:w-full">
+            مشاهده فروشگاه
+          </span>
+        </div>
+      </Link>
+    </article>
+  );
+}
+
+function FeedEmptyState({ children }: { children: ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm leading-7 text-slate-500 md:col-span-2 lg:col-span-3">
+      {children}
     </div>
   );
 }
 
 export function DealsList({ products, stores }: DealsListProps) {
   const [query, setQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string>("همه");
-  const [selectedFloor, setSelectedFloor] = useState<FloorFilterValue>("all");
   const [storedDeals, setStoredDeals] = useState<StoredDeal[]>([]);
   const [hasLoadedDeals, setHasLoadedDeals] = useState(false);
   const [isDealSelectionClosed, setIsDealSelectionClosed] = useState(false);
@@ -349,17 +606,18 @@ export function DealsList({ products, stores }: DealsListProps) {
       );
   }, [productById, sortNowMs, storeById, storedDeals]);
 
-  const tags = useMemo(() => {
-    return Array.from(new Set(deals.map((item) => item.deal.tag))).filter(
-      Boolean,
-    );
-  }, [deals]);
-
-  useEffect(() => {
-    if (selectedTag !== "همه" && !tags.includes(selectedTag)) {
-      setSelectedTag("همه");
-    }
-  }, [selectedTag, tags]);
+  const activeDeals = useMemo(() => {
+    return deals
+      .filter((item) => {
+        const expiresAtMs = getTime(item.deal.expiresAt);
+        return (
+          item.deal.discount > 0 &&
+          expiresAtMs !== null &&
+          expiresAtMs > sortNowMs
+        );
+      })
+      .sort(compareActiveDealPriority);
+  }, [deals, sortNowMs]);
 
   const dealByProductId = useMemo(() => {
     const dealMap = new Map<string, DealView>();
@@ -373,18 +631,44 @@ export function DealsList({ products, stores }: DealsListProps) {
     return dealMap;
   }, [deals]);
 
-  const filteredDeals = useMemo(() => {
-    if (isSearching) {
-      return [];
-    }
+  const feedItems = useMemo(() => {
+    return toProductStoreItems(products, storeById);
+  }, [products, storeById]);
 
-    return deals.filter((item) => {
-      const matchesTag = selectedTag === "همه" || item.deal.tag === selectedTag;
-      const level = parseStoreFloorToLevel(item.store.floor);
-      const matchesFloor = selectedFloor === "all" || level === selectedFloor;
-      return matchesTag && matchesFloor;
+  const suggestedItems = useMemo(() => {
+    const foodItems = feedItems.filter(isFoodIntentItem);
+    const sourceItems = foodItems.length > 0 ? foodItems : feedItems;
+
+    return [...sourceItems]
+      .sort((first, second) => stableHash(first.product.id) - stableHash(second.product.id))
+      .slice(0, SUGGESTED_LIMIT);
+  }, [feedItems]);
+
+  const newCollectionItems = useMemo(() => {
+    const dailySeed = Math.floor(sortNowMs / DAY_MS);
+    const freshItems = feedItems.filter((item) =>
+      isFreshCollectionItem(item, sortNowMs),
+    );
+    const sourceItems = freshItems.length > 0 ? freshItems : feedItems;
+    const prioritizedItems = [...sourceItems].sort((first, second) => {
+      const firstIsFullPrice = first.product.discount === null ? 0 : 1;
+      const secondIsFullPrice = second.product.discount === null ? 0 : 1;
+
+      if (firstIsFullPrice !== secondIsFullPrice) {
+        return firstIsFullPrice - secondIsFullPrice;
+      }
+
+      return stableHash(first.product.id) - stableHash(second.product.id);
     });
-  }, [deals, isSearching, selectedTag, selectedFloor]);
+
+    return rotateItems(prioritizedItems, dailySeed).slice(0, COLLECTION_LIMIT);
+  }, [feedItems, sortNowMs]);
+
+  const featuredStores = useMemo(() => {
+    return [...stores]
+      .sort((first, second) => scoreFeaturedStore(second) - scoreFeaturedStore(first))
+      .slice(0, FEATURED_STORES_LIMIT);
+  }, [stores]);
 
   const productSearchResults = useMemo<ProductSearchResult[]>(() => {
     if (!isSearching) {
@@ -403,18 +687,13 @@ export function DealsList({ products, stores }: DealsListProps) {
       const matchesProduct =
         matchesSearch(product.name, normalizedQuery) ||
         matchesSearch(product.description, normalizedQuery) ||
+        matchesSearch(product.tag, normalizedQuery) ||
+        matchesSearch(product.isNew ? "کالکشن جدید new collection" : undefined, normalizedQuery) ||
         matchesSearch(store.name, normalizedQuery) ||
         matchesSearch(store.brand, normalizedQuery) ||
         matchesSearch(store.category, normalizedQuery);
 
       if (!matchesProduct) {
-        return;
-      }
-
-      const level = parseStoreFloorToLevel(store.floor);
-      const matchesFloor = selectedFloor === "all" || level === selectedFloor;
-
-      if (!matchesFloor) {
         return;
       }
 
@@ -434,12 +713,10 @@ export function DealsList({ products, stores }: DealsListProps) {
     isSearching,
     normalizedQuery,
     products,
-    selectedFloor,
     storeById,
   ]);
-  const hasNoResults = isSearching
-    ? productSearchResults.length === 0
-    : hasLoadedDeals && filteredDeals.length === 0;
+
+  const hasNoSearchResults = isSearching && productSearchResults.length === 0;
 
   useEffect(() => {
     trackSearchIntent({
@@ -468,122 +745,28 @@ export function DealsList({ products, stores }: DealsListProps) {
 
   return (
     <>
-      <DealsViewedTracker dealCount={deals.length} />
+      <DealsViewedTracker dealCount={activeDeals.length} />
 
-      <section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5 md:p-5">
-        {/*Just Desktop  */}
-        <label
-          htmlFor="deals-search"
-          className="mb-2 hidden text-sm font-bold text-slate-500 md:block"
-        >
-          جستجو در تخفیف‌ها و محصولات
-        </label>
-
+      <section className="sticky top-2 z-30 -mx-1 rounded-2xl border border-white/80 bg-white/95 p-2.5 shadow-soft ring-1 ring-slate-900/5 backdrop-blur md:top-20 md:mx-0 md:p-3">
         <form className="relative" onSubmit={handleSearchSubmit}>
+          <label htmlFor="deals-search" className="sr-only">
+            جستجو در تخفیف‌ها، محصولات و کالکشن‌ها
+          </label>
           <input
             id="deals-search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
-            className="
-      h-12 md:h-14
-      w-full
-      rounded-xl
-      border border-slate-200
-      bg-slate-50
-      py-0
-      px-4 md:px-5
-      text-sm md:text-base
-      text-slate-900
-      outline-none
-      transition
-      focus:border-slate-400
-      focus:bg-white
-      md:shadow-sm
-    "
+            placeholder="جستجو بین تخفیف‌ها، محصولات و کالکشن‌ها"
+            className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-0 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white md:h-14 md:px-5 md:text-base md:shadow-sm"
           />
         </form>
       </section>
 
-      {/* <section className="rounded-2xl border border-rose-100 bg-gradient-to-l from-rose-50 to-orange-50 p-3 shadow-sm md:p-4">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-slate-700 md:text-sm">
-            {selectedTag === "همه" ? "مرتب‌شده بر اساس زمان پایان تخفیف" : `فیلتر تگ: ${selectedTag}`}
-          </p>
-          <span className="rounded-full bg-rose-600 px-2.5 py-1 text-[11px] font-bold text-white md:text-xs">
-            {toPersianDigits(urgentCount)} پیشنهاد فوری
-          </span>
-        </div>
-      </section> */}
-
-      <section className="space-y-2 md:space-y-3">
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-bold text-slate-500 md:text-xs">
-            طبقه:
-          </span>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            <button
-              onClick={() => setSelectedFloor("all")}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                selectedFloor === "all"
-                  ? "bg-slate-900 text-white"
-                  : "bg-white text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              همه طبقات
-            </button>
-            {FLOOR_LEVELS.map((floorLevel) => (
-              <button
-                key={floorLevel}
-                onClick={() => setSelectedFloor(floorLevel)}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                  selectedFloor === floorLevel
-                    ? "bg-slate-900 text-white"
-                    : "bg-white text-slate-600 hover:bg-slate-100"
-                }`}
-              >
-                {getFloorLabel(floorLevel)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {!isSearching && (
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-slate-500">تگ:</span>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              <button
-                onClick={() => setSelectedTag("همه")}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                  selectedTag === "همه"
-                    ? "bg-slate-900 text-white"
-                    : "bg-white text-slate-600 hover:bg-slate-100"
-                }`}
-              >
-                همه
-              </button>
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setSelectedTag(tag)}
-                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                    selectedTag === tag
-                      ? "bg-slate-900 text-white"
-                      : "bg-white text-slate-600 hover:bg-slate-100"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
-
-      <section className="space-y-2.5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0 lg:grid-cols-3">
-        {isSearching
-          ? productSearchResults.map((result) =>
+      {isSearching ? (
+        <FeedSection title="نتایج جستجو" className="pt-1">
+          <div className="space-y-2.5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0 lg:grid-cols-3">
+            {productSearchResults.map((result) =>
               result.type === "deal" ? (
                 <DealCard
                   key={`deal-${result.item.deal.id}`}
@@ -597,19 +780,71 @@ export function DealsList({ products, stores }: DealsListProps) {
                   variant="compact"
                 />
               ),
-            )
-          : filteredDeals.map((item) => (
-              <DealCard key={item.deal.id} item={item} />
-            ))}
+            )}
 
-        {hasNoResults && isDealSelectionClosed && <NightDealsMessage />}
-
-        {hasNoResults && !isDealSelectionClosed && (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3">
-            محصولی با فیلتر انتخابی پیدا نشد.
+            {hasNoSearchResults ? (
+              <FeedEmptyState>نتیجه‌ای برای جستجوی شما پیدا نشد.</FeedEmptyState>
+            ) : null}
           </div>
-        )}
-      </section>
+        </FeedSection>
+      ) : (
+        <div className="space-y-6 pt-1 md:space-y-8">
+          <FeedSection title="🔥 تخفیف‌های فعال">
+            <div className="space-y-2.5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0 lg:grid-cols-3">
+              {!hasLoadedDeals ? (
+                <FeedEmptyState>در حال آماده‌سازی پیشنهادهای امروز...</FeedEmptyState>
+              ) : activeDeals.length > 0 ? (
+                activeDeals.map((item) => (
+                  <DealCard key={item.deal.id} item={item} />
+                ))
+              ) : isDealSelectionClosed ? (
+                <NightDealsMessage />
+              ) : (
+                <FeedEmptyState>
+                  فعلاً تخفیف فعالی پیدا نشد؛ پیشنهادهای دیگر همین صفحه آماده‌اند.
+                </FeedEmptyState>
+              )}
+            </div>
+          </FeedSection>
+
+          <FeedSection title="🍽 پیشنهاد برای شما">
+            <HorizontalRail>
+              {suggestedItems.map(({ product, store }) => (
+                <FeedProductTile
+                  key={`suggested-${product.id}`}
+                  product={product}
+                  store={store}
+                  href={`/store/${store.id}`}
+                  ctaLabel="بازدید"
+                />
+              ))}
+            </HorizontalRail>
+          </FeedSection>
+
+          <FeedSection title="✨ کالکشن‌های جدید">
+            <HorizontalRail>
+              {newCollectionItems.map(({ product, store }) => (
+                <FeedProductTile
+                  key={`collection-${product.id}`}
+                  product={product}
+                  store={store}
+                  href={`/product/${product.id}`}
+                  ctaLabel="کاوش"
+                  badgeLabel="جدید"
+                />
+              ))}
+            </HorizontalRail>
+          </FeedSection>
+
+          <FeedSection title="🏬 فروشگاه‌های منتخب">
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+              {featuredStores.map((store) => (
+                <FeaturedStoreTile key={store.id} store={store} />
+              ))}
+            </div>
+          </FeedSection>
+        </div>
+      )}
     </>
   );
 }
