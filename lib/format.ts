@@ -1,7 +1,12 @@
 const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+const GOLD_PRODUCT_TAG = "طلا";
 
 export function toPersianDigits(input: number | string): string {
   return String(input).replace(/[0-9]/g, (digit) => persianDigits[Number(digit)]);
+}
+
+export function isGoldProductTag(tag: string | null | undefined): boolean {
+  return tag?.trim() === GOLD_PRODUCT_TAG;
 }
 
 export function formatPrice(amount: number): string {

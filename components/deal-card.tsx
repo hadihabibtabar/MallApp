@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { DealView } from "@/types";
-import { discountedPrice, formatPrice, toPersianDigits } from "@/lib/format";
+import {
+  discountedPrice,
+  formatPrice,
+  isGoldProductTag,
+  toPersianDigits,
+} from "@/lib/format";
 import { trackDealClicked } from "@/lib/posthog";
 import { SmartImage } from "@/components/smart-image";
 
@@ -48,8 +53,7 @@ export function DealCard({ item }: DealCardProps) {
   const [timeBadge, setTimeBadge] = useState(() =>
     getTimeBadgeState(item.deal.expiresAt),
   );
-  const oldPrice = item.product.price;
-  const newPrice = discountedPrice(oldPrice, item.deal.discount);
+  const isGoldProduct = isGoldProductTag(item.product.tag);
   const timeBadgeClassName = timeBadge.isExpired
     ? "rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-500"
     : "rounded-full bg-orange-50 px-2 py-0.5 font-bold text-orange-700";
@@ -125,19 +129,32 @@ export function DealCard({ item }: DealCardProps) {
             </Link>
           </h3>
 
-          <div className="mt-1.5">
-            <p className="text-[10px] font-semibold text-slate-400">
-              قیمت بعد از تخفیف
-            </p>
-            <div className="mt-0.5 flex items-center gap-1.5">
-              <p className="text-base text-slate-900 sm:text-lg">
-                {formatPrice(newPrice)}
+          {isGoldProduct ? (
+            <div className="mt-1.5">
+              <p className="text-[10px] font-semibold text-slate-400">
+                توضیحات محصول
               </p>
-              <p className="text-[11px] text-slate-400 line-through">
-                {formatPrice(oldPrice)}
+              <p className="mt-0.5 line-clamp-2 text-xs leading-6 text-slate-700 sm:text-sm">
+                {item.product.description}
               </p>
             </div>
-          </div>
+          ) : (
+            <div className="mt-1.5">
+              <p className="text-[10px] font-semibold text-slate-400">
+                قیمت بعد از تخفیف
+              </p>
+              <div className="mt-0.5 flex items-center gap-1.5">
+                <p className="text-base text-slate-900 sm:text-lg">
+                  {formatPrice(
+                    discountedPrice(item.product.price, item.deal.discount),
+                  )}
+                </p>
+                <p className="text-[11px] text-slate-400 line-through">
+                  {formatPrice(item.product.price)}
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
             <p className="line-clamp-1 min-w-0 text-[11px] text-slate-500">

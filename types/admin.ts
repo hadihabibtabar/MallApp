@@ -27,6 +27,7 @@ export interface AdminProduct {
   image: string;
   storeId: string;
   isNew: boolean;
+  tag?: string;
   description: string;
   paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
 }

@@ -153,6 +153,7 @@ function normalizeCatalog(payload: unknown): AdminCatalog {
       price: Number(product.price) || 0,
       discount: Number(product.discount) || 0,
       isNew: Boolean(product.isNew),
+      tag: String(product.tag ?? "").trim(),
     }),
   );
   const storeSeeds = ensureArray<AdminStore>(payload.stores, "stores");

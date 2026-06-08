@@ -2,7 +2,12 @@ import { notFound } from "next/navigation";
 import { ProductOpenedTracker } from "@/components/analytics-trackers";
 import { SmartImage } from "@/components/smart-image";
 import { StoreNavigationLink } from "@/components/store-navigation-cta";
-import { discountedPrice, formatPrice, toPersianDigits } from "@/lib/format";
+import {
+  discountedPrice,
+  formatPrice,
+  isGoldProductTag,
+  toPersianDigits,
+} from "@/lib/format";
 import { getProductById, getStoreById } from "@/lib/mock-data";
 
 interface ProductPageProps {
@@ -23,7 +28,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const finalPrice = discountedPrice(product.price, product.discount);
+  const isGoldProduct = isGoldProductTag(product.tag);
+  const discountPercent =
+    typeof product.discount === "number" && product.discount > 0
+      ? product.discount
+      : null;
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-4xl lg:px-8">
@@ -49,9 +58,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
   {/* badges container */}
   <div className="absolute right-3 top-3 flex flex-col gap-2 items-end">
     
-    {product.discount !== null && (
+    {discountPercent !== null && (
       <div className="rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
-        %{toPersianDigits(product.discount)} تخفیف
+        %{toPersianDigits(discountPercent)} تخفیف
       </div>
     )}
 
@@ -68,13 +77,26 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <section className="space-y-5">
           <div className="rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5 p-4 md:p-6">
             <h1 className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl">{product.name}</h1>
-            <p className="mt-3 text-sm leading-7 text-slate-600 md:text-base md:leading-8">{product.description}</p>
-            <div className="mt-4 flex items-center gap-3 md:mt-5">
-              <p className="text-lg font-black text-slate-900 md:text-2xl">{formatPrice(finalPrice)}</p>
-               {product.discount !==null ?(
-              <p className="text-sm text-slate-400 line-through md:text-base">{formatPrice(product.price)}</p>
-              ):null}
-            </div>
+            {isGoldProduct ? (
+              <div className="mt-4 md:mt-5">
+                <p className="text-[11px] font-bold text-slate-400">
+                  توضیحات محصول
+                </p>
+                <p className="mt-1 text-lg font-black leading-8 text-slate-900 md:text-2xl md:leading-10">
+                  {product.description}
+                </p>
+              </div>
+            ) : (
+              <>
+                <p className="mt-3 text-sm leading-7 text-slate-600 md:text-base md:leading-8">{product.description}</p>
+                <div className="mt-4 flex items-center gap-3 md:mt-5">
+                  <p className="text-lg font-black text-slate-900 md:text-2xl">{formatPrice(discountedPrice(product.price, product.discount))}</p>
+                  {discountPercent !== null ? (
+                    <p className="text-sm text-slate-400 line-through md:text-base">{formatPrice(product.price)}</p>
+                  ) : null}
+                </div>
+              </>
+            )}
           </div>
 
           <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-900/5 md:p-6">

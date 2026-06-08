@@ -1,6 +1,11 @@
 ﻿import Link from "next/link";
 import type { Product, Store } from "@/types";
-import { discountedPrice, formatPrice, toPersianDigits } from "@/lib/format";
+import {
+  discountedPrice,
+  formatPrice,
+  isGoldProductTag,
+  toPersianDigits,
+} from "@/lib/format";
 import { SmartImage } from "@/components/smart-image";
 
 interface ProductCardProps {
@@ -14,7 +19,11 @@ export function ProductCard({
   store,
   variant = "grid",
 }: ProductCardProps) {
-  const finalPrice = discountedPrice(product.price, product.discount);
+  const isGoldProduct = isGoldProductTag(product.tag);
+  const discountPercent =
+    typeof product.discount === "number" && product.discount > 0
+      ? product.discount
+      : null;
   const paymentIcons = {
     digipay: "/images/digipay.webp",
     snapppay: "/images/snapppay.webp",
@@ -40,10 +49,11 @@ export function ProductCard({
                 fallbackSrc="/images/fallback-image.svg"
                 sizes="(min-width: 640px) 112px, 96px"
               />
-{product.discount !==null ?(
-              <div className="absolute right-1 top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
-                %{toPersianDigits(product.discount)}
-              </div> ):null}
+              {discountPercent !== null ? (
+                <div className="absolute right-1 top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm">
+                  %{toPersianDigits(discountPercent)}
+                </div>
+              ) : null}
             </Link>
 
             {/* PAYMENT METHODS (UNDER IMAGE) */}
@@ -79,22 +89,33 @@ export function ProductCard({
               <Link href={`/product/${product.id}`}>{product.name}</Link>
             </h3>
 
-            <div className="mt-1.5">
-              <p className="text-[10px] font-semibold text-slate-400">
-                قیمت محصول
-              </p>
-
-              <div className="mt-0.5 flex items-center gap-1.5">
-                  
-                <p className="text-base text-slate-900 sm:text-lg">
-                  {formatPrice(finalPrice)}
+            {isGoldProduct ? (
+              <div className="mt-1.5">
+                <p className="text-[10px] font-semibold text-slate-400">
+                  توضیحات محصول
                 </p>
-                {product.discount !==null ?(
-                <p className="text-[11px] text-slate-400 line-through">
-                  {formatPrice(product.price)}
-                </p>):null}
+                <p className="mt-0.5 line-clamp-2 text-xs leading-6 text-slate-700 sm:text-sm">
+                  {product.description}
+                </p>
               </div>
-            </div>
+            ) : (
+              <div className="mt-1.5">
+                <p className="text-[10px] font-semibold text-slate-400">
+                  قیمت محصول
+                </p>
+
+                <div className="mt-0.5 flex items-center gap-1.5">
+                  <p className="text-base text-slate-900 sm:text-lg">
+                    {formatPrice(discountedPrice(product.price, product.discount))}
+                  </p>
+                  {discountPercent !== null ? (
+                    <p className="text-[11px] text-slate-400 line-through">
+                      {formatPrice(product.price)}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            )}
 
             <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
               <p className="line-clamp-1 min-w-0 text-[11px] text-slate-500">
@@ -139,23 +160,36 @@ export function ProductCard({
 
         {store && <p className="text-xs text-slate-500">{store.name}</p>}
 
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-extrabold text-slate-900 md:text-base">
-            {formatPrice(finalPrice)}
-          </span>
-
-          {product.discount ? (
-            <span className="text-xs text-slate-400 line-through">
-              {formatPrice(product.price)}
+        {isGoldProduct ? (
+          <div className="space-y-2">
+            <p className="line-clamp-2 text-xs leading-6 text-slate-600 md:text-sm">
+              {product.description}
+            </p>
+            {discountPercent !== null ? (
+              <span className="inline-flex rounded-full bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700">
+                %{toPersianDigits(discountPercent)}
+              </span>
+            ) : null}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-extrabold text-slate-900 md:text-base">
+              {formatPrice(discountedPrice(product.price, product.discount))}
             </span>
-          ) : null}
 
-          {product.discount ? (
-            <span className="rounded-full bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700">
-              %{toPersianDigits(product.discount)}
-            </span>
-          ) : null}
-        </div>
+            {discountPercent !== null ? (
+              <span className="text-xs text-slate-400 line-through">
+                {formatPrice(product.price)}
+              </span>
+            ) : null}
+
+            {discountPercent !== null ? (
+              <span className="rounded-full bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700">
+                %{toPersianDigits(discountPercent)}
+              </span>
+            ) : null}
+          </div>
+        )}
 
         <Link
           href={`/product/${product.id}`}

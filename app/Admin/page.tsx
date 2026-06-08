@@ -13,6 +13,7 @@ import type {
   AdminProduct,
   AdminStore,
 } from "@/types/admin";
+import { isGoldProductTag } from "@/lib/format";
 
 type AdminTab = "stores" | "products" | "deals";
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -44,6 +45,7 @@ const emptyProduct = (storeId = ""): AdminProduct => ({
   image: "/images/fallback-image.svg",
   storeId,
   isNew: true,
+  tag: "",
   description: "",
 });
 
@@ -106,6 +108,22 @@ function pickCatalog(response: CatalogResponse): AdminCatalog {
 
 function formatPrice(amount: number): string {
   return new Intl.NumberFormat("fa-IR").format(amount || 0);
+}
+
+function formatDiscountLabel(discount: number): string {
+  return discount > 0 ? `${discount}% تخفیف` : "بدون تخفیف";
+}
+
+function getProductDetail(product: AdminProduct): string {
+  if (isGoldProductTag(product.tag)) {
+    const description = product.description || "بدون توضیحات";
+
+    return product.discount > 0
+      ? `${description} - ${formatDiscountLabel(product.discount)}`
+      : description;
+  }
+
+  return `${formatPrice(product.price)} تومان - ${formatDiscountLabel(product.discount)}`;
 }
 
 function getStoreName(stores: AdminStore[], storeId: string): string {
@@ -369,6 +387,7 @@ export default function AdminPage() {
       discount: clampPercent(Number(productDraft.discount)),
       image: productDraft.image.trim() || "/images/fallback-image.svg",
       storeId: selectedStore,
+      tag: productDraft.tag?.trim() || "",
       description: productDraft.description.trim(),
     };
     const previousId = selectedProductId;
@@ -892,6 +911,8 @@ function ProductsManager({
   onSave,
   onDelete,
 }: ProductsManagerProps) {
+  const isGoldDraft = isGoldProductTag(draft.tag);
+
   return (
     <ManagerShell
       title="مدیریت محصولات و قیمت‌ها"
@@ -907,7 +928,7 @@ function ProductsManager({
               active={selectedId === product.id}
               title={product.name}
               eyebrow={getStoreName(catalog.stores, product.storeId)}
-              detail={`${formatPrice(product.price)} تومان - ${product.discount}% تخفیف`}
+              detail={getProductDetail(product)}
               meta={product.isNew ? "کالکشن جدید" : "معمولی"}
               onClick={() => onSelect(product)}
               onDelete={() => onDelete(product.id)}
@@ -936,15 +957,7 @@ function ProductsManager({
               value: store.id,
             }))}
           />
-          <div className="grid gap-3 md:grid-cols-2">
-            <Field
-              label="قیمت تومان"
-              value={draft.price}
-              onChange={(price) =>
-                onDraftChange({ ...draft, price: toPositiveNumber(Number(price)) })
-              }
-              type="number"
-            />
+          {isGoldDraft ? (
             <Field
               label="درصد تخفیف"
               value={draft.discount}
@@ -955,7 +968,28 @@ function ProductsManager({
               min={0}
               max={100}
             />
-          </div>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2">
+              <Field
+                label="قیمت تومان"
+                value={draft.price}
+                onChange={(price) =>
+                  onDraftChange({ ...draft, price: toPositiveNumber(Number(price)) })
+                }
+                type="number"
+              />
+              <Field
+                label="درصد تخفیف"
+                value={draft.discount}
+                onChange={(discount) =>
+                  onDraftChange({ ...draft, discount: clampPercent(Number(discount)) })
+                }
+                type="number"
+                min={0}
+                max={100}
+              />
+            </div>
+          )}
           <Field
             label="آدرس تصویر محصول"
             value={draft.image}
