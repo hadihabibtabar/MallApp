@@ -9,6 +9,7 @@ import {
   getFloorLabel,
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
+import { toPersianDigits } from "@/lib/format";
 import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Deal, DealView, Product, Store } from "@/types";
@@ -38,7 +39,11 @@ type ProductSearchResult =
 
 type DiscountedProduct = Product & { discount: number };
 
+const ALL_TAG = "همه";
+const FOOD_TAG = "غذا";
+const FOOD_RELATED_TAGS = new Set([FOOD_TAG, "کافه", "صبحانه"]);
 const STORAGE_KEY = "hamilia-active-deals-v1";
+const FOOD_STORAGE_KEY = "hamilia-active-food-deals-v1";
 const TARGET_DEAL_COUNT = 5;
 const HIDE_AFTER_EXPIRED_MS = 5 * 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
@@ -53,6 +58,17 @@ function matchesSearch(value: string | undefined, query: string): boolean {
 
 function isDiscountedProduct(product: Product): product is DiscountedProduct {
   return typeof product.discount === "number" && product.discount > 0;
+}
+
+function isFoodRelatedProduct(
+  product: Product,
+  storeById: Map<string, Store>,
+): boolean {
+  const store = storeById.get(product.storeId);
+
+  return (
+    FOOD_RELATED_TAGS.has(product.tag.trim()) || store?.category === FOOD_TAG
+  );
 }
 
 function isSelectionWindowOpen(now: Date): boolean {
@@ -106,25 +122,25 @@ function isStoredDeal(value: unknown): value is StoredDeal {
   );
 }
 
-function readStoredDeals(): StoredDeal[] {
+function readStoredDeals(storageKey = STORAGE_KEY): StoredDeal[] {
   if (typeof window === "undefined") {
     return [];
   }
 
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
+    const parsed = JSON.parse(window.localStorage.getItem(storageKey) ?? "[]");
     return Array.isArray(parsed) ? parsed.filter(isStoredDeal) : [];
   } catch {
     return [];
   }
 }
 
-function persistStoredDeals(deals: StoredDeal[]) {
+function persistStoredDeals(deals: StoredDeal[], storageKey = STORAGE_KEY) {
   if (typeof window === "undefined") {
     return;
   }
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(deals));
+  window.localStorage.setItem(storageKey, JSON.stringify(deals));
 }
 
 function getRandomDealHours(): number {
@@ -162,6 +178,7 @@ function syncStoredDeals(
   products: Product[],
   storeById: Map<string, Store>,
   now: Date,
+  shouldIncludeProduct: (product: Product) => boolean,
 ): StoredDeal[] {
   const nowMs = now.getTime();
 
@@ -170,7 +187,10 @@ function syncStoredDeals(
   }
 
   const discountedProducts = products.filter(
-    (product) => isDiscountedProduct(product) && storeById.has(product.storeId),
+    (product) =>
+      isDiscountedProduct(product) &&
+      storeById.has(product.storeId) &&
+      shouldIncludeProduct(product),
   );
   const discountedById = new Map(
     discountedProducts.map((product) => [product.id, product]),
@@ -281,9 +301,10 @@ function NightDealsMessage() {
 
 export function DealsList({ products, stores }: DealsListProps) {
   const [query, setQuery] = useState("");
-  const [selectedTag, setSelectedTag] = useState<string>("همه");
+  const [selectedTag, setSelectedTag] = useState<string>(ALL_TAG);
   const [selectedFloor, setSelectedFloor] = useState<FloorFilterValue>("all");
   const [storedDeals, setStoredDeals] = useState<StoredDeal[]>([]);
+  const [foodStoredDeals, setFoodStoredDeals] = useState<StoredDeal[]>([]);
   const [hasLoadedDeals, setHasLoadedDeals] = useState(false);
   const [isDealSelectionClosed, setIsDealSelectionClosed] = useState(false);
   const [sortNowMs, setSortNowMs] = useState(() => Date.now());
@@ -306,15 +327,35 @@ export function DealsList({ products, stores }: DealsListProps) {
       setIsDealSelectionClosed(!isSelectionWindowOpen(now));
       setStoredDeals((currentDeals) => {
         const sourceDeals =
-          currentDeals.length > 0 ? currentDeals : readStoredDeals();
+          currentDeals.length > 0
+            ? currentDeals
+            : readStoredDeals(STORAGE_KEY);
         const nextDeals = syncStoredDeals(
           sourceDeals,
           products,
           storeById,
           now,
+          (product) => !isFoodRelatedProduct(product, storeById),
         );
 
-        persistStoredDeals(nextDeals);
+        persistStoredDeals(nextDeals, STORAGE_KEY);
+
+        return nextDeals;
+      });
+      setFoodStoredDeals((currentDeals) => {
+        const sourceDeals =
+          currentDeals.length > 0
+            ? currentDeals
+            : readStoredDeals(FOOD_STORAGE_KEY);
+        const nextDeals = syncStoredDeals(
+          sourceDeals,
+          products,
+          storeById,
+          now,
+          (product) => isFoodRelatedProduct(product, storeById),
+        );
+
+        persistStoredDeals(nextDeals, FOOD_STORAGE_KEY);
 
         return nextDeals;
       });
@@ -349,15 +390,39 @@ export function DealsList({ products, stores }: DealsListProps) {
       );
   }, [productById, sortNowMs, storeById, storedDeals]);
 
+  const foodDeals = useMemo(() => {
+    return foodStoredDeals
+      .map((storedDeal) => toDealView(storedDeal, productById, storeById))
+      .filter((item): item is DealView => Boolean(item))
+      .sort((a, b) =>
+        compareDealsByExpiryStatus(
+          a.deal.expiresAt,
+          b.deal.expiresAt,
+          sortNowMs,
+        ),
+      );
+  }, [foodStoredDeals, productById, sortNowMs, storeById]);
+
+  const activeFoodDealCount = useMemo(() => {
+    return foodDeals.filter((item) => {
+      const expiresAtMs = getTime(item.deal.expiresAt);
+      return expiresAtMs !== null && expiresAtMs > sortNowMs;
+    }).length;
+  }, [foodDeals, sortNowMs]);
+
   const tags = useMemo(() => {
     return Array.from(new Set(deals.map((item) => item.deal.tag))).filter(
-      Boolean,
+      (tag) => Boolean(tag) && tag !== FOOD_TAG,
     );
   }, [deals]);
 
   useEffect(() => {
-    if (selectedTag !== "همه" && !tags.includes(selectedTag)) {
-      setSelectedTag("همه");
+    if (
+      selectedTag !== ALL_TAG &&
+      selectedTag !== FOOD_TAG &&
+      !tags.includes(selectedTag)
+    ) {
+      setSelectedTag(ALL_TAG);
     }
   }, [selectedTag, tags]);
 
@@ -378,13 +443,18 @@ export function DealsList({ products, stores }: DealsListProps) {
       return [];
     }
 
-    return deals.filter((item) => {
-      const matchesTag = selectedTag === "همه" || item.deal.tag === selectedTag;
+    const sourceDeals = selectedTag === FOOD_TAG ? foodDeals : deals;
+
+    return sourceDeals.filter((item) => {
+      const matchesTag =
+        selectedTag === ALL_TAG ||
+        selectedTag === FOOD_TAG ||
+        item.deal.tag === selectedTag;
       const level = parseStoreFloorToLevel(item.store.floor);
       const matchesFloor = selectedFloor === "all" || level === selectedFloor;
       return matchesTag && matchesFloor;
     });
-  }, [deals, isSearching, selectedTag, selectedFloor]);
+  }, [deals, foodDeals, isSearching, selectedTag, selectedFloor]);
 
   const productSearchResults = useMemo<ProductSearchResult[]>(() => {
     if (!isSearching) {
@@ -550,18 +620,41 @@ export function DealsList({ products, stores }: DealsListProps) {
         </div>
 
         {!isSearching && (
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-slate-500">تگ:</span>
-            <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="flex items-end gap-2">
+            <span className="pb-1.5 text-[11px] font-bold text-slate-500">
+              تگ:
+            </span>
+            <div className="flex gap-2 overflow-x-auto pb-1 pt-5">
+              <div className="relative shrink-0">
+                <span
+                  className={`absolute -top-4 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-extrabold shadow-sm ${
+                    selectedTag === FOOD_TAG
+                      ? "bg-white text-rose-700 ring-1 ring-rose-200"
+                      : "bg-rose-600 text-white"
+                  }`}
+                >
+                  {toPersianDigits(activeFoodDealCount)} فعال
+                </span>
+                <button
+                  onClick={() => setSelectedTag(FOOD_TAG)}
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-extrabold transition ${
+                    selectedTag === FOOD_TAG
+                      ? "bg-rose-600 text-white shadow-sm ring-1 ring-rose-300"
+                      : "border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                  }`}
+                >
+                  {FOOD_TAG}
+                </button>
+              </div>
               <button
-                onClick={() => setSelectedTag("همه")}
+                onClick={() => setSelectedTag(ALL_TAG)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                  selectedTag === "همه"
+                  selectedTag === ALL_TAG
                     ? "bg-slate-900 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-100"
                 }`}
               >
-                همه
+                {ALL_TAG}
               </button>
               {tags.map((tag) => (
                 <button
