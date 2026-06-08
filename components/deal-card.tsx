@@ -106,15 +106,11 @@ export function DealCard({ item }: DealCardProps) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="mb-2 flex items-center justify-between gap-1.5 text-[10px]">
+          <div className="mb-0.5 flex items-center justify-between gap-1.5 text-[10px]">
             <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">
               {item.product.tag}
             </span>
-{item.product.isNew && (
-  <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-medium text-white">
-    کالکشن جدید
-  </span>
-)}
+
             <span className={timeBadgeClassName}>
               {timeBadge.label}
             </span>
@@ -130,9 +126,9 @@ export function DealCard({ item }: DealCardProps) {
           </h3>
 
           <div className="mt-1.5">
-            {/* <p className="text-[10px] font-semibold text-slate-400">
+            <p className="text-[10px] font-semibold text-slate-400">
               قیمت بعد از تخفیف
-            </p> */}
+            </p>
             <div className="mt-0.5 flex items-center gap-1.5">
               <p className="text-base text-slate-900 sm:text-lg">
                 {formatPrice(newPrice)}
