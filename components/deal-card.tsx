@@ -1,16 +1,10 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import type { DealView } from "@/types";
-import {
-  discountedPrice,
-  formatPrice,
-  isGoldProductTag,
-  toPersianDigits,
-} from "@/lib/format";
+import { toPersianDigits } from "@/lib/format";
 import { trackDealClicked } from "@/lib/posthog";
-import { SmartImage } from "@/components/smart-image";
+import { CatalogResultCard } from "@/components/catalog-result-card";
 
 interface DealCardProps {
   item: DealView;
@@ -20,11 +14,6 @@ interface TimeBadgeState {
   isExpired: boolean;
 }
 
-const paymentIcons = {
-  digipay: "/images/digipay.webp",
-  snapppay: "/images/snapppay.webp",
-  tarapay: "/images/tarapay.webp",
-};
 function getTimeBadgeState(expiresAt: string): TimeBadgeState {
   const diffMs = new Date(expiresAt).getTime() - Date.now();
 
@@ -53,10 +42,6 @@ export function DealCard({ item }: DealCardProps) {
   const [timeBadge, setTimeBadge] = useState(() =>
     getTimeBadgeState(item.deal.expiresAt),
   );
-  const isGoldProduct = isGoldProductTag(item.product.tag);
-  const timeBadgeClassName = timeBadge.isExpired
-    ? "rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-500"
-    : "rounded-full bg-orange-50 px-2 py-0.5 font-bold text-orange-700";
   const dealClickProperties = {
     source: "deal_card" as const,
     deal_id: item.deal.id,
@@ -75,101 +60,14 @@ export function DealCard({ item }: DealCardProps) {
   }, [item.deal.expiresAt]);
 
   return (
-    <article className="rounded-2xl border border-slate-200/80 bg-white p-2.5 shadow-sm ring-1 ring-slate-900/5 sm:p-3">
-      <div className="flex items-start gap-2.5 sm:gap-3">
-        <div className="shrink-0">
-          <Link
-            href={`/product/${item.product.id}`}
-            className="relative block h-24 w-24 overflow-hidden rounded-xl sm:h-28 sm:w-28"
-            onClick={() => trackDealClicked(dealClickProperties)}
-          >
-            <SmartImage
-              src={item.product.image}
-              alt={item.product.name}
-              fill
-              className="object-cover"
-              fallbackSrc="/images/fallback-image.svg"
-              sizes="(min-width: 640px) 112px, 96px"
-            />
-
-            <div className="absolute right-1 top-1 rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold text-white shadow-sm sm:right-1.5 sm:top-1.5 sm:px-2 sm:text-[10px]">
-              %{toPersianDigits(item.deal.discount)}
-            </div>
-          </Link>
-
-          <div className="mt-2 flex justify-center gap-1.5">
-            {item.product.paymentMethods?.map((method) => (
-              <img
-                key={method}
-                src={paymentIcons[method]}
-                alt={method}
-                className="h-5 w-5 rounded-lg border border-slate-200 object-cover"
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="min-w-0 flex-1">
-          <div className="mb-0.5 flex items-center justify-between gap-1.5 text-[10px]">
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">
-              {item.product.tag}
-            </span>
-
-            <span className={timeBadgeClassName}>
-              {timeBadge.label}
-            </span>
-          </div>
-
-          <h3 className="line-clamp-2 text-sm leading-5 text-slate-900 sm:text-base sm:leading-6">
-            <Link
-              href={`/product/${item.product.id}`}
-              onClick={() => trackDealClicked(dealClickProperties)}
-            >
-              {item.product.name}
-            </Link>
-          </h3>
-
-          {isGoldProduct ? (
-            <div className="mt-1.5">
-              <p className="text-[10px] font-semibold text-slate-400">
-                توضیحات محصول
-              </p>
-              <p className="mt-0.5 line-clamp-2 text-xs leading-6 text-slate-700 sm:text-sm">
-                {item.product.description}
-              </p>
-            </div>
-          ) : (
-            <div className="mt-1.5">
-              <p className="text-[10px] font-semibold text-slate-400">
-                قیمت بعد از تخفیف
-              </p>
-              <div className="mt-0.5 flex items-center gap-1.5">
-                <p className="text-base text-slate-900 sm:text-lg">
-                  {formatPrice(
-                    discountedPrice(item.product.price, item.deal.discount),
-                  )}
-                </p>
-                <p className="text-[11px] text-slate-400 line-through">
-                  {formatPrice(item.product.price)}
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
-            <p className="line-clamp-1 min-w-0 text-[11px] text-slate-500">
-              {item.store.name} · {item.store.floor}
-            </p>
-            <Link
-              href={`/store/${item.store.id}`}
-              onClick={() => trackDealClicked(dealClickProperties)}
-              className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-[14px] font-semibold text-white transition hover:bg-slate-700 sm:text-[11px]"
-            >
-              مشاهده فروشگاه
-            </Link>
-          </div>
-        </div>
-      </div>
-    </article>
+    <CatalogResultCard
+      product={item.product}
+      store={item.store}
+      discountPercent={item.deal.discount}
+      statusLabel={timeBadge.label}
+      statusTone={timeBadge.isExpired ? "muted" : "active"}
+      onProductClick={() => trackDealClicked(dealClickProperties)}
+      onStoreClick={() => trackDealClicked(dealClickProperties)}
+    />
   );
 }
