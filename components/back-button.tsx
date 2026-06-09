@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 
-const hiddenPaths = new Set(["/", "/deals", "/stores", "/Admin"]);
+const hiddenPaths = new Set(["/", "/deals", "/stores", "/new-collection", "/Admin"]);
 
 export function BackButton() {
   const router = useRouter();

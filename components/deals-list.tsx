@@ -9,6 +9,7 @@ import {
   getFloorLabel,
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
+import { getCatalogSearchResults } from "@/lib/catalog-search";
 import { toPersianDigits } from "@/lib/format";
 import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
@@ -26,17 +27,6 @@ interface StoredDeal {
   hideAt: string;
 }
 
-type ProductSearchResult =
-  | {
-      type: "deal";
-      item: DealView;
-    }
-  | {
-      type: "product";
-      product: Product;
-      store: Store;
-    };
-
 type DiscountedProduct = Product & { discount: number };
 
 const ALL_TAG = "همه";
@@ -51,10 +41,6 @@ const MIN_DEAL_HOURS = 1;
 const MAX_DEAL_HOURS = 5;
 const SELECTION_START_HOUR = 8;
 const SELECTION_END_HOUR = 23;
-
-function matchesSearch(value: string | undefined, query: string): boolean {
-  return value?.toLowerCase().includes(query) ?? false;
-}
 
 function isDiscountedProduct(product: Product): product is DiscountedProduct {
   return typeof product.discount === "number" && product.discount > 0;
@@ -426,18 +412,6 @@ export function DealsList({ products, stores }: DealsListProps) {
     }
   }, [selectedTag, tags]);
 
-  const dealByProductId = useMemo(() => {
-    const dealMap = new Map<string, DealView>();
-
-    deals.forEach((item) => {
-      if (!dealMap.has(item.product.id)) {
-        dealMap.set(item.product.id, item);
-      }
-    });
-
-    return dealMap;
-  }, [deals]);
-
   const filteredDeals = useMemo(() => {
     if (isSearching) {
       return [];
@@ -456,57 +430,14 @@ export function DealsList({ products, stores }: DealsListProps) {
     });
   }, [deals, foodDeals, isSearching, selectedTag, selectedFloor]);
 
-  const productSearchResults = useMemo<ProductSearchResult[]>(() => {
-    if (!isSearching) {
-      return [];
-    }
-
-    const results: ProductSearchResult[] = [];
-
-    products.forEach((product) => {
-      const store = storeById.get(product.storeId);
-
-      if (!store) {
-        return;
-      }
-
-      const matchesProduct =
-        matchesSearch(product.name, normalizedQuery) ||
-        matchesSearch(product.description, normalizedQuery) ||
-        matchesSearch(store.name, normalizedQuery) ||
-        matchesSearch(store.brand, normalizedQuery) ||
-        matchesSearch(store.category, normalizedQuery);
-
-      if (!matchesProduct) {
-        return;
-      }
-
-      const level = parseStoreFloorToLevel(store.floor);
-      const matchesFloor = selectedFloor === "all" || level === selectedFloor;
-
-      if (!matchesFloor) {
-        return;
-      }
-
-      const deal = dealByProductId.get(product.id);
-
-      if (deal) {
-        results.push({ type: "deal", item: deal });
-        return;
-      }
-
-      results.push({ type: "product", product, store });
+  const productSearchResults = useMemo(() => {
+    return getCatalogSearchResults({
+      products,
+      storeById,
+      query: normalizedQuery,
+      selectedFloor,
     });
-
-    return results;
-  }, [
-    dealByProductId,
-    isSearching,
-    normalizedQuery,
-    products,
-    selectedFloor,
-    storeById,
-  ]);
+  }, [normalizedQuery, products, selectedFloor, storeById]);
   const hasNoResults = isSearching
     ? productSearchResults.length === 0
     : hasLoadedDeals && filteredDeals.length === 0;
@@ -546,7 +477,7 @@ export function DealsList({ products, stores }: DealsListProps) {
           htmlFor="deals-search"
           className="mb-2 hidden text-sm font-bold text-slate-500 md:block"
         >
-          جستجو در تخفیف‌ها و محصولات
+          جستجو در تخفیف‌ها و کالکشن جدید
         </label>
 
         <form className="relative" onSubmit={handleSearchSubmit}>
@@ -555,7 +486,7 @@ export function DealsList({ products, stores }: DealsListProps) {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="نام محصول، فروشگاه یا تخفیف را جستجو کنید"
+            placeholder="نام محصول، فروشگاه، تخفیف یا کالکشن را جستجو کنید"
             className="
       h-12 md:h-14
       w-full
@@ -676,28 +607,23 @@ export function DealsList({ products, stores }: DealsListProps) {
 
       <section className="space-y-2.5 md:grid md:grid-cols-2 md:gap-3 md:space-y-0 lg:grid-cols-3">
         {isSearching
-          ? productSearchResults.map((result) =>
-              result.type === "deal" ? (
-                <DealCard
-                  key={`deal-${result.item.deal.id}`}
-                  item={result.item}
-                />
-              ) : (
-                <ProductCard
-                  key={`product-${result.product.id}`}
-                  product={result.product}
-                  store={result.store}
-                  variant="compact"
-                />
-              ),
-            )
+          ? productSearchResults.map((result) => (
+              <ProductCard
+                key={`search-${result.product.id}`}
+                product={result.product}
+                store={result.store}
+                variant="compact"
+              />
+            ))
           : filteredDeals.map((item) => (
               <DealCard key={item.deal.id} item={item} />
             ))}
 
-        {hasNoResults && isDealSelectionClosed && <NightDealsMessage />}
+        {hasNoResults && !isSearching && isDealSelectionClosed && (
+          <NightDealsMessage />
+        )}
 
-        {hasNoResults && !isDealSelectionClosed && (
+        {hasNoResults && (isSearching || !isDealSelectionClosed) && (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3">
             محصولی با فیلتر انتخابی پیدا نشد.
           </div>
