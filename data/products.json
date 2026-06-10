@@ -24,6 +24,18 @@
     "paymentMethods": ["digipay", "snapppay"]
   },
   {
+    "id": "zara-4",
+    "name": "شلوار کرم راسته تست",
+    "price": 2190000,
+    "discount": null,
+    "image": "/images/products/coleen2.webp",
+    "storeId": "coleen-store",
+    "isNew": true,
+    "tag": "شلوار زنانه",
+    "description": "پارچه سبک با تن‌خور راحت برای استایل روزمره.",
+    "paymentMethods": ["digipay", "tarapay"]
+  },
+  {
     "id": "zara-3",
     "name": "پیراهن نخی تابستانه",
     "price": 1980000,
@@ -61,7 +73,18 @@
     "id": "nike-3",
     "name": "شلوار ورزشی هکتاتون",
     "price": 1890000,
-    "discount": 15,
+    "discount": null,
+    "image": "/images/products/hec2.webp",
+    "storeId": "hectaton-store",
+    "isNew": true,
+    "tag": "شلوار ورزشی",
+    "description": "شلوار سبک برای باشگاه و استفاده روزانه."
+  },
+  {
+    "id": "nike-4",
+    "name": "شلوار ورزشی هکتاتون تست",
+    "price": 1890000,
+    "discount": null,
     "image": "/images/products/hec2.webp",
     "storeId": "hectaton-store",
     "isNew": true,
@@ -83,7 +106,7 @@
     "id": "digi-2",
     "name": "کیف دندی مدل The little prince",
     "price": 7290000,
-    "discount": 22,
+    "discount": null,
     "image": "/images/products/dnd2.webp",
     "storeId": "dandy-store",
     "isNew": true,
@@ -184,6 +207,18 @@
     "paymentMethods": ["digipay"]
   },
   {
+    "id": "adidas-3",
+    "name": "انگشتر بهار تست",
+    "price": 72590000,
+    "discount": null,
+    "image": "/images/products/san1.webp",
+    "storeId": "sanjaaq-store",
+    "isNew": true,
+    "tag": "طلا",
+    "description": "1.46 گرم طلای 18 عیار",
+    "paymentMethods": ["tarapay"]
+  },
+  {
     "id": "adidas-2",
     "name": "گردنبند قلب کامنت صورتی",
     "price": 11790000,
@@ -218,5 +253,17 @@
     "tag": "شلوار",
     "description": "کد 145698",
     "paymentMethods": ["snapppay", "tarapay"]
+  },
+  {
+    "id": "aroma-3",
+    "name": "شلوار سپهراد تست",
+    "price": 1980000,
+    "discount": null,
+    "image": "/images/products/tan2.webp",
+    "storeId": "tanedorost-store",
+    "isNew": true,
+    "tag": "شلوار",
+    "description": "کد 145698",
+    "paymentMethods": ["digipay", "tarapay"]
   }
 ]

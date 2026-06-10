@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 import { BackButton } from "@/components/back-button";
-import { HomeButton } from "@/components/home-button";
+import { BottomNav } from "@/components/bottom-nav";
 import { PostHogProvider } from "@/components/posthog-provider";
+import { TopNav } from "@/components/top-nav";
 import "./globals.css";
 
 const iranYekan = localFont({
@@ -68,13 +69,14 @@ export default function RootLayout({
         className={`${iranYekan.variable} ${iranYekan.className} antialiased`}
       >
         <PostHogProvider />
+        <TopNav />
 
         <div className="fixed top-4 right-3 z-50 flex flex-col gap-2 md:top-6 md:right-6">
           <BackButton />
-          <HomeButton />
         </div>
 
-        {children}
+        <div className="pb-20 lg:pb-0">{children}</div>
+        <BottomNav />
       </body>
     </html>
   );
