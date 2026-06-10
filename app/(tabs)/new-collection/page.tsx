@@ -10,11 +10,11 @@ export default function NewCollectionPage() {
         </h1>
 
         <p className="text-xs text-slate-600 md:text-sm">
-          انتخاب‌های تازه‌
-          <span className="mx-1 font-bold bg-gradient-to-r from-emerald-500 via-sky-500 to-slate-800 bg-clip-text text-transparent">
-            همیلا سنتر
+         انتخاب‌های تازه‌{" "} 
+         <span className="font-bold bg-gradient-to-r from-yellow-500 via-amber-400 to-yellow-600 bg-clip-text text-transparent">
+             همیلا سنتر 
           </span>
-          برای امروز
+         {" "} برای امروز
         </p>
       </header>
 

@@ -96,7 +96,7 @@ export function ProductCard({
           href={`/product/${product.id}`}
           className="block rounded-xl bg-slate-900 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-slate-700"
         >
-          مشاهده محصول
+          جزئیات محصول
         </Link>
       </div>
     </article>

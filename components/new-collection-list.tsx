@@ -36,22 +36,9 @@ const TARGET_COLLECTION_COUNT = 5;
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_COLLECTION_HOURS = 1;
 const MAX_COLLECTION_HOURS = 5;
-const SELECTION_START_HOUR = 8;
-const SELECTION_END_HOUR = 23;
 
 function isNewCollectionProduct(product: Product): boolean {
   return product.isNew && product.discount === null;
-}
-
-function isSelectionWindowOpen(now: Date): boolean {
-  const hour = now.getHours();
-  return hour >= SELECTION_START_HOUR && hour < SELECTION_END_HOUR;
-}
-
-function getSelectionWindowEnd(now: Date): Date {
-  const end = new Date(now);
-  end.setHours(SELECTION_END_HOUR, 0, 0, 0);
-  return end;
 }
 
 function getTime(value: string): number | null {
@@ -138,10 +125,7 @@ function createStoredCollectionItem(
 ): StoredCollectionItem {
   const durationHours = getRandomCollectionHours();
   const startedAtMs = now.getTime();
-  const expiresAtMs = Math.min(
-    startedAtMs + durationHours * HOUR_MS,
-    getSelectionWindowEnd(now).getTime(),
-  );
+  const expiresAtMs = startedAtMs + durationHours * HOUR_MS;
   const expiresAt = new Date(expiresAtMs).toISOString();
 
   return {
@@ -159,10 +143,6 @@ function syncStoredCollection(
   now: Date,
 ): StoredCollectionItem[] {
   const nowMs = now.getTime();
-
-  if (!isSelectionWindowOpen(now)) {
-    return [];
-  }
 
   const collectionProducts = products.filter(
     (product) => isNewCollectionProduct(product) && storeById.has(product.storeId),
@@ -242,25 +222,6 @@ function toCollectionView(
   };
 }
 
-function ClosedCollectionMessage() {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-sky-50 p-5 text-center shadow-sm ring-1 ring-emerald-100 md:col-span-2 md:p-7 lg:col-span-3">
-      <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-emerald-200 bg-white text-sm font-black text-emerald-700 shadow-sm">
-        ۸:۰۰
-        <span className="absolute -left-2 -top-2 rounded-full bg-slate-900 px-2 py-1 text-[10px] font-bold text-white">
-          جدید
-        </span>
-      </div>
-      <p className="text-base font-extrabold text-slate-900 md:text-lg">
-        کالکشن بعدی از ساعت ۸ صبح تازه می‌شود.
-      </p>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-slate-600">
-        هر روز چند انتخاب تازه از محصولات جدید فروشگاه‌ها برای نمایش آماده می‌شود.
-      </p>
-    </div>
-  );
-}
-
 export function NewCollectionList({ products, stores }: NewCollectionListProps) {
   const [query, setQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string>(ALL_TAG);
@@ -269,7 +230,6 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
     StoredCollectionItem[]
   >([]);
   const [hasLoadedCollection, setHasLoadedCollection] = useState(false);
-  const [isSelectionClosed, setIsSelectionClosed] = useState(false);
   const [sortNowMs, setSortNowMs] = useState(() => Date.now());
   const normalizedQuery = query.trim().toLowerCase();
   const isSearching = normalizedQuery.length > 0;
@@ -286,7 +246,6 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
     const refreshCollection = () => {
       const now = new Date();
       setSortNowMs(now.getTime());
-      setIsSelectionClosed(!isSelectionWindowOpen(now));
       setStoredCollection((currentItems) => {
         const sourceItems =
           currentItems.length > 0 ? currentItems : readStoredCollection();
@@ -494,11 +453,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
               />
             ))}
 
-        {hasNoResults && isSelectionClosed && !isSearching && (
-          <ClosedCollectionMessage />
-        )}
-
-        {hasNoResults && (!isSelectionClosed || isSearching) && (
+        {hasNoResults && (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3">
             محصولی با فیلتر انتخابی پیدا نشد.
           </div>

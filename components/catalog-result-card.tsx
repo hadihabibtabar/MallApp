@@ -151,7 +151,7 @@ export function CatalogResultCard({
                 onClick={onStoreClick}
                 className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-extrabold text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 sm:px-3 sm:text-xs"
               >
-                مشاهده فروشگاه
+                رفتن به فروشگاه
               </Link>
             </div>
           </div>
