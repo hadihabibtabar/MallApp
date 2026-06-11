@@ -9,6 +9,7 @@ import {
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
 import { getCatalogSearchResults } from "@/lib/catalog-search";
+import { toPersianDigits } from "@/lib/format";
 import {
   trackCategoryChipClicked,
   trackCollectionViewed,
@@ -39,8 +40,13 @@ interface CollectionView {
   expiresAt: string;
 }
 
+interface TimeBadgeState {
+  label: string;
+  isExpired: boolean;
+}
+
 const ALL_TAG = "همه";
-const STORAGE_KEY = "hamilia-active-new-collection-v1";
+const STORAGE_KEY = "hamilia-active-new-collection-v2";
 const TARGET_COLLECTION_COUNT = 5;
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_COLLECTION_HOURS = 1;
@@ -70,6 +76,31 @@ function compareItemsByExpiry(
   }
 
   return firstExpiresAtMs - secondExpiresAtMs;
+}
+
+function getTimeBadgeState(expiresAt: string, nowMs: number): TimeBadgeState {
+  const expiresAtMs = getTime(expiresAt);
+  const diffMs = expiresAtMs === null ? 0 : expiresAtMs - nowMs;
+
+  if (diffMs <= 0) {
+    return {
+      label: "تمام شده",
+      isExpired: true,
+    };
+  }
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  const hh = String(hours).padStart(2, "0");
+  const mm = String(minutes).padStart(2, "0");
+  const ss = String(seconds).padStart(2, "0");
+
+  return {
+    label: toPersianDigits(`${hh}:${mm}:${ss}`),
+    isExpired: false,
+  };
 }
 
 function isStoredCollectionItem(
@@ -160,8 +191,9 @@ function syncStoredCollection(
     collectionProducts.map((product) => [product.id, product]),
   );
   const targetCount = Math.min(TARGET_COLLECTION_COUNT, collectionProducts.length);
+  const expiredProductIds = new Set<string>();
   const seenProductIds = new Set<string>();
-  const visibleItems = currentItems
+  const activeItems = currentItems
     .filter((item) => {
       if (
         seenProductIds.has(item.productId) ||
@@ -170,9 +202,10 @@ function syncStoredCollection(
         return false;
       }
 
-      const hideAtMs = getTime(item.hideAt);
+      const expiresAtMs = getTime(item.expiresAt);
 
-      if (hideAtMs === null || hideAtMs <= nowMs) {
+      if (expiresAtMs === null || expiresAtMs <= nowMs) {
+        expiredProductIds.add(item.productId);
         return false;
       }
 
@@ -182,17 +215,24 @@ function syncStoredCollection(
     .sort((a, b) => compareItemsByExpiry(a.expiresAt, b.expiresAt, nowMs))
     .slice(0, targetCount);
 
-  if (visibleItems.length >= targetCount) {
-    return visibleItems;
+  if (activeItems.length >= targetCount) {
+    return activeItems;
   }
 
-  const visibleProductIds = new Set(
-    visibleItems.map((item) => item.productId),
+  const activeProductIds = new Set(activeItems.map((item) => item.productId));
+  const inactiveCandidates = collectionProducts.filter(
+    (product) => !activeProductIds.has(product.id),
   );
-  const candidates = shuffleProducts(
-    collectionProducts.filter((product) => !visibleProductIds.has(product.id)),
+  const freshCandidates = shuffleProducts(
+    inactiveCandidates.filter(
+      (product) => !expiredProductIds.has(product.id),
+    ),
   );
-  const nextItems = [...visibleItems];
+  const fallbackCandidates = shuffleProducts(
+    inactiveCandidates.filter((product) => expiredProductIds.has(product.id)),
+  );
+  const candidates = [...freshCandidates, ...fallbackCandidates];
+  const nextItems = [...activeItems];
 
   while (nextItems.length < targetCount && candidates.length > 0) {
     const product = candidates.shift();
@@ -279,6 +319,50 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
     return () => window.clearInterval(intervalId);
   }, [products, storeById]);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setSortNowMs(Date.now());
+    }, 1_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedCollection) {
+      return;
+    }
+
+    const hasExpiredItem = storedCollection.some((item) => {
+      const expiresAtMs = getTime(item.expiresAt);
+      return expiresAtMs === null || expiresAtMs <= sortNowMs;
+    });
+
+    if (!hasExpiredItem) {
+      return;
+    }
+
+    const now = new Date(sortNowMs);
+
+    setStoredCollection((currentItems) => {
+      const nextItems = syncStoredCollection(
+        currentItems,
+        products,
+        storeById,
+        now,
+      );
+
+      persistStoredCollection(nextItems);
+
+      return nextItems;
+    });
+  }, [
+    hasLoadedCollection,
+    products,
+    sortNowMs,
+    storeById,
+    storedCollection,
+  ]);
+
   const collectionItems = useMemo(() => {
     return storedCollection
       .map((item) => toCollectionView(item, productById, storeById))
@@ -286,11 +370,18 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
       .sort((a, b) => compareItemsByExpiry(a.expiresAt, b.expiresAt, sortNowMs));
   }, [productById, sortNowMs, storeById, storedCollection]);
 
+  const activeCollectionItems = useMemo(() => {
+    return collectionItems.filter((item) => {
+      const expiresAtMs = getTime(item.expiresAt);
+      return expiresAtMs !== null && expiresAtMs > sortNowMs;
+    });
+  }, [collectionItems, sortNowMs]);
+
   const tags = useMemo<string[]>(() => {
     return Array.from(
-      new Set(collectionItems.map((item) => item.store.category)),
+      new Set(activeCollectionItems.map((item) => item.store.category)),
     ).filter(Boolean);
-  }, [collectionItems]);
+  }, [activeCollectionItems]);
 
   useEffect(() => {
     if (selectedTag !== ALL_TAG && !tags.includes(selectedTag)) {
@@ -303,7 +394,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
       return [];
     }
 
-    return collectionItems.filter((item) => {
+    return activeCollectionItems.filter((item) => {
       const matchesTag =
         selectedTag === ALL_TAG || item.store.category === selectedTag;
       const level = parseStoreFloorToLevel(item.store.floor);
@@ -311,7 +402,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
 
       return matchesTag && matchesFloor;
     });
-  }, [collectionItems, isSearching, selectedFloor, selectedTag]);
+  }, [activeCollectionItems, isSearching, selectedFloor, selectedTag]);
 
   const productSearchResults = useMemo(() => {
     return getCatalogSearchResults({
@@ -343,9 +434,9 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
     trackCollectionViewed({
       source: "new_collection_tab",
       source_tab: "new_collection",
-      collection_size: collectionItems.length,
+      collection_size: activeCollectionItems.length,
     });
-  }, [collectionItems.length, hasLoadedCollection]);
+  }, [activeCollectionItems.length, hasLoadedCollection]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -541,21 +632,27 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
                 }
               />
             ))
-          : filteredCollection.map((item) => (
-              <ProductCard
-                key={`new-collection-${item.product.id}`}
-                product={item.product}
-                store={item.store}
-                variant="compact"
-                sourceTab="new_collection"
-                onProductClick={() =>
-                  handleNewCollectionProductClick(item.product, item.store)
-                }
-                onStoreClick={() =>
-                  handleNewCollectionStoreClick(item.product, item.store)
-                }
-              />
-            ))}
+          : filteredCollection.map((item) => {
+              const timeBadge = getTimeBadgeState(item.expiresAt, sortNowMs);
+
+              return (
+                <ProductCard
+                  key={`new-collection-${item.product.id}`}
+                  product={item.product}
+                  store={item.store}
+                  variant="compact"
+                  sourceTab="new_collection"
+                  statusLabel={timeBadge.label}
+                  statusTone={timeBadge.isExpired ? "muted" : "active"}
+                  onProductClick={() =>
+                    handleNewCollectionProductClick(item.product, item.store)
+                  }
+                  onStoreClick={() =>
+                    handleNewCollectionStoreClick(item.product, item.store)
+                  }
+                />
+              );
+            })}
 
         {hasNoResults && (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500 md:col-span-2 lg:col-span-3">

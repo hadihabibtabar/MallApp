@@ -16,6 +16,8 @@ interface ProductCardProps {
   store?: Store;
   variant?: "grid" | "compact";
   sourceTab?: AnalyticsSourceTab;
+  statusLabel?: string;
+  statusTone?: "active" | "muted";
   onProductClick?: () => void;
   onStoreClick?: () => void;
 }
@@ -25,6 +27,8 @@ export function ProductCard({
   store,
   variant = "grid",
   sourceTab,
+  statusLabel,
+  statusTone,
   onProductClick,
   onStoreClick,
 }: ProductCardProps) {
@@ -40,6 +44,8 @@ export function ProductCard({
         product={product}
         store={store}
         discountPercent={discountPercent}
+        // statusLabel={statusLabel}
+        statusTone={statusTone}
         sourceTab={sourceTab}
         onProductClick={onProductClick}
         onStoreClick={onStoreClick}
