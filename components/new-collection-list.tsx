@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { TabOpenedTracker } from "@/components/analytics-trackers";
 import { ProductCard } from "@/components/product-card";
 import {
   FLOOR_LEVELS,
@@ -8,7 +9,15 @@ import {
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
 import { getCatalogSearchResults } from "@/lib/catalog-search";
-import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
+import {
+  trackCategoryChipClicked,
+  trackCollectionViewed,
+  trackNewCollectionProductClicked,
+  trackSearchIntent,
+  trackSearchPerformed,
+  trackSearchResultClicked,
+  trackVisitIntent,
+} from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Product, Store } from "@/types";
 
@@ -319,11 +328,24 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
 
   useEffect(() => {
     trackSearchIntent({
+      source_tab: "new_collection",
       search_query: query,
       results_count: productSearchResults.length,
       has_results: productSearchResults.length > 0,
     });
   }, [productSearchResults.length, query]);
+
+  useEffect(() => {
+    if (!hasLoadedCollection) {
+      return;
+    }
+
+    trackCollectionViewed({
+      source: "new_collection_tab",
+      source_tab: "new_collection",
+      collection_size: collectionItems.length,
+    });
+  }, [collectionItems.length, hasLoadedCollection]);
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -335,6 +357,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
     }
 
     trackSearchPerformed({
+      source_tab: "new_collection",
       search_query: searchQuery,
       results_count: productSearchResults.length,
       search_type: "submit",
@@ -342,8 +365,75 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
     });
   };
 
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag);
+    trackCategoryChipClicked({
+      source_tab: "new_collection",
+      category: tag,
+    });
+  };
+
+  const handleNewCollectionProductClick = (product: Product, store: Store) => {
+    trackNewCollectionProductClicked({
+      source_tab: "new_collection",
+      product_id: product.id,
+      store_id: store.id,
+      store_category: store.category,
+      store_floor: store.floor,
+      tag: product.tag || store.category,
+    });
+  };
+
+  const handleSearchResultClick = (product: Product, store: Store) => {
+    const searchQuery = query.trim();
+
+    if (!searchQuery) {
+      return;
+    }
+
+    trackSearchResultClicked({
+      source_tab: "search",
+      search_query: searchQuery,
+      product_id: product.id,
+      store_id: store.id,
+      store_category: store.category,
+      store_floor: store.floor,
+      product_discount: product.discount ?? undefined,
+    });
+  };
+
+  const handleNewCollectionStoreClick = (product: Product, store: Store) => {
+    trackVisitIntent({
+      source_tab: "new_collection",
+      product_id: product.id,
+      store_id: store.id,
+      store_category: store.category,
+      store_floor: store.floor,
+      product_discount: product.discount ?? undefined,
+      cta: "go_to_store",
+    });
+  };
+
+  const handleSearchResultStoreClick = (product: Product, store: Store) => {
+    const searchQuery = query.trim();
+
+    handleSearchResultClick(product, store);
+
+    trackVisitIntent({
+      source_tab: "search",
+      search_query: searchQuery || undefined,
+      product_id: product.id,
+      store_id: store.id,
+      store_category: store.category,
+      store_floor: store.floor,
+      product_discount: product.discount ?? undefined,
+      cta: "go_to_store",
+    });
+  };
+
   return (
     <>
+      <TabOpenedTracker tab="new_collection" />
       <section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5 md:p-5">
         <label
           htmlFor="new-collection-search"
@@ -406,7 +496,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
             <div className="flex gap-2 overflow-x-auto pb-1">
               <button
                 type="button"
-                onClick={() => setSelectedTag(ALL_TAG)}
+                onClick={() => handleTagClick(ALL_TAG)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedTag === ALL_TAG
                     ? "bg-slate-900 text-white"
@@ -419,7 +509,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
                 <button
                   type="button"
                   key={tag}
-                  onClick={() => setSelectedTag(tag)}
+                  onClick={() => handleTagClick(tag)}
                   className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                     selectedTag === tag
                       ? "bg-slate-900 text-white"
@@ -442,6 +532,13 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
                 product={item.product}
                 store={item.store}
                 variant="compact"
+                sourceTab="search"
+                onProductClick={() =>
+                  handleSearchResultClick(item.product, item.store)
+                }
+                onStoreClick={() =>
+                  handleSearchResultStoreClick(item.product, item.store)
+                }
               />
             ))
           : filteredCollection.map((item) => (
@@ -450,6 +547,13 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
                 product={item.product}
                 store={item.store}
                 variant="compact"
+                sourceTab="new_collection"
+                onProductClick={() =>
+                  handleNewCollectionProductClick(item.product, item.store)
+                }
+                onStoreClick={() =>
+                  handleNewCollectionStoreClick(item.product, item.store)
+                }
               />
             ))}
 

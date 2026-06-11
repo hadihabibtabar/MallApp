@@ -8,14 +8,23 @@ import {
   isGoldProductTag,
   toPersianDigits,
 } from "@/lib/format";
+import {
+  buildSourceTabHref,
+  normalizeAnalyticsSourceTab,
+} from "@/lib/analytics-context";
 import { getProductById, getStoreById } from "@/lib/mock-data";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ source_tab?: string | string[] }>;
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: ProductPageProps) {
   const { id } = await params;
+  const { source_tab: sourceTabParam } = await searchParams;
   const product = getProductById(id);
 
   if (!product) {
@@ -33,13 +42,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
     typeof product.discount === "number" && product.discount > 0
       ? product.discount
       : null;
+  const sourceTab = normalizeAnalyticsSourceTab(sourceTabParam);
+  const storeRouteHref = buildSourceTabHref(
+    `/store/${store.id}#route`,
+    sourceTab,
+  );
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-4xl lg:px-8">
       <ProductOpenedTracker
         productId={product.id}
         storeId={store.id}
+        storeCategory={store.category}
+        storeFloor={store.floor}
         productDiscount={product.discount ?? undefined}
+        sourceTab={sourceTab}
       />
 
       <div className="md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
@@ -115,9 +132,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </section>
 
           <StoreNavigationLink
-            href={`/store/${store.id}#route`}
+            href={storeRouteHref}
             source="product_page"
+            sourceTab={sourceTab}
             storeId={store.id}
+            storeCategory={store.category}
+            storeFloor={store.floor}
             productId={product.id}
             className="block rounded-2xl bg-slate-900 px-4 py-3 text-center text-sm font-bold text-white transition hover:bg-slate-700 md:rounded-xl md:py-4 md:text-base"
           >

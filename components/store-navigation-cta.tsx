@@ -2,15 +2,48 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { trackStoreNavigation } from "@/lib/posthog";
+import { trackStoreNavigation, trackVisitIntent } from "@/lib/posthog";
+import type { AnalyticsSourceTab } from "@/lib/analytics-context";
 
 interface StoreNavigationLinkProps {
   href: string;
   className: string;
   children: ReactNode;
   storeId: string;
+  storeCategory?: string;
+  storeFloor?: string;
   productId?: string;
+  sourceTab?: AnalyticsSourceTab;
   source: "product_page" | "store_page";
+}
+
+function trackStoreNavigationIntent({
+  source,
+  sourceTab,
+  storeId,
+  storeCategory,
+  storeFloor,
+  productId,
+}: {
+  source: "product_page" | "store_page";
+  sourceTab?: AnalyticsSourceTab;
+  storeId: string;
+  storeCategory?: string;
+  storeFloor?: string;
+  productId?: string;
+}) {
+  const properties = {
+    source,
+    source_tab: sourceTab,
+    store_id: storeId,
+    store_category: storeCategory,
+    store_floor: storeFloor,
+    product_id: productId,
+    cta: "go_to_store",
+  };
+
+  trackStoreNavigation(properties);
+  trackVisitIntent(properties);
 }
 
 export function StoreNavigationLink({
@@ -18,19 +51,24 @@ export function StoreNavigationLink({
   className,
   children,
   storeId,
+  storeCategory,
+  storeFloor,
   productId,
-  source
+  sourceTab,
+  source,
 }: StoreNavigationLinkProps) {
   return (
     <Link
       href={href}
       className={className}
       onClick={() =>
-        trackStoreNavigation({
+        trackStoreNavigationIntent({
           source,
-          store_id: storeId,
-          product_id: productId,
-          cta: "go_to_store"
+          sourceTab,
+          storeId,
+          storeCategory,
+          storeFloor,
+          productId,
         })
       }
     >
@@ -43,19 +81,32 @@ interface StoreNavigationButtonProps {
   className: string;
   children: ReactNode;
   storeId: string;
+  storeCategory?: string;
+  storeFloor?: string;
+  sourceTab?: AnalyticsSourceTab;
   source: "product_page" | "store_page";
 }
 
-export function StoreNavigationButton({ className, children, storeId, source }: StoreNavigationButtonProps) {
+export function StoreNavigationButton({
+  className,
+  children,
+  storeId,
+  storeCategory,
+  storeFloor,
+  sourceTab,
+  source,
+}: StoreNavigationButtonProps) {
   return (
     <button
       type="button"
       className={className}
       onClick={() =>
-        trackStoreNavigation({
+        trackStoreNavigationIntent({
           source,
-          store_id: storeId,
-          cta: "go_to_store"
+          sourceTab,
+          storeId,
+          storeCategory,
+          storeFloor,
         })
       }
     >

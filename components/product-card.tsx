@@ -6,19 +6,27 @@ import {
   isGoldProductTag,
   toPersianDigits,
 } from "@/lib/format";
+import { buildSourceTabHref } from "@/lib/analytics-context";
 import { CatalogResultCard } from "@/components/catalog-result-card";
 import { SmartImage } from "@/components/smart-image";
+import type { AnalyticsSourceTab } from "@/lib/analytics-context";
 
 interface ProductCardProps {
   product: Product;
   store?: Store;
   variant?: "grid" | "compact";
+  sourceTab?: AnalyticsSourceTab;
+  onProductClick?: () => void;
+  onStoreClick?: () => void;
 }
 
 export function ProductCard({
   product,
   store,
   variant = "grid",
+  sourceTab,
+  onProductClick,
+  onStoreClick,
 }: ProductCardProps) {
   const isGoldProduct = isGoldProductTag(product.tag);
   const discountPercent =
@@ -32,9 +40,14 @@ export function ProductCard({
         product={product}
         store={store}
         discountPercent={discountPercent}
+        sourceTab={sourceTab}
+        onProductClick={onProductClick}
+        onStoreClick={onStoreClick}
       />
     );
   }
+
+  const productHref = buildSourceTabHref(`/product/${product.id}`, sourceTab);
 
   return (
     <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/5 transition hover:-translate-y-0.5 hover:shadow-md lg:rounded-xl">
@@ -93,8 +106,9 @@ export function ProductCard({
         )}
 
         <Link
-          href={`/product/${product.id}`}
+          href={productHref}
           className="block rounded-xl bg-slate-900 px-3 py-2 text-center text-xs font-semibold text-white transition hover:bg-slate-700"
+          onClick={onProductClick}
         >
           جزئیات محصول
         </Link>
