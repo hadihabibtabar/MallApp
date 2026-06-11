@@ -1,6 +1,12 @@
 "use client";
 
 import posthog from "posthog-js";
+import {
+  SOURCE_TAB_QUERY_PARAM,
+  normalizeAnalyticsSourceTab,
+  type AnalyticsSourceTab,
+  type AnalyticsTab,
+} from "@/lib/analytics-context";
 
 const POSTHOG_KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 const POSTHOG_API_HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com";
@@ -20,6 +26,8 @@ export type AnalyticsQrSource =
   | "entrance"
   | "foodcourt"
   | "elevator"
+  |"coldelevator"
+  |"warmelevator"
   | "parking"
   | "unknown";
 
@@ -27,8 +35,8 @@ const QR_SOURCE_MAP: Record<string, AnalyticsQrSource> = {
   entrance: "entrance",
   foodcourt: "foodcourt",
   elevator: "elevator",
-  coldelevator: "elevator",
-  warmelevator: "elevator",
+  coldelevator: "coldelevator",
+  warmelevator: "warmelevator",
   parking: "parking",
 };
 
@@ -36,19 +44,26 @@ type AnalyticsSource =
   | AnalyticsQrSource
   | "landing"
   | "deals_tab"
+  | "new_collection_tab"
+  | "stores_tab"
   | "deal_card"
   | "product_page"
   | "store_page";
 
+export type { AnalyticsSourceTab, AnalyticsTab };
 export type AnalyticsSearchType = "realtime" | "submit";
 
 export interface AnalyticsEventProperties {
   source?: AnalyticsSource;
+  source_tab?: AnalyticsSourceTab;
+  tab?: AnalyticsTab;
   deal_count?: number;
   store_count?: number;
   collection_size?: number;
   deal_id?: string;
   deal_tag?: string;
+  tag?: string;
+  category?: string;
   store_id?: string;
   store_floor?: string;
   store_category?: string;
@@ -138,8 +153,18 @@ function captureEvent(event: string, properties: AnalyticsEventProperties = {}) 
 
   posthog.capture(event, {
     app_section: "mall_app",
-    ...properties
+    ...properties,
   });
+}
+
+function getCurrentSourceTab() {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  return normalizeAnalyticsSourceTab(
+    new URLSearchParams(window.location.search).get(SOURCE_TAB_QUERY_PARAM),
+  );
 }
 
 function shouldTrackSearch(
@@ -185,24 +210,80 @@ export function trackDealsViewed(properties: AnalyticsEventProperties = {}) {
   captureEvent("deals_viewed", properties);
 }
 
+export function trackTabOpened(tab: AnalyticsTab) {
+  captureEvent("tab_opened", { tab });
+}
+
 export function trackDealClicked(properties: AnalyticsEventProperties = {}) {
   captureEvent("deal_clicked", properties);
 }
 
 export function trackProductOpened(properties: AnalyticsEventProperties = {}) {
-  captureEvent("product_opened", properties);
+  captureEvent("product_opened", {
+    ...properties,
+    source_tab: properties.source_tab ?? getCurrentSourceTab(),
+  });
 }
 
 export function trackStoreOpened(properties: AnalyticsEventProperties = {}) {
-  captureEvent("store_opened", properties);
+  captureEvent("store_opened", {
+    ...properties,
+    source_tab: properties.source_tab ?? getCurrentSourceTab(),
+  });
 }
 
 export function trackStoreNavigation(properties: AnalyticsEventProperties = {}) {
-  captureEvent("store_navigation_clicked", properties);
+  captureEvent("store_navigation_clicked", {
+    ...properties,
+    source_tab: properties.source_tab ?? getCurrentSourceTab(),
+  });
 }
 
 export function trackCollectionViewed(properties: AnalyticsEventProperties = {}) {
   captureEvent("collection_viewed", properties);
+}
+
+export function trackNewCollectionProductClicked(
+  properties: AnalyticsEventProperties = {},
+) {
+  captureEvent("new_collection_product_clicked", properties);
+}
+
+export function trackSearchResultClicked(
+  properties: AnalyticsEventProperties = {},
+) {
+  const searchQuery = properties.search_query?.trim();
+
+  if (!searchQuery) {
+    return;
+  }
+
+  captureEvent("search_result_clicked", {
+    ...properties,
+    search_query: searchQuery,
+  });
+}
+
+export function trackCategoryChipClicked(
+  properties: AnalyticsEventProperties = {},
+) {
+  const category = properties.category?.trim();
+
+  if (!category) {
+    return;
+  }
+
+  captureEvent("category_chip_clicked", {
+    ...properties,
+    category,
+  });
+}
+
+export function trackVisitIntent(properties: AnalyticsEventProperties = {}) {
+  captureEvent("visit_intent", {
+    ...properties,
+    source_tab: properties.source_tab ?? getCurrentSourceTab(),
+  });
 }
 
 // Search is a core KPI for understanding user intent discovery behavior,

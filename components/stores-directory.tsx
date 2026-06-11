@@ -1,13 +1,18 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { TabOpenedTracker } from "@/components/analytics-trackers";
 import { StoreCard } from "@/components/store-card";
 import {
   FLOOR_LEVELS,
   getFloorLabel,
   parseStoreFloorToLevel,
 } from "@/lib/floor-filter";
-import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
+import {
+  trackCategoryChipClicked,
+  trackSearchIntent,
+  trackSearchPerformed,
+} from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Store, StoreCategory } from "@/types";
 
@@ -22,6 +27,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
     StoreCategory | "همه"
   >("همه");
   const [selectedFloor, setSelectedFloor] = useState<FloorFilterValue>("all");
+  const isSearching = query.trim().length > 0;
 
   const filteredStores = useMemo(() => {
     return stores.filter((store) => {
@@ -40,6 +46,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
 
   useEffect(() => {
     trackSearchIntent({
+      source_tab: "stores",
       search_query: query,
       results_count: filteredStores.length,
       has_results: filteredStores.length > 0,
@@ -56,6 +63,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
     }
 
     trackSearchPerformed({
+      source_tab: "stores",
       search_query: searchQuery,
       results_count: filteredStores.length,
       search_type: "submit",
@@ -63,8 +71,18 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
     });
   };
 
+  const handleCategoryClick = (category: StoreCategory | "همه") => {
+    setSelectedCategory(category);
+    trackCategoryChipClicked({
+      source_tab: "stores",
+      category,
+    });
+  };
+
   return (
     <section className="space-y-4">
+      <TabOpenedTracker tab="stores" />
+
       <div className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5">
         <label
           htmlFor="store-search"
@@ -120,7 +138,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
           </span>
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
-              onClick={() => setSelectedCategory("همه")}
+              onClick={() => handleCategoryClick("همه")}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 selectedCategory === "همه"
                   ? "bg-slate-900 text-white"
@@ -132,7 +150,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryClick(category)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedCategory === category
                     ? "bg-slate-900 text-white"
@@ -148,7 +166,11 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
 
       <div className="space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3 xl:grid-cols-4">
         {filteredStores.map((store) => (
-          <StoreCard key={store.id} store={store} />
+          <StoreCard
+            key={store.id}
+            store={store}
+            sourceTab={isSearching ? "search" : "stores"}
+          />
         ))}
 
         {filteredStores.length === 0 && (

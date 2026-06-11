@@ -6,7 +6,9 @@ import {
   isGoldProductTag,
   toPersianDigits,
 } from "@/lib/format";
+import { buildSourceTabHref } from "@/lib/analytics-context";
 import { SmartImage } from "@/components/smart-image";
+import type { AnalyticsSourceTab } from "@/lib/analytics-context";
 
 interface CatalogResultCardProps {
   product: Product;
@@ -14,6 +16,7 @@ interface CatalogResultCardProps {
   discountPercent?: number | null;
   statusLabel?: string;
   statusTone?: "active" | "muted";
+  sourceTab?: AnalyticsSourceTab;
   onProductClick?: () => void;
   onStoreClick?: () => void;
 }
@@ -35,6 +38,7 @@ export function CatalogResultCard({
   discountPercent,
   statusLabel,
   statusTone = "active",
+  sourceTab,
   onProductClick,
   onStoreClick,
 }: CatalogResultCardProps) {
@@ -42,8 +46,8 @@ export function CatalogResultCard({
   const hasDiscount =
     typeof discountPercent === "number" && discountPercent > 0;
   const paymentMethods = product.paymentMethods ?? [];
-  const productHref = `/product/${product.id}`;
-  const storeHref = `/store/${store.id}`;
+  const productHref = buildSourceTabHref(`/product/${product.id}`, sourceTab);
+  const storeHref = buildSourceTabHref(`/store/${store.id}`, sourceTab);
 
   return (
     <article className="rounded-2xl border border-slate-200/80 bg-white p-2.5 shadow-sm ring-1 ring-slate-900/5 transition hover:border-slate-300 hover:shadow-md sm:p-3">

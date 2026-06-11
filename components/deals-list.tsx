@@ -1,7 +1,10 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { DealsViewedTracker } from "@/components/analytics-trackers";
+import {
+  DealsViewedTracker,
+  TabOpenedTracker,
+} from "@/components/analytics-trackers";
 import { DealCard } from "@/components/deal-card";
 import { ProductCard } from "@/components/product-card";
 import {
@@ -11,7 +14,13 @@ import {
 } from "@/lib/floor-filter";
 import { getCatalogSearchResults } from "@/lib/catalog-search";
 import { toPersianDigits } from "@/lib/format";
-import { trackSearchIntent, trackSearchPerformed } from "@/lib/posthog";
+import {
+  trackCategoryChipClicked,
+  trackSearchIntent,
+  trackSearchPerformed,
+  trackSearchResultClicked,
+  trackVisitIntent,
+} from "@/lib/posthog";
 import type { FloorFilterValue } from "@/lib/floor-filter";
 import type { Deal, DealView, Product, Store } from "@/types";
 
@@ -444,6 +453,7 @@ export function DealsList({ products, stores }: DealsListProps) {
 
   useEffect(() => {
     trackSearchIntent({
+      source_tab: "deals",
       search_query: query,
       results_count: productSearchResults.length,
       has_results: productSearchResults.length > 0,
@@ -460,6 +470,7 @@ export function DealsList({ products, stores }: DealsListProps) {
     }
 
     trackSearchPerformed({
+      source_tab: "deals",
       search_query: searchQuery,
       results_count: productSearchResults.length,
       search_type: "submit",
@@ -467,8 +478,52 @@ export function DealsList({ products, stores }: DealsListProps) {
     });
   };
 
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag);
+    trackCategoryChipClicked({
+      source_tab: "deals",
+      category: tag,
+    });
+  };
+
+  const handleSearchResultClick = (product: Product, store: Store) => {
+    const searchQuery = query.trim();
+
+    if (!searchQuery) {
+      return;
+    }
+
+    trackSearchResultClicked({
+      source_tab: "search",
+      search_query: searchQuery,
+      product_id: product.id,
+      store_id: store.id,
+      store_category: store.category,
+      store_floor: store.floor,
+      product_discount: product.discount ?? undefined,
+    });
+  };
+
+  const handleSearchResultStoreClick = (product: Product, store: Store) => {
+    const searchQuery = query.trim();
+
+    handleSearchResultClick(product, store);
+
+    trackVisitIntent({
+      source_tab: "search",
+      search_query: searchQuery || undefined,
+      product_id: product.id,
+      store_id: store.id,
+      store_category: store.category,
+      store_floor: store.floor,
+      product_discount: product.discount ?? undefined,
+      cta: "go_to_store",
+    });
+  };
+
   return (
     <>
+      <TabOpenedTracker tab="deals" />
       <DealsViewedTracker dealCount={deals.length} />
 
       <section className="rounded-2xl border border-slate-200/80 bg-white/95 p-3 shadow-sm ring-1 ring-slate-900/5 md:p-5">
@@ -567,7 +622,7 @@ export function DealsList({ products, stores }: DealsListProps) {
                   {toPersianDigits(activeFoodDealCount)} فعال
                 </span>
                 <button
-                  onClick={() => setSelectedTag(FOOD_TAG)}
+                  onClick={() => handleTagClick(FOOD_TAG)}
                   className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-extrabold transition ${
                     selectedTag === FOOD_TAG
                       ? "bg-rose-600 text-white shadow-sm ring-1 ring-rose-300"
@@ -578,7 +633,7 @@ export function DealsList({ products, stores }: DealsListProps) {
                 </button>
               </div>
               <button
-                onClick={() => setSelectedTag(ALL_TAG)}
+                onClick={() => handleTagClick(ALL_TAG)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedTag === ALL_TAG
                     ? "bg-slate-900 text-white"
@@ -590,7 +645,7 @@ export function DealsList({ products, stores }: DealsListProps) {
               {tags.map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => setSelectedTag(tag)}
+                  onClick={() => handleTagClick(tag)}
                   className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                     selectedTag === tag
                       ? "bg-slate-900 text-white"
@@ -613,6 +668,13 @@ export function DealsList({ products, stores }: DealsListProps) {
                 product={result.product}
                 store={result.store}
                 variant="compact"
+                sourceTab="search"
+                onProductClick={() =>
+                  handleSearchResultClick(result.product, result.store)
+                }
+                onStoreClick={() =>
+                  handleSearchResultStoreClick(result.product, result.store)
+                }
               />
             ))
           : filteredDeals.map((item) => (

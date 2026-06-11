@@ -4,14 +4,20 @@ import { SmartImage } from "@/components/smart-image";
 import { StoreOpenedTracker } from "@/components/analytics-trackers";
 import { StoreNavigationButton } from "@/components/store-navigation-cta";
 import { toPersianDigits } from "@/lib/format";
+import { normalizeAnalyticsSourceTab } from "@/lib/analytics-context";
 import { getStoreById, getStoreProducts } from "@/lib/mock-data";
 
 interface StorePageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ source_tab?: string | string[] }>;
 }
 
-export default async function StorePage({ params }: StorePageProps) {
+export default async function StorePage({
+  params,
+  searchParams,
+}: StorePageProps) {
   const { id } = await params;
+  const { source_tab: sourceTabParam } = await searchParams;
   const store = getStoreById(id);
 
   if (!store) {
@@ -19,6 +25,7 @@ export default async function StorePage({ params }: StorePageProps) {
   }
 
   const products = getStoreProducts(store.id);
+  const sourceTab = normalizeAnalyticsSourceTab(sourceTabParam);
 const paymentIcons = {
   digipay: "/images/digipay.webp",
   snapppay: "/images/snapppay.webp",
@@ -32,6 +39,7 @@ const paymentIcons = {
         storeCategory={store.category}
         storeFloor={store.floor}
         collectionSize={products.length}
+        sourceTab={sourceTab}
       />
 
       <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
@@ -84,7 +92,11 @@ const paymentIcons = {
         </div>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              sourceTab={sourceTab ?? "stores"}
+            />
           ))}
         </div>
       </section>

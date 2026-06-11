@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { DealView } from "@/types";
 import { toPersianDigits } from "@/lib/format";
-import { trackDealClicked } from "@/lib/posthog";
+import { trackDealClicked, trackVisitIntent } from "@/lib/posthog";
 import { CatalogResultCard } from "@/components/catalog-result-card";
 
 interface DealCardProps {
@@ -44,9 +44,11 @@ export function DealCard({ item }: DealCardProps) {
   );
   const dealClickProperties = {
     source: "deal_card" as const,
+    source_tab: "deals" as const,
     deal_id: item.deal.id,
     deal_tag: item.deal.tag,
     store_id: item.store.id,
+    store_category: item.store.category,
     store_floor: item.store.floor,
     product_id: item.product.id,
     product_discount: item.deal.discount,
@@ -59,6 +61,14 @@ export function DealCard({ item }: DealCardProps) {
     return () => clearInterval(intervalId);
   }, [item.deal.expiresAt]);
 
+  const handleStoreClick = () => {
+    trackDealClicked(dealClickProperties);
+    trackVisitIntent({
+      ...dealClickProperties,
+      cta: "go_to_store",
+    });
+  };
+
   return (
     <CatalogResultCard
       product={item.product}
@@ -66,8 +76,9 @@ export function DealCard({ item }: DealCardProps) {
       discountPercent={item.deal.discount}
       statusLabel={timeBadge.label}
       statusTone={timeBadge.isExpired ? "muted" : "active"}
+      sourceTab="deals"
       onProductClick={() => trackDealClicked(dealClickProperties)}
-      onStoreClick={() => trackDealClicked(dealClickProperties)}
+      onStoreClick={handleStoreClick}
     />
   );
 }
