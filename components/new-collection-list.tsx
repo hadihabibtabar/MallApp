@@ -47,7 +47,7 @@ interface TimeBadgeState {
 
 const ALL_TAG = "همه";
 const STORAGE_KEY = "hamilia-active-new-collection-v2";
-const TARGET_COLLECTION_COUNT = 5;
+const TARGET_COLLECTION_COUNT = 50;
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_COLLECTION_HOURS = 1;
 const MAX_COLLECTION_HOURS = 5;

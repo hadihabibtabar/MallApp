@@ -30,6 +30,8 @@ const paymentIcons = {
   digipay: "/images/digipay.webp",
   snapppay: "/images/snapppay.webp",
   tarapay: "/images/tarapay.webp",
+  technopay:"/images/technopay.webp",
+  gishe724:"/images/gishe724.webp"
 };
   const paymentMethods = store.paymentMethods ?? [];
   return (

@@ -96,10 +96,10 @@ export default async function ProductPage({
             <h1 className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl">{product.name}</h1>
             {isGoldProduct ? (
               <div className="mt-4 md:mt-5">
-                <p className="text-[11px] font-bold text-slate-400">
+                <p className="text-[11px] font-black text-slate-400">
                   توضیحات محصول
                 </p>
-                <p className="mt-1 text-lg font-black leading-8 text-slate-900 md:text-2xl md:leading-10">
+                <p className="mt-1 text-lg  leading-8 text-slate-900 md:text-2xl md:leading-10">
                   {product.description}
                 </p>
               </div>

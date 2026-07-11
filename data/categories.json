@@ -1,64 +1,59 @@
 [
   {
-    "id": "apparel",
-    "name": "پوشاک",
-    "floors": [
-      "طبقه ۱",
-      "طبقه ۳"
-    ],
+    "id": "home",
+    "name": "لوازم خانه",
+    "floors": ["طبقه ۱"],
+    "storeIds": ["yeshil-store"]
+  },
+  {
+    "id": "women-apparel",
+    "name": "پوشاک زنانه",
+    "floors": ["طبقه همکف", "طبقه ۱"],
     "storeIds": [
-      "coleen-store",
-      "dandy-store",
-      "tanedorost-store"
+      "delvin-store",
+      "confi-store",
+      "rissani-store",
+      "rouyehdoza-store",
+      "pranssa-store",
+      "vanessa-store",
+      "tanedorost-store",
+      "orez-store"
     ]
   },
   {
-    "id": "shoes",
-    "name": "ورزشی",
-    "floors": [
-      "طبقه ۲",
-      "طبقه همکف"
-    ],
-    "storeIds": [
-      "hectaton-store"
-    ]
-  },
-  {
-    "id": "digital",
-    "name": "دیجیتال",
-    "floors": [
-      "طبقه ۲"
-    ],
-    "storeIds": []
-  },
-  {
-    "id": "food",
-    "name": "غذا",
-    "floors": [
-      "طبقه همکف",
-      "طبقه ۴"
-    ],
-    "storeIds": [
-      "brioche-store",
-      "hyperstar-store"
-    ]
-  },
-  {
-    "id": "beauty",
-    "name": "زیبایی",
-    "floors": [
-      "طبقه ۱"
-    ],
-    "storeIds": []
+    "id": "bags-shoes",
+    "name": "کیف و کفش",
+    "floors": ["طبقه همکف", "طبقه ۳"],
+    "storeIds": ["dandy-store", "aldo-store"]
   },
   {
     "id": "watch",
     "name": "ساعت",
-    "floors": [
-      "طبقه -۱"
-    ],
-    "storeIds": [
-      "gshock-store"
-    ]
+    "floors": ["طبقه -۱", "طبقه ۱"],
+    "storeIds": ["gshock-store", "fakharian-store"]
+  },
+  {
+    "id": "gold",
+    "name": "طلا",
+    "floors": ["طبقه ۱"],
+    "storeIds": ["parasteh-store", "cheshm-store", "sanjaaq-store"]
+  },
+  {
+    "id": "leather",
+    "name": "چرم",
+    "floors": ["طبقه همکف"],
+    "storeIds": ["orez-store"]
+  },
+  {
+    "id": "carpet",
+    "name": "فرش",
+    "floors": ["طبقه -۱"],
+    "storeIds": ["aminifarsh-store"]
+  },
+  {
+    "id": "apparel",
+    "name": "پوشاک",
+    "floors": ["طبقه ۳", "طبقه همکف"],
+    "storeIds": ["tanedorost-store", "orez-store"]
   }
 ]

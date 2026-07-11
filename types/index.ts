@@ -25,7 +25,7 @@ export interface Store {
   heroImage: string;
   productIds: string[];
   dealIds: string[];
-   paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
+   paymentMethods?: ("digipay" | "snapppay" | "tarapay" | "technopay" | "gishe724")[];
 }
 
 export interface Product {
@@ -38,7 +38,7 @@ export interface Product {
   isNew: boolean;
   tag: string;
   description: string;
-  paymentMethods?: ("digipay" | "snapppay" | "tarapay")[];
+  paymentMethods?: ("digipay" | "snapppay" | "tarapay" | "technopay" | "gishe724")[];
 
 }
 
