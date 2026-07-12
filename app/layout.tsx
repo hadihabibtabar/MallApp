@@ -66,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body
-        className={`${iranYekan.variable} ${iranYekan.className} antialiased`}
+        className={`${iranYekan.variable} ${iranYekan.className} antialiased select-none`}
       >
         <PostHogProvider />
         <TopNav />

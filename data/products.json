@@ -1686,5 +1686,65 @@
     "tag": "کفش مردانه",
     "description": "مناسب استایل روزمره",
     "paymentMethods": ["snapppay", "tarapay"]
-  }
+  },
+  {
+    "id": "colleen-1",
+    "name": "دامن قارچی - 1328",
+    "price": 3980000,
+    "discount": 30,
+    "image": "/images/products/colleen/colleen-Skirt-1328.webp",
+    "storeId": "colleen-store",
+    "isNew": true,
+    "tag": "دامن",
+    "description": "🍃 دامن لینن مدل 1328\n✨ طراحی ساده و شیک، مناسب استایل‌های روزمره و نیمه‌رسمی\n🌿 پارچه لینن باکیفیت، سبک، لطیف و تنفس‌پذیر\n☀️ مناسب فصل‌های بهار و تابستان\n💨 گردش هوای عالی برای احساس خنکی و راحتی در طول روز\n👌 ایستایی زیبا روی بدن",
+    "paymentMethods": ["snapppay", "tarapay", "gishe724"]
+  },
+  {
+    "id": "colleen-2",
+    "name": "بلوز قارچی - 3332",
+    "price": 3980000,
+    "discount": 30,
+    "image": "/images/products/colleen/colleen-shirt-3332.webp",
+    "storeId": "colleen-store",
+    "isNew": true,
+    "tag": "بلوز",
+    "description": "👚 بلوز قارچی مدل 3332\n✨ طراحی خاص و جذاب برای استایل‌های روزمره و نیمه‌رسمی\n🍃 پارچه لینن سبک، لطیف و طبیعی\n💨 تنفس‌پذیری بالا و راحتی فوق‌العاده\n☀️ انتخابی ایده‌آل برای روزهای گرم سال",
+    "paymentMethods": ["snapppay", "tarapay", "gishe724"]
+  },
+  {
+    "id": "colleen-3",
+    "name": "دامن لینن - 1326",
+    "price": 4280000,
+    "discount": 30,
+    "image": "/images/products/colleen/colleen-skirt-1326.webp",
+    "storeId": "colleen-store",
+    "isNew": true,
+    "tag": "دامن",
+    "description": "🌸 دامن لینن مدل 1326\n✨ طراحی ساده و شیک، مناسب استایل روزمره و نیمه‌رسمی\n🍃 پارچه لینن سبک، لطیف و تنفس‌پذیر\n☀️ مناسب فصل‌های بهار و تابستان\n👌 راحتی بالا در استفاده روزانه",
+    "paymentMethods": ["snapppay", "tarapay", "gishe724"]
+  },
+  {
+    "id": "colleen-4",
+    "name": "شلوارک زنانه - 8162",
+    "price": 2890000,
+    "discount": 30,
+    "image": "/images/products/colleen/colleen-shorts-8162.webp",
+    "storeId": "colleen-store",
+    "isNew": true,
+    "tag": "شلوارک زنانه",
+    "description": "🩳 شلوارک کتان مدل 8162\n✨ طراحی راحت و کاربردی برای استایل‌های روزمره و کژوال\n🌿 پارچه کتان باکیفیت، سبک و بادوام\n💨 گردش هوای مناسب برای راحتی بیشتر\n☀️ انتخابی عالی برای روزهای گرم سال",
+    "paymentMethods": ["snapppay", "tarapay", "gishe724"]
+  },
+  {
+  "id": "colleen-5",
+  "name": "ژیله کتان - 1112",
+  "price": 2890000,
+  "discount": 30,
+  "image": "/images/products/colleen/colleen-cotton-1112.webp",
+  "storeId": "colleen-store",
+  "isNew": true,
+  "tag": "ژیله",
+  "description": "🦺 ژیله کتان مدل 1112\n✨ طراحی خاص و مدرن، مناسب برای تکمیل استایل‌های لایه‌ای\n🌿 پارچه کتان باکیفیت، بادوام و خوش‌فرم\n👌 ایستایی مناسب و راحتی در استفاده روزمره\n🍃 انتخابی ایده‌آل برای استایل‌های کژوال و نیمه‌رسمی",
+  "paymentMethods": ["snapppay", "tarapay", "gishe724"]
+}
 ]

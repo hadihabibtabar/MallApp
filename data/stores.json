@@ -75,7 +75,7 @@
     "brand": "aldo",
     "floor": "طبقه ۳",
     "category": "کیف و کفش",
-    "locationHint": "کنار پله برقی شرقی، جنب فروشگاه spring field،۳۰۹ رو به روی فروشگاه پاندورا ، پلاک",
+    "locationHint": "کنار پله برقی شرقی، جنب فروشگاه spring field، رو به روی فروشگاه پاندورا ، پلاک ۳۰۹",
     "description": "به روز ترین کیف و کفش های اسپورت و رسمی",
     "heroImage": "/images/stores/aldo.webp",
     "productIds": ["aldo-1", "aldo-2", "aldo-3", "aldo-4", "aldo-5", "aldo-6", "aldo-7", "aldo-8", "aldo-9", "aldo-10", "aldo-11", "aldo-12", "aldo-13", "aldo-14"]
@@ -191,7 +191,7 @@
     "brand": "sanjaaq",
     "floor": "طبقه ۱",
     "category": "طلا",
-    "locationHint": "رو به روی اسانسور شیشه ای ، راهروی طلا و جواهرات، پلاک ۱۲۳",
+    "locationHint": "رو به روی آسانسور شیشه ای ، راهروی طلا و جواهرات(جنوبی)، پلاک ۱۲۳",
     "description": "گالری طلای سنجاق، با تمرکز بر طراحی اختصاصی و در نظر گرفتن سلیقه مینیمال مخاطبان، طراحی و ساخت محصولات دست ساز",
     "heroImage": "/images/stores/sanjaaq.webp",
     "paymentMethods": ["snapppay", "digipay"],
@@ -203,10 +203,22 @@
     "brand": "sanjaaq",
     "floor": "طبقه همکف",
     "category": "پوشاک مردانه",
-    "locationHint": "رو به روی آساسنوز شسشه ای،  پشت رنه کافه",
+    "locationHint": "رو به روی آساسنور شیشه ای،  پشت رنه کافه، پلاک ۶۷",
     "description": "برند پوشاک مردانه",
     "heroImage": "/images/stores/springcut.webp",
     "paymentMethods": ["snapppay", "tarapay"],
     "productIds": ["springcut-1", "springcut-2", "springcut-3", "springcut-4", "springcut-5", "springcut-6", "springcut-7", "springcut-8"]
+  },
+  {
+    "id": "colleen-store",
+    "name": "colleen | کالین",
+    "brand": "colleen",
+    "floor": "طبقه ۱",
+    "category": "پوشاک زنانه",
+    "locationHint": "ضلع غربی رینگ مرکزی، جنب فروشگاه M&M ، پلاک ۱۸۰",
+    "description": "برند پوشاک زنانه",
+    "heroImage": "/images/stores/colleen.webp",
+    "paymentMethods": ["snapppay", "tarapay", "gishe724"],
+    "productIds": ["colleen-1", "colleen-2", "colleen-3", "colleen-4", "colleen-5"]
   }
 ]

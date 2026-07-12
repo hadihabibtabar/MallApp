@@ -34,7 +34,7 @@ export function StoreCard({ store, sourceTab }: StoreCardProps) {
             <p className="text-xs font-semibold text-slate-500 md:text-sm">
               {store.category}
             </p>
-            <p className="line-clamp-1 text-xs text-slate-500 md:text-sm">
+            <p className="contents line-clamp-1 text-xs text-slate-500 md:text-sm">
               {store.floor} · {store.locationHint}
             </p>
           </div>
