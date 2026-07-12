@@ -20,7 +20,7 @@
     "locationHint": "انتهای راهروی غربی، جنب فروشگاه دنیم ، واحد ۲۶ ",
     "description": "مدل‌های متنوع برای استفاده روزمره  .",
     "heroImage": "/images/stores/delvin.webp",
-    "productIds": ["delvin-1", "delvin-2", "delvin-3", "delvin-4"]
+    "productIds": ["delvin-1", "delvin-2", "delvin-3", "delvin-4", "delvin-5"]
   },
   {
     "id": "dandy-store",
@@ -31,7 +31,7 @@
     "locationHint": "راهرو شمالی،پلاک ۷",
     "description": "خلاقیت در استایل",
     "heroImage": "/images/stores/dandy.webp",
-    "paymentMethods": ["snapppay", "digipay", "tarapay"],
+    "paymentMethods": ["snapppay", "tarapay"],
     "productIds": ["dandy-1", "dandy-2", "dandy-3", "dandy-4", "dandy-5"]
   },
   {
@@ -113,7 +113,6 @@
     "locationHint": "راهرو شرقی، راهرو طلا و جواهر، پلاک ۱۱۸",
     "description": "جواهرات منتخب برای  خاص پسندان.",
     "heroImage": "/images/stores/cheshm.webp",
-    "paymentMethods": ["digipay"],
     "productIds": ["cheshm-1", "cheshm-2", "cheshm-3", "cheshm-4", "cheshm-5", "cheshm-6", "cheshm-7", "cheshm-8"]
   },
   {

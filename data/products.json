@@ -729,8 +729,7 @@
     "storeId": "cheshm-store",
     "isNew": true,
     "tag": "طلا",
-    "description": "۱.۲ گرم طلای ۱۸ عیار با کسر سنگ",
-    "paymentMethods": ["snapppay", "technopay"]
+    "description": "۱.۲ گرم طلای ۱۸ عیار با کسر سنگ"
   },
   {
     "id": "cheshm-2",
