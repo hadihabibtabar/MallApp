@@ -49,11 +49,5 @@
     "name": "فرش",
     "floors": ["طبقه -۱"],
     "storeIds": ["aminifarsh-store"]
-  },
-  {
-    "id": "apparel",
-    "name": "پوشاک",
-    "floors": ["طبقه ۳", "طبقه همکف"],
-    "storeIds": ["tanedorost-store", "orez-store"]
   }
 ]

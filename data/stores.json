@@ -197,5 +197,17 @@
     "heroImage": "/images/stores/sanjaaq.webp",
     "paymentMethods": ["snapppay", "digipay"],
     "productIds": ["sanjaaq-1", "sanjaaq-2", "sanjaaq-3", "sanjaaq-4", "sanjaaq-5", "sanjaaq-6"]
+  },
+  {
+    "id": "springcut-store",
+    "name": "springcut | اسپرینگ کات",
+    "brand": "sanjaaq",
+    "floor": "طبقه همکف",
+    "category": "پوشاک مردانه",
+    "locationHint": "رو به روی آساسنوز شسشه ای،  پشت رنه کافه",
+    "description": "برند پوشاک مردانه",
+    "heroImage": "/images/stores/springcut.webp",
+    "paymentMethods": ["snapppay", "tarapay"],
+    "productIds": ["springcut-1", "springcut-2", "springcut-3", "springcut-4", "springcut-5", "springcut-6", "springcut-7", "springcut-8"]
   }
 ]
