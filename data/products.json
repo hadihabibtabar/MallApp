@@ -1601,7 +1601,7 @@
     "isNew": true,
     "tag": "تیشرت مردانه",
     "description": "پارچه نخ و پنبه در سایز های مختلف",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-2",
@@ -1613,7 +1613,7 @@
     "isNew": true,
     "tag": "شلوارک مردانه",
     "description": "در سایز های مختلف مناسب فصل تابستان",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-3",
@@ -1625,7 +1625,7 @@
     "isNew": true,
     "tag": "کفش مردانه",
     "description": "ساخته شده از چرم طبیعی",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-4",
@@ -1637,7 +1637,7 @@
     "isNew": true,
     "tag": "تیشرت مردانه",
     "description": "پارچه نخ و پنبه",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-5",
@@ -1649,7 +1649,7 @@
     "isNew": true,
     "tag": " پلوشرت مردانه",
     "description": "در رنگ های سرمه ای و آبی",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-6",
@@ -1661,7 +1661,7 @@
     "isNew": true,
     "tag": "شلوار مردانه",
     "description": "در رنگ های مختلف",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-7",
@@ -1673,7 +1673,7 @@
     "isNew": true,
     "tag": "کفش مردانه",
     "description": "مناسب استایل روزمره",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   },
   {
     "id": "springcut-8",
@@ -1685,6 +1685,6 @@
     "isNew": true,
     "tag": "کفش مردانه",
     "description": "مناسب استایل روزمره",
-    "paymentMethods": ["snappay", "tarapay"]
+    "paymentMethods": ["snapppay", "tarapay"]
   }
 ]
