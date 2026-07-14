@@ -42,12 +42,16 @@ const ALL_TAG = "همه";
 const FOOD_TAG = "غذا";
 const FOOD_RELATED_TAGS = new Set([FOOD_TAG, "کافه", "صبحانه"]);
 const STORAGE_KEY = "hamilia-active-deals-v1";
-const FOOD_STORAGE_KEY = "hamilia-active-food-deals-v1";
+const FOOD_STORAGE_KEY = "hamilia-active-food-deals-v2";
 const TARGET_DEAL_COUNT = 50;
+const FOOD_TARGET_DEAL_COUNT = 10;
 const HIDE_AFTER_EXPIRED_MS = 5 * 60 * 1000;
+const MINUTE_MS = 60 * 1000;
 const HOUR_MS = 60 * 60 * 1000;
 const MIN_DEAL_HOURS = 1;
 const MAX_DEAL_HOURS = 5;
+const MIN_FOOD_DEAL_MINUTES = 30;
+const MAX_FOOD_DEAL_MINUTES = 120;
 const SELECTION_START_HOUR = 8;
 const SELECTION_END_HOUR = 23;
 
@@ -145,6 +149,19 @@ function getRandomDealHours(): number {
   );
 }
 
+function getRandomDealDurationMs(): number {
+  return getRandomDealHours() * HOUR_MS;
+}
+
+function getRandomFoodDealDurationMs(): number {
+  const durationMinutes =
+    Math.floor(
+      Math.random() * (MAX_FOOD_DEAL_MINUTES - MIN_FOOD_DEAL_MINUTES + 1),
+    ) + MIN_FOOD_DEAL_MINUTES;
+
+  return durationMinutes * MINUTE_MS;
+}
+
 function shuffleProducts(products: Product[]): Product[] {
   return products
     .map((product) => ({ product, sort: Math.random() }))
@@ -152,11 +169,15 @@ function shuffleProducts(products: Product[]): Product[] {
     .map((item) => item.product);
 }
 
-function createStoredDeal(product: Product, now: Date): StoredDeal {
-  const durationHours = getRandomDealHours();
+function createStoredDeal(
+  product: Product,
+  now: Date,
+  getDealDurationMs = getRandomDealDurationMs,
+): StoredDeal {
+  const durationMs = getDealDurationMs();
   const startedAtMs = now.getTime();
   const expiresAtMs = Math.min(
-    startedAtMs + durationHours * HOUR_MS,
+    startedAtMs + durationMs,
     getSelectionWindowEnd(now).getTime(),
   );
 
@@ -174,6 +195,8 @@ function syncStoredDeals(
   storeById: Map<string, Store>,
   now: Date,
   shouldIncludeProduct: (product: Product) => boolean,
+  targetDealCount = TARGET_DEAL_COUNT,
+  getDealDurationMs = getRandomDealDurationMs,
 ): StoredDeal[] {
   const nowMs = now.getTime();
 
@@ -190,7 +213,7 @@ function syncStoredDeals(
   const discountedById = new Map(
     discountedProducts.map((product) => [product.id, product]),
   );
-  const targetCount = Math.min(TARGET_DEAL_COUNT, discountedProducts.length);
+  const targetCount = Math.min(targetDealCount, discountedProducts.length);
   const seenProductIds = new Set<string>();
   const visibleDeals = currentDeals
     .filter((deal) => {
@@ -229,7 +252,7 @@ function syncStoredDeals(
     const product = candidates.shift();
 
     if (product) {
-      nextDeals.push(createStoredDeal(product, now));
+      nextDeals.push(createStoredDeal(product, now, getDealDurationMs));
     }
   }
 
@@ -348,6 +371,8 @@ export function DealsList({ products, stores }: DealsListProps) {
           storeById,
           now,
           (product) => isFoodRelatedProduct(product, storeById),
+          FOOD_TARGET_DEAL_COUNT,
+          getRandomFoodDealDurationMs,
         );
 
         persistStoredDeals(nextDeals, FOOD_STORAGE_KEY);

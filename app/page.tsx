@@ -49,7 +49,7 @@ export default function LandingPage() {
         ورود به تخفیف‌ها
       </Link>
       <div className="w-full text-center">
-        <p className="text-xs text-slate-400">1.0.0-beta.1</p>
+        <p className="text-xs text-slate-400">1.0.1-beta.1</p>
       </div>
     </main>
   );
