@@ -220,5 +220,16 @@
     "heroImage": "/images/stores/colleen.webp",
     "paymentMethods": ["snapppay", "tarapay", "gishe724"],
     "productIds": ["colleen-1", "colleen-2", "colleen-3", "colleen-4", "colleen-5"]
+  },
+  {
+    "id": "revalkitchen-store",
+    "name": "revalkitchen | آشپزخانه روال",
+    "brand": "revalkitchen",
+    "floor": "طبقه ۴",
+    "category": "غذا",
+    "locationHint": "ضلع شمالی فودکوردت کنار پله برقی شرقی ",
+    "description": "انواع صبحانه و فست فود و غذای ایرانی",
+    "heroImage": "/images/stores/revalkitchen.webp",
+    "productIds": ["revalkitchen-1", "revalkitchen-2", "revalkitchen-3", "revalkitchen-4", "revalkitchen-5", "revalkitchen-6", "revalkitchen-7", "revalkitchen-8", "revalkitchen-9", "revalkitchen-10", "revalkitchen-11", "revalkitchen-12", "revalkitchen-13", "revalkitchen-14", "revalkitchen-15"]
   }
 ]

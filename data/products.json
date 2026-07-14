@@ -1736,15 +1736,169 @@
     "paymentMethods": ["snapppay", "tarapay", "gishe724"]
   },
   {
-  "id": "colleen-5",
-  "name": "ژیله کتان - 1112",
-  "price": 2890000,
-  "discount": 30,
-  "image": "/images/products/colleen/colleen-cotton-1112.webp",
-  "storeId": "colleen-store",
-  "isNew": true,
-  "tag": "ژیله",
-  "description": "🦺 ژیله کتان مدل 1112\n✨ طراحی خاص و مدرن، مناسب برای تکمیل استایل‌های لایه‌ای\n🌿 پارچه کتان باکیفیت، بادوام و خوش‌فرم\n👌 ایستایی مناسب و راحتی در استفاده روزمره\n🍃 انتخابی ایده‌آل برای استایل‌های کژوال و نیمه‌رسمی",
-  "paymentMethods": ["snapppay", "tarapay", "gishe724"]
-}
+    "id": "colleen-5",
+    "name": "ژیله کتان - 1112",
+    "price": 2890000,
+    "discount": 30,
+    "image": "/images/products/colleen/colleen-cotton-1112.webp",
+    "storeId": "colleen-store",
+    "isNew": true,
+    "tag": "ژیله",
+    "description": "🦺 ژیله کتان مدل 1112\n✨ طراحی خاص و مدرن، مناسب برای تکمیل استایل‌های لایه‌ای\n🌿 پارچه کتان باکیفیت، بادوام و خوش‌فرم\n👌 ایستایی مناسب و راحتی در استفاده روزمره\n🍃 انتخابی ایده‌آل برای استایل‌های کژوال و نیمه‌رسمی",
+    "paymentMethods": ["snapppay", "tarapay", "gishe724"]
+  },
+  {
+    "id": "revalkitchen-1",
+    "name": "املت اسفناج",
+    "price": 340000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-Spinach-omlet.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "صبحانه",
+    "description": "🍳 املت اسفناج\n🥚 تهیه‌شده با ۲ عدد تخم‌مرغ\n🥬 اسفناج تازه\n🍅 رب گوجه‌فرنگی"
+  },
+  {
+    "id": "revalkitchen-2",
+    "name": "املت ژامبون",
+    "price": 350000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-hammeat-omlet.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "صبحانه",
+    "description": "🍳 املت ژامبون\n🥚 تهیه‌شده با ۲ عدد تخم‌مرغ\n🥓 ژامبون\n🍅 رب گوجه‌فرنگی"
+  },
+  {
+    "id": "revalkitchen-3",
+    "name": "املت سوسیس",
+    "price": 350000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-sausage-omlet.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "صبحانه",
+    "description": "🍳 املت سوسیس\n🥚 تهیه‌شده با ۲ عدد تخم‌مرغ\n🌭 سوسیس\n🍅 رب گوجه‌فرنگی"
+  },
+  {
+    "id": "revalkitchen-4",
+    "name": "املت قهوه خونه",
+    "price": 320000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-coffeshop-omlet.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "صبحانه",
+    "description": "🍳 املت قهوه خونه\n🥚 تهیه‌شده با ۲ عدد تخم‌مرغ\n🍅 رب گوجه‌فرنگی"
+  },
+  {
+    "id": "revalkitchen-5",
+    "name": "املت پنیر",
+    "price": 315000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-chees-omelet.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "صبحانه",
+    "description": "🧀 املت پنیر\n🥚 تهیه‌شده با ۲ عدد تخم‌مرغ\n🧀 پنیر چدار\n🍅 رب گوجه‌فرنگی"
+  },
+  {
+    "id": "revalkitchen-6",
+    "name": "نیمرو",
+    "price": 210000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-eggs.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "صبحانه",
+    "description": "🍳 نیمرو\n🥚 تهیه‌شده با ۲ عدد تخم‌مرغ"
+  },
+  {
+    "id": "revalkitchen-7",
+    "name": "خوراک بندری",
+    "price": 350000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-bandari.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🌭 خوراک بندری\n🌭 سوسیس\n🧅 پیاز طعم‌دار شده\n🌶️ ادویه مخصوص\n🍅 رب گوجه‌فرنگی"
+  },
+  {
+    "id": "revalkitchen-8",
+    "name": "ساندویچ هات داگ",
+    "price": 380000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-hotdog.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🌭 ساندویچ هات داگ\n🌭 هات داگ\n🥬 کاهو\n🍅 گوجه\n🥒 خیارشور\n🥣 سس مخصوص"
+  },
+  {
+    "id": "revalkitchen-9",
+    "name": "چیپس پنیر ژامبون",
+    "price": 360000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-cheeschips.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🍟 چیپس پنیر ژامبون\n🧀 پنیر پیتزا\n🥓 ژامبون گوشت\n🥔 چیپس خلالی"
+  },
+  {
+    "id": "revalkitchen-10",
+    "name": "سیب پنیر ژامبون",
+    "price": 360000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-cheesfries.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🍟 سیب زمینی سرخ‌شده\n🧀 پنیر پیتزا\n🥓 ژامبون گوشت"
+  },
+  {
+    "id": "revalkitchen-11",
+    "name": "سیب سرخ شده",
+    "price": 260000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-fries.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🍟 خلال سیب‌زمینی سرخ‌شده و ترد"
+  },
+  {
+    "id": "revalkitchen-12",
+    "name": "ساندویچ زبان",
+    "price": 690000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-zaban.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🥪 ساندویچ زبان\n🥩 زبان گوساله\n🥬 کاهو\n🍅 گوجه\n🧅 پیاز\n🥒 خیارشور\n🥣 سس مخصوص"
+  },
+  {
+    "id": "revalkitchen-13",
+    "name": "ساندویچ رست بیف",
+    "price": 690000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-rostbeef.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🥪 ساندویچ رست بیف\n🥩 مغز ران گوساله\n🥬 کاهو\n🍅 گوجه\n🧅 پیاز\n🥒 خیارشور\n🥣 سس مخصوص"
+  },
+  {
+    "id": "revalkitchen-14",
+    "name": "ساندویچ ژامبون میکس",
+    "price": 640000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-hammix.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🥪 ساندویچ ژامبون میکس\n🥓 ژامبون گوشت تنوری\n🌭 کوکتل\n🧀 پنیر چدار\n🥬 کاهو\n🍅 گوجه\n🥒 خیارشور\n🥣 سس مخصوص"
+  }
 ]
