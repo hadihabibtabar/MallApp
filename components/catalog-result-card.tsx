@@ -25,8 +25,8 @@ const paymentIcons = {
   digipay: "/images/digipay.webp",
   snapppay: "/images/snapppay.webp",
   tarapay: "/images/tarapay.webp",
-    technopay:"/images/technopay.webp",
-  gishe724:"/images/gishe724.webp"
+  technopay: "/images/technopay.webp",
+  gishe724: "/images/gishe724.webp",
 };
 
 const statusToneClassNames = {
@@ -66,6 +66,11 @@ export function CatalogResultCard({
               alt={product.name}
               fill
               className="object-cover"
+              placeholder="blur"
+              blurDataURL="..."
+              style={{
+                objectFit: "cover",
+              }}
               fallbackSrc="/images/fallback-image.svg"
               sizes="(min-width: 640px) 112px, 96px"
             />
@@ -93,22 +98,25 @@ export function CatalogResultCard({
 
         <div className="min-w-0 flex-1">
           {(statusLabel || product.isNew) && (
-<div className="mb-1.5 flex items-center justify-between text-[12px]">
-  <div>
-    {product.isNew ? ( <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-bold text-emerald-700"> کالکشن جدید </span> ) : null}
-  </div>
-  <div>
-    {statusLabel && (
-      <span
-        className={`tabular-nums rounded-full px-2 py-0.5 font-bold ${statusToneClassNames[statusTone]}`}
-      >
-        {statusLabel}
-      </span>
-    )}
-  </div>
-
-  
-</div>
+            <div className="mb-1.5 flex items-center justify-between text-[12px]">
+              <div>
+                {product.isNew ? (
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 font-bold text-emerald-700">
+                    {" "}
+                    کالکشن جدید{" "}
+                  </span>
+                ) : null}
+              </div>
+              <div>
+                {statusLabel && (
+                  <span
+                    className={`tabular-nums rounded-full px-2 py-0.5 font-bold ${statusToneClassNames[statusTone]}`}
+                  >
+                    {statusLabel}
+                  </span>
+                )}
+              </div>
+            </div>
           )}
 
           <h3 className="line-clamp-2 text-sm font-extrabold leading-5 text-slate-950 sm:text-base sm:leading-6">

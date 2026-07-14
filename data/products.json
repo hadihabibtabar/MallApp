@@ -547,7 +547,7 @@
   {
     "id": "confi-5",
     "name": "ست کت و شلوار لنین ترک زنانه",
-    "price": 6679000,
+    "price": 8590000,
     "discount": null,
     "image": "/images/products/confi/confi-set-coat.webp",
     "storeId": "confi-store",
@@ -569,7 +569,7 @@
   {
     "id": "confi-7",
     "name": "شلوار زنانه لنین",
-    "price": 3980000,
+    "price": 3890000,
     "discount": null,
     "image": "/images/products/confi/confi-set-coat.webp",
     "storeId": "confi-store",
@@ -817,7 +817,7 @@
     "storeId": "parasteh-store",
     "isNew": true,
     "tag": "طلا",
-    "description": "⚖️ وزن: ۴.۸۴۰ گرم\n💰 تخفیف در اجرت\n✨ ساخته شده از طلای ۱۸ عیار و کاملاً دست‌ساز\n💎 نگین اتمی سفید با بالاترین کیفیت",
+    "description": "⚖️ وزن: ۴.۸۴۰ گرم\n💰 اجرت با تخفیف: ۱۸٪\n✨ ساخته شده از طلای ۱۸ عیار و کاملاً دست‌ساز\n💎 نگین اتمی سفید با بالاترین کیفیت",
     "paymentMethods": ["snapppay", "technopay"]
   },
   {
@@ -956,7 +956,7 @@
     "id": "orez-2",
     "name": "KAI کفش مردانه",
     "price": 15290000,
-    "discount": 30,
+    "discount": 40,
     "image": "/images/products/orez/orez-kai.webp",
     "storeId": "orez-store",
     "isNew": true,
@@ -992,7 +992,7 @@
     "id": "orez-5",
     "name": "JULIANA کفش زنانه",
     "price": 14990000,
-    "discount": 30,
+    "discount": 40,
     "image": "/images/products/orez/orez-juliana.webp",
     "storeId": "orez-store",
     "isNew": true,
@@ -1559,36 +1559,36 @@
     "id": "sanjaaq-4",
     "name": "گردنبند قلب پرتو",
     "price": 5,
-    "discount": null,
+    "discount": 30,
     "image": "/images/products/sanjaaq/sanjaaq-heart-parto.webp",
     "storeId": "sanjaaq-store",
     "isNew": true,
     "tag": "طلا",
-    "description": "⚖️ وزن: ۱.۹۰۰ گرم طلای ۱۸ عیار\n💰 ۵ درصد تخفیف در اجرت ساخت",
+    "description": "⚖️ وزن: ۱.۹۰۰ گرم طلای ۱۸ عیار\n💰 ۳۰ درصد تخفیف در اجرت ساخت",
     "paymentMethods": ["snapppay", "digipay"]
   },
   {
     "id": "sanjaaq-5",
     "name": "گردنبند قلب فانتزی",
     "price": 0,
-    "discount": 6,
+    "discount": 30,
     "image": "/images/products/sanjaaq/sanjaaq-heart-fantasy.webp",
     "storeId": "sanjaaq-store",
     "isNew": true,
     "tag": "طلا",
-    "description": "⚖️ وزن: ۱.۹۰۰ گرم طلای ۱۸ عیار\n💰 ۶ درصد تخفیف در اجرت ساخت",
+    "description": "⚖️ وزن: ۱.۹۰۰ گرم طلای ۱۸ عیار\n💰 ۳۰ درصد تخفیف در اجرت ساخت",
     "paymentMethods": ["snapppay", "digipay"]
   },
   {
     "id": "sanjaaq-6",
     "name": "گردنبند قلب تابان",
     "price": 0,
-    "discount": 5,
+    "discount": 30,
     "image": "/images/products/sanjaaq/sanjaaq-heart-taban.webp",
     "storeId": "sanjaaq-store",
     "isNew": true,
     "tag": "طلا",
-    "description": "⚖️ طلای ۱۸ عیار  \n💰  درصد تخفیف در ۵ اجرت ساخت",
+    "description": "⚖️ طلای ۱۸ عیار  \n💰 ۳۰ درصد تخفیف در اجرت ساخت",
     "paymentMethods": ["snapppay", "digipay"]
   },
   {
@@ -1900,5 +1900,16 @@
     "isNew": false,
     "tag": "غذا",
     "description": "🥪 ساندویچ ژامبون میکس\n🥓 ژامبون گوشت تنوری\n🌭 کوکتل\n🧀 پنیر چدار\n🥬 کاهو\n🍅 گوجه\n🥒 خیارشور\n🥣 سس مخصوص"
+  },
+  {
+    "id": "revalkitchen-15",
+    "name": "آبدوغ خیار خنک",
+    "price": 450000,
+    "discount": 10,
+    "image": "/images/products/revalkitchen/revalkitchen-abdoghkhiar.webp",
+    "storeId": "revalkitchen-store",
+    "isNew": false,
+    "tag": "غذا",
+    "description": "🥣 آبدوغ خیار سنتی و خنک\n🥒 خیار تازه\n🥛 ماست و دوغ محلی\n🌿 سبزیجات معطر\n🥜 گردو\n🍇 کشمش\n🫓 سرو همراه با نان تازه"
   }
 ]

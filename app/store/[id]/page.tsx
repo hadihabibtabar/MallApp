@@ -51,6 +51,11 @@ export default async function StorePage({
             alt={store.name}
             fill
             className="object-cover"
+            placeholder="blur"
+            blurDataURL="..."
+            style={{
+              objectFit: "cover",
+            }}
             fallbackSrc="/images/fallback-image.svg"
             sizes="(min-width: 1024px) 800px, (min-width: 768px) 600px, 420px"
           />

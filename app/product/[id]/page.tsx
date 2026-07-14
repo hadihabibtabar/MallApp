@@ -62,38 +62,43 @@ export default async function ProductPage({
       <div className="md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
           <div className="relative h-72 w-full md:h-96">
-  <SmartImage
-    src={product.image}
-    alt={product.name}
-    fill
-    className="object-cover"
-    fallbackSrc="/images/fallback-image.svg"
-    sizes="(min-width: 1024px) 400px, (min-width: 768px) 300px, 420px"
-    priority
-  />
+            <SmartImage
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-cover"
+              placeholder="blur"
+              blurDataURL="..."
+              style={{
+                objectFit: "cover",
+              }}
+              fallbackSrc="/images/fallback-image.svg"
+              sizes="(min-width: 1024px) 400px, (min-width: 768px) 300px, 420px"
+              priority
+            />
 
-  {/* badges container */}
-  <div className="absolute right-3 top-3 flex flex-col gap-2 items-end">
-    
-    {discountPercent !== null && (
-      <div className="rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
-        %{toPersianDigits(discountPercent)} تخفیف
-      </div>
-    )}
+            {/* badges container */}
+            <div className="absolute right-3 top-3 flex flex-col gap-2 items-end">
+              {discountPercent !== null && (
+                <div className="rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white md:text-sm">
+                  %{toPersianDigits(discountPercent)} تخفیف
+                </div>
+              )}
 
-    {product.isNew && (
-      <span className="rounded-full bg-emerald-500 px-2 py-1 text-[11px] font-bold text-white">
-        کالکشن جدید
-      </span>
-    )}
-
-  </div>
-</div>
+              {product.isNew && (
+                <span className="rounded-full bg-emerald-500 px-2 py-1 text-[11px] font-bold text-white">
+                  کالکشن جدید
+                </span>
+              )}
+            </div>
+          </div>
         </section>
 
         <section className="space-y-5">
           <div className="rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5 p-4 md:p-6">
-            <h1 className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl">{product.name}</h1>
+            <h1 className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl">
+              {product.name}
+            </h1>
             {isGoldProduct ? (
               <div className="mt-4 md:mt-5">
                 <p className="text-[11px] font-black text-slate-400">
@@ -105,11 +110,19 @@ export default async function ProductPage({
               </div>
             ) : (
               <>
-                <p className="mt-3 text-sm leading-7 text-slate-600 md:text-base md:leading-8">{product.description}</p>
+                <p className="mt-3 text-sm leading-7 text-slate-600 md:text-base md:leading-8">
+                  {product.description}
+                </p>
                 <div className="mt-4 flex items-center gap-3 md:mt-5">
-                  <p className="text-lg font-black text-slate-900 md:text-2xl">{formatPrice(discountedPrice(product.price, product.discount))}</p>
+                  <p className="text-lg font-black text-slate-900 md:text-2xl">
+                    {formatPrice(
+                      discountedPrice(product.price, product.discount),
+                    )}
+                  </p>
                   {discountPercent !== null ? (
-                    <p className="text-sm text-slate-400 line-through md:text-base">{formatPrice(product.price)}</p>
+                    <p className="text-sm text-slate-400 line-through md:text-base">
+                      {formatPrice(product.price)}
+                    </p>
                   ) : null}
                 </div>
               </>
@@ -117,16 +130,21 @@ export default async function ProductPage({
           </div>
 
           <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm ring-1 ring-slate-900/5 md:p-6">
-            <h2 className="text-base font-extrabold text-slate-900 md:text-lg">اطلاعات فروشگاه</h2>
+            <h2 className="text-base font-extrabold text-slate-900 md:text-lg">
+              اطلاعات فروشگاه
+            </h2>
             <div className="mt-3 space-y-2 text-sm text-slate-600 md:text-base">
               <p>
-                <span className="font-bold text-slate-800">فروشگاه:</span> {store.name}
+                <span className="font-bold text-slate-800">فروشگاه:</span>{" "}
+                {store.name}
               </p>
               <p>
-                <span className="font-bold text-slate-800">طبقه:</span> {store.floor}
+                <span className="font-bold text-slate-800">طبقه:</span>{" "}
+                {store.floor}
               </p>
               <p>
-                <span className="font-bold text-slate-800">موقعیت:</span> {store.locationHint}
+                <span className="font-bold text-slate-800">موقعیت:</span>{" "}
+                {store.locationHint}
               </p>
             </div>
           </section>
