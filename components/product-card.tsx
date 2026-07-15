@@ -81,6 +81,16 @@ export function ProductCard({
               کالکشن جدید
             </span>
           )}
+
+          {discountPercent !== null ? (
+            <span
+              className={`absolute right-2 rounded-full bg-rose-500 px-2 py-1 text-[11px] font-bold text-white shadow-sm ${
+                product.isNew ? "top-10" : "top-2"
+              }`}
+            >
+              %{toPersianDigits(discountPercent)}
+            </span>
+          ) : null}
         </div>
 
         <div className="space-y-2 p-3 md:p-4">
@@ -95,11 +105,7 @@ export function ProductCard({
               <p className="line-clamp-2 text-xs leading-6 text-slate-600 md:text-sm">
                 {product.description}
               </p>
-              {discountPercent !== null ? (
-                <span className="inline-flex rounded-full bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700">
-                  %{toPersianDigits(discountPercent)}
-                </span>
-              ) : null}
+
             </div>
           ) : (
             <div className="flex items-center gap-2">
@@ -113,11 +119,7 @@ export function ProductCard({
                 </span>
               ) : null}
 
-              {discountPercent !== null ? (
-                <span className="rounded-full bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700">
-                  %{toPersianDigits(discountPercent)}
-                </span>
-              ) : null}
+
             </div>
           )}
 
