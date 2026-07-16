@@ -146,7 +146,7 @@
     "floor": "طبقه -۱",
     "category": "فرش",
     "locationHint": "راهروی شرقی، رو به روی کافه ویونا و فروشگاه لایکو، پلاک ٥",
-    "description": "انواع فرش هاي ماشيني ، مدرن،كلاسیک\n 09121982004",
+    "description": "انواع فرش هاي ماشيني ، مدرن،كلاسیک.\nتماس: ۰۹۱۲۱۹۸۲۰۰۴",
     "heroImage": "/images/stores/aminifarsh.webp",
     "paymentMethods": ["digipay"],
     "productIds": ["aminifarsh-1", "aminifarsh-2", "aminifarsh-3", "aminifarsh-4", "aminifarsh-5", "aminifarsh-6", "aminifarsh-7", "aminifarsh-8", "aminifarsh-9"]
@@ -228,7 +228,7 @@
     "floor": "طبقه ۴",
     "category": "غذا",
     "locationHint": "سمت چپ پله برقی فودکورت، پلاک ۴۰۲",
-    "description": "انواع صبحانه و فست فود و غذای ایرانی\n 021-44348709",
+    "description": "انواع صبحانه و فست فود و غذای ایرانی.\nتماس: ۴۴۳۴۸۷۰۹",
     "heroImage": "/images/stores/revalkitchen.webp",
     "productIds": ["revalkitchen-1", "revalkitchen-2", "revalkitchen-3", "revalkitchen-4", "revalkitchen-5", "revalkitchen-6", "revalkitchen-7", "revalkitchen-8", "revalkitchen-9", "revalkitchen-10", "revalkitchen-11", "revalkitchen-12", "revalkitchen-13", "revalkitchen-14", "revalkitchen-15"]
   }
