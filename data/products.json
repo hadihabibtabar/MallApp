@@ -86,8 +86,8 @@
   {
     "id": "yeshil-8",
     "name": "شال مبل و رویه کوسن",
-    "price": 2900000,
-    "discount": 10,
+    "price": 3080000,
+    "discount": 9,
     "image": "/images/products/yeshilev/yeshil-sofa-throw.webp",
     "storeId": "yeshil-store",
     "isNew": true,
@@ -450,7 +450,7 @@
     "isNew": true,
     "tag": "کفش زنانه",
     "description": "👟 اسنیکر چاپی دندی مدل ماتیلدا\n🔘 نوک گرد (Round Toe)\n👣 پاشنه تخت (Flat Heel)\n🧩 کفی طبی PU Light بالشتکی (قابل جدا شدن)\n🧵 رویه چرم مصنوعی چاپی با آستر پارچه‌ای\n🔧 تکه‌دوزی برای استحکام بیشتر",
-    "paymentMethods": ["snapppay", "tarapay"]
+    "paymentMethods": ["snapppay", "digipay", "tarapay"]
   },
   {
     "id": "dandy-2",
@@ -462,7 +462,7 @@
     "isNew": true,
     "tag": "کفش زنانه",
     "description": "👟 اسنیکر چاپی دندی مدل آنشرلی\n🔘 نوک گرد (Round Toe)\n👣 پاشنه تخت (Flat Heel)\n🧩 کفی طبی PU Light قابل جدا شدن\n🧵 رویه چرم مصنوعی چاپی با آستر پارچه‌ای\n🔧 طراحی مقاوم و راحت",
-    "paymentMethods": ["snapppay", "tarapay"]
+    "paymentMethods": ["snapppay", "digipay", "tarapay"]
   },
   {
     "id": "dandy-3",
@@ -474,7 +474,7 @@
     "isNew": true,
     "tag": "کفش زنانه",
     "description": "🎒 کوله پشتی دندی مدل ماتیلدا\n📏 ابعاد: 35×30×10 سانتی‌متر\n🧩 یک جیب داخلی زیپ‌دار\n🔒 بسته شدن با دکمه مگنتی\n🪡 تکه‌دوزی طرح‌دار جلویی\n🎯 دارای بند دستی و دوشی قابل تنظیم\n💼 طراحی کاربردی روزمره",
-    "paymentMethods": ["snapppay", "tarapay"]
+    "paymentMethods": ["snapppay", "digipay", "tarapay"]
   },
   {
     "id": "dandy-4",
@@ -486,7 +486,7 @@
     "isNew": true,
     "tag": "کفش زنانه",
     "description": "👟 کفش زنانه مدل آیسا (Slip-On)\n🧵 چرم مصنوعی وگان چاپی\n🧽 کفی فوم PU بالشتکی (قابل جدا شدن)\n🪶 زیره EVA بسیار سبک\n📏 پاشنه 3 سانتی‌متری\n🔧 دوخت و چسب تقویت‌شده برای دوام بیشتر\n🌿 طراحی راحت و روزمره",
-    "paymentMethods": ["snapppay", "tarapay"]
+    "paymentMethods": ["snapppay", "digipay", "tarapay"]
   },
   {
     "id": "dandy-5",
@@ -498,7 +498,7 @@
     "isNew": true,
     "tag": "کیف",
     "description": "👜 کیف طرح شازده کوچولو دندی\n📏 ابعاد: 35×33×6 سانتی‌متر\n🧵 چرم مصنوعی درجه یک\n🎯 جیب‌های متعدد کاربردی\n🪶 وزن سبک (500 گرم)\n🔒 بند قابل تنظیم\n✨ طراحی الهام‌گرفته از داستان شازده کوچولو\n💼 مناسب استفاده روزمره",
-    "paymentMethods": ["snapppay", "tarapay"]
+    "paymentMethods": ["snapppay", "digipay", "tarapay"]
   },
   {
     "id": "confi-1",
@@ -1911,5 +1911,125 @@
     "isNew": false,
     "tag": "غذا",
     "description": "🥣 آبدوغ خیار سنتی و خنک\n🥒 خیار تازه\n🥛 ماست و دوغ محلی\n🌿 سبزیجات معطر\n🥜 گردو\n🍇 کشمش\n🫓 سرو همراه با نان تازه"
-  }
+  },
+    {
+    "id": "justeen-1",
+    "name": "شلوارک بچگانه",
+    "price": 2580000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-shalvarak.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "شلوارک بچگانه",
+    "description": "🩳 شلوارک بچگانه، تین‌ایجر و بزرگسال\n🎨 موجود در رنگ‌بندی متنوع\n✨ مناسب استفاده روزمره",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-2",
+    "name": "انواع شلوار بچگانه",
+    "price": 2580000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-shalvar.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "شلوار بچگانه",
+    "description": "👖 انواع شلوار در رنگ‌بندی متنوع\n👦 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-3",
+    "name": "انواع دامن بچگانه",
+    "price": 2580000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-daman1.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "دامن بچگانه",
+    "description": "👗 انواع دامن در رنگ‌بندی متنوع\n👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+    {
+    "id": "justeen-4",
+    "name": "انواع دامن بچگانه",
+    "price": 2580000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-daman2.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "دامن بچگانه",
+    "description": "👗 انواع دامن در رنگ‌بندی متنوع\n👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-5",
+    "name": "انواع تیشرت پسرانه",
+    "price": 1980000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-tshirt-boy.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "تیشرت بچگانه",
+    "description": "👕 انواع تیشرت پسرانه\n👦 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-6",
+    "name": "انواع تیشرت دخترانه",
+    "price": 1980000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-tshirt-girl1.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "تیشرت بچگانه",
+    "description": "👚 انواع تیشرت دخترانه\n👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-7",
+    "name": "انواع تیشرت دخترانه",
+    "price": 1980000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-tshirt-girl2.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "تیشرت بچگانه",
+    "description": "👚 انواع تیشرت دخترانه\n👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-8",
+    "name": "انواع تیشرت دخترانه",
+    "price": 1980000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-tshirt-girl3.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "تیشرت بچگانه",
+    "description": "👚 انواع تیشرت دخترانه\n👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+    "id": "justeen-9",
+    "name": "انواع سارافن بچگانه",
+    "price": 3980000,
+    "discount": null,
+    "image": "/images/products/justeen/justeen-sarafan.webp",
+    "storeId": "justeen-store",
+    "isNew": true,
+    "tag": "سارافون",
+    "description": "👗 انواع سارافن در مدل‌های متنوع\n👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز",
+    "paymentMethods": ["snapppay", "digipay"]
+  },
+  {
+  "id": "justeen-10",
+  "name": "انواع پولوشرت بچگانه",
+  "price": 1980000,
+  "discount": null,
+  "image": "/images/products/justeen/justeen-poloshirt.webp",
+  "storeId": "justeen-store",
+  "isNew": true,
+  "tag": "پوشاک بچگانه",
+  "description": "👕 انواع پولوشرت در رنگ‌بندی متنوع\n👦👧 مناسب بچگانه، تین‌ایجر و بزرگسال\n📏 فول سایز\n✨ مناسب استایل روزمره و نیمه‌رسمی",
+  "paymentMethods": ["snapppay", "digipay"]
+}
 ]
