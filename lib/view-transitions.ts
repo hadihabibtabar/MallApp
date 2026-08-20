@@ -9,7 +9,7 @@ interface NativeViewTransition {
   skipTransition: () => void;
 }
 
-interface ViewTransitionDocument extends Document {
+interface ViewTransitionDocument {
   startViewTransition?: (
     updateCallback?: ViewTransitionUpdateCallback,
   ) => NativeViewTransition;
@@ -20,7 +20,7 @@ function getViewTransitionDocument(): ViewTransitionDocument | null {
     return null;
   }
 
-  return document as ViewTransitionDocument;
+  return document as unknown as ViewTransitionDocument;
 }
 
 export function prefersReducedMotion(): boolean {
