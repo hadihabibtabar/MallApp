@@ -1,11 +1,12 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useViewTransitionRouter } from "@/components/view-transition";
 
 const hiddenPaths = new Set(["/", "/deals", "/stores", "/new-collection", "/Admin"]);
 
 export function BackButton() {
-  const router = useRouter();
+  const router = useViewTransitionRouter();
   const pathname = usePathname();
 
   if (!pathname || hiddenPaths.has(pathname) || pathname.startsWith("/Admin/")) {

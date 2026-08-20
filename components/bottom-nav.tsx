@@ -1,11 +1,11 @@
 ﻿"use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   getActivePrimaryNavHref,
   PRIMARY_NAV_HREFS,
 } from "@/lib/primary-navigation";
+import { TransitionLink } from "@/components/view-transition";
 
 const navItems = [
   {
@@ -63,7 +63,7 @@ export function BottomNav() {
 
           return (
             <li key={item.href}>
-              <Link
+              <TransitionLink
                 href={item.href}
                 dir="rtl"
                 className={`group flex h-12 min-w-0 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-center text-[10px] font-extrabold leading-4 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 md:text-[11px] ${
@@ -71,16 +71,16 @@ export function BottomNav() {
                     ? "bg-slate-900 text-white shadow-sm"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 }`}
-              >
-                <span
-                  className={`flex h-5 w-5 items-center justify-center rounded-full ${
-                    isActive ? "text-white" : "text-slate-400 group-hover:text-slate-700"
-                  }`}
                 >
-                  {item.icon}
-                </span>
-                <span className="w-full truncate leading-4">{item.label}</span>
-              </Link>
+                  <span
+                    className={`flex h-5 w-5 items-center justify-center rounded-full ${
+                      isActive ? "text-white" : "text-slate-400 group-hover:text-slate-700"
+                  }`}
+                  >
+                    {item.icon}
+                  </span>
+                  <span className="w-full truncate leading-4">{item.label}</span>
+              </TransitionLink>
             </li>
           );
         })}

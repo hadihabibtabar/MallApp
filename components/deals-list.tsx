@@ -7,6 +7,7 @@ import {
 } from "@/components/analytics-trackers";
 import { DealCard } from "@/components/deal-card";
 import { ProductCard } from "@/components/product-card";
+import { useViewTransition } from "@/components/view-transition";
 import {
   FLOOR_LEVELS,
   getFloorLabel,
@@ -326,6 +327,7 @@ export function DealsList({ products, stores }: DealsListProps) {
   const [hasLoadedDeals, setHasLoadedDeals] = useState(false);
   const [isDealSelectionClosed, setIsDealSelectionClosed] = useState(false);
   const [sortNowMs, setSortNowMs] = useState(() => Date.now());
+  const runViewTransition = useViewTransition();
   const normalizedQuery = query.trim().toLowerCase();
   const isSearching = normalizedQuery.length > 0;
 
@@ -504,11 +506,22 @@ export function DealsList({ products, stores }: DealsListProps) {
   };
 
   const handleTagClick = (tag: string) => {
-    setSelectedTag(tag);
+    if (selectedTag !== tag) {
+      runViewTransition(() => setSelectedTag(tag));
+    }
+
     trackCategoryChipClicked({
       source_tab: "deals",
       category: tag,
     });
+  };
+
+  const handleFloorClick = (floor: FloorFilterValue) => {
+    if (selectedFloor === floor) {
+      return;
+    }
+
+    runViewTransition(() => setSelectedFloor(floor));
   };
 
   const handleSearchResultClick = (product: Product, store: Store) => {
@@ -605,7 +618,8 @@ export function DealsList({ products, stores }: DealsListProps) {
           </span>
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
-              onClick={() => setSelectedFloor("all")}
+              type="button"
+              onClick={() => handleFloorClick("all")}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 selectedFloor === "all"
                   ? "bg-slate-900 text-white"
@@ -617,7 +631,8 @@ export function DealsList({ products, stores }: DealsListProps) {
             {FLOOR_LEVELS.map((floorLevel) => (
               <button
                 key={floorLevel}
-                onClick={() => setSelectedFloor(floorLevel)}
+                type="button"
+                onClick={() => handleFloorClick(floorLevel)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedFloor === floorLevel
                     ? "bg-slate-900 text-white"
@@ -647,6 +662,7 @@ export function DealsList({ products, stores }: DealsListProps) {
                   {toPersianDigits(activeFoodDealCount)} فعال
                 </span>
                 <button
+                  type="button"
                   onClick={() => handleTagClick(FOOD_TAG)}
                   className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-extrabold transition ${
                     selectedTag === FOOD_TAG
@@ -658,6 +674,7 @@ export function DealsList({ products, stores }: DealsListProps) {
                 </button>
               </div>
               <button
+                type="button"
                 onClick={() => handleTagClick(ALL_TAG)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedTag === ALL_TAG
@@ -670,6 +687,7 @@ export function DealsList({ products, stores }: DealsListProps) {
               {tags.map((tag) => (
                 <button
                   key={tag}
+                  type="button"
                   onClick={() => handleTagClick(tag)}
                   className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                     selectedTag === tag

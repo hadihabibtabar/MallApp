@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   getActivePrimaryNavHref,
   PRIMARY_NAV_HREFS,
 } from "@/lib/primary-navigation";
+import { TransitionLink } from "@/components/view-transition";
 
 const navItems = [
   {
@@ -58,7 +58,7 @@ export function TopNav() {
 
             return (
               <li key={item.href}>
-                <Link
+                <TransitionLink
                   href={item.href}
                   className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition ${
                     isActive
@@ -68,7 +68,7 @@ export function TopNav() {
                 >
                   {item.icon}
                   <span>{item.label}</span>
-                </Link>
+                </TransitionLink>
               </li>
             );
           })}

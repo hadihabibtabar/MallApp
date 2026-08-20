@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Product, Store } from "@/types";
 import {
   discountedPrice,
@@ -7,7 +6,12 @@ import {
   toPersianDigits,
 } from "@/lib/format";
 import { buildSourceTabHref } from "@/lib/analytics-context";
+import {
+  getProductImageTransitionName,
+  getProductTitleTransitionName,
+} from "@/lib/view-transitions";
 import { SmartImage } from "@/components/smart-image";
+import { TransitionLink } from "@/components/view-transition";
 import type { AnalyticsSourceTab } from "@/lib/analytics-context";
 
 interface CatalogResultCardProps {
@@ -50,16 +54,19 @@ export function CatalogResultCard({
   const paymentMethods = product.paymentMethods ?? [];
   const productHref = buildSourceTabHref(`/product/${product.id}`, sourceTab);
   const storeHref = buildSourceTabHref(`/store/${store.id}`, sourceTab);
+  const productImageTransitionName = getProductImageTransitionName(product.id);
+  const productTitleTransitionName = getProductTitleTransitionName(product.id);
 
   return (
     <article className="rounded-2xl border border-slate-200/80 bg-white p-2.5 shadow-sm ring-1 ring-slate-900/5 transition hover:border-slate-300 hover:shadow-md sm:p-3">
       <div className="flex items-start gap-2.5 sm:gap-3">
         <div className="shrink-0">
-          <Link
+          <TransitionLink
             href={productHref}
             aria-label={product.name}
             className="relative block h-24 w-24 overflow-hidden rounded-xl bg-slate-100 transition hover:opacity-95 sm:h-28 sm:w-28"
             onClick={onProductClick}
+            style={{ viewTransitionName: productImageTransitionName }}
           >
             <SmartImage
               src={product.image}
@@ -80,7 +87,7 @@ export function CatalogResultCard({
                 %{toPersianDigits(discountPercent)}
               </div>
             ) : null}
-          </Link>
+          </TransitionLink>
 
           {paymentMethods.length > 0 ? (
             <div className="mt-2 flex justify-center gap-1.5">
@@ -119,14 +126,17 @@ export function CatalogResultCard({
             </div>
           )}
 
-          <h3 className="line-clamp-2 text-sm font-extrabold leading-5 text-slate-950 sm:text-base sm:leading-6">
-            <Link
+          <h3
+            className="line-clamp-2 text-sm font-extrabold leading-5 text-slate-950 sm:text-base sm:leading-6"
+            style={{ viewTransitionName: productTitleTransitionName }}
+          >
+            <TransitionLink
               href={productHref}
               className="transition hover:text-slate-700"
               onClick={onProductClick}
             >
               {product.name}
-            </Link>
+            </TransitionLink>
           </h3>
 
           {isGoldProduct ? (
@@ -160,13 +170,13 @@ export function CatalogResultCard({
                 </p>
               </div>
 
-              <Link
+              <TransitionLink
                 href={storeHref}
                 onClick={onStoreClick}
                 className="shrink-0 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] font-extrabold text-white transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 sm:px-3 sm:text-xs"
               >
                 رفتن به فروشگاه
-              </Link>
+              </TransitionLink>
             </div>
           </div>
         </div>

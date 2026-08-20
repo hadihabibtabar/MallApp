@@ -12,6 +12,10 @@ import {
   buildSourceTabHref,
   normalizeAnalyticsSourceTab,
 } from "@/lib/analytics-context";
+import {
+  getProductImageTransitionName,
+  getProductTitleTransitionName,
+} from "@/lib/view-transitions";
 import { getProductById, getStoreById } from "@/lib/mock-data";
 
 interface ProductPageProps {
@@ -47,6 +51,8 @@ export default async function ProductPage({
     `/store/${store.id}#route`,
     sourceTab,
   );
+  const productImageTransitionName = getProductImageTransitionName(product.id);
+  const productTitleTransitionName = getProductTitleTransitionName(product.id);
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-4xl lg:px-8">
@@ -61,7 +67,10 @@ export default async function ProductPage({
 
       <div className="md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
-          <div className="relative h-72 w-full md:h-96">
+          <div
+            className="relative h-72 w-full md:h-96"
+            style={{ viewTransitionName: productImageTransitionName }}
+          >
             <SmartImage
               src={product.image}
               alt={product.name}
@@ -96,7 +105,10 @@ export default async function ProductPage({
 
         <section className="space-y-5">
           <div className="rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5 p-4 md:p-6">
-            <h1 className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl">
+            <h1
+              className="text-xl font-black text-slate-900 md:text-2xl lg:text-3xl"
+              style={{ viewTransitionName: productTitleTransitionName }}
+            >
               {product.name}
             </h1>
             {isGoldProduct ? (

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { TabOpenedTracker } from "@/components/analytics-trackers";
 import { ProductCard } from "@/components/product-card";
+import { useViewTransition } from "@/components/view-transition";
 import {
   FLOOR_LEVELS,
   getFloorLabel,
@@ -280,6 +281,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
   >([]);
   const [hasLoadedCollection, setHasLoadedCollection] = useState(false);
   const [sortNowMs, setSortNowMs] = useState(() => Date.now());
+  const runViewTransition = useViewTransition();
   const normalizedQuery = query.trim().toLowerCase();
   const isSearching = normalizedQuery.length > 0;
 
@@ -457,11 +459,22 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
   };
 
   const handleTagClick = (tag: string) => {
-    setSelectedTag(tag);
+    if (selectedTag !== tag) {
+      runViewTransition(() => setSelectedTag(tag));
+    }
+
     trackCategoryChipClicked({
       source_tab: "new_collection",
       category: tag,
     });
+  };
+
+  const handleFloorClick = (floor: FloorFilterValue) => {
+    if (selectedFloor === floor) {
+      return;
+    }
+
+    runViewTransition(() => setSelectedFloor(floor));
   };
 
   const handleNewCollectionProductClick = (product: Product, store: Store) => {
@@ -553,7 +566,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
               type="button"
-              onClick={() => setSelectedFloor("all")}
+              onClick={() => handleFloorClick("all")}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 selectedFloor === "all"
                   ? "bg-slate-900 text-white"
@@ -566,7 +579,7 @@ export function NewCollectionList({ products, stores }: NewCollectionListProps) 
               <button
                 type="button"
                 key={floorLevel}
-                onClick={() => setSelectedFloor(floorLevel)}
+                onClick={() => handleFloorClick(floorLevel)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedFloor === floorLevel
                     ? "bg-slate-900 text-white"

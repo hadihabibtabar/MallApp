@@ -1,11 +1,13 @@
 ﻿"use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {
+  TransitionLink,
+  useViewTransitionRouter,
+} from "@/components/view-transition";
 
 export default function LandingPage() {
-  const router = useRouter();
+  const router = useViewTransitionRouter();
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -42,12 +44,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <Link
+      <TransitionLink
         href="/deals"
         className="mt-8 rounded-2xl bg-white px-5 py-3 text-center text-sm font-bold text-slate-900 shadow-soft transition hover:bg-slate-100 md:py-4 md:text-base"
       >
         ورود به تخفیف‌ها
-      </Link>
+      </TransitionLink>
       <div className="w-full text-center">
         <p className="text-xs text-slate-400">1.0.1-beta.1</p>
       </div>

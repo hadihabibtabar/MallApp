@@ -5,6 +5,7 @@ import { BackButton } from "@/components/back-button";
 import { BottomNav } from "@/components/bottom-nav";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { TopNav } from "@/components/top-nav";
+import { ViewTransitionProvider } from "@/components/view-transition";
 import "./globals.css";
 
 const iranYekan = localFont({
@@ -68,15 +69,17 @@ export default function RootLayout({
       <body
         className={`${iranYekan.variable} ${iranYekan.className} antialiased select-none`}
       >
-        <PostHogProvider />
-        <TopNav />
+        <ViewTransitionProvider>
+          <PostHogProvider />
+          <TopNav />
 
-        <div className="fixed top-4 right-3 z-50 flex flex-col gap-2 md:top-6 md:right-6">
-          <BackButton />
-        </div>
+          <div className="fixed top-4 right-3 z-50 flex flex-col gap-2 md:top-6 md:right-6">
+            <BackButton />
+          </div>
 
-        <div className="pb-20 lg:pb-0">{children}</div>
-        <BottomNav />
+          <div className="pb-20 lg:pb-0">{children}</div>
+          <BottomNav />
+        </ViewTransitionProvider>
       </body>
     </html>
   );

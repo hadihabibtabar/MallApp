@@ -1,8 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { trackStoreNavigation, trackVisitIntent } from "@/lib/posthog";
+import { TransitionLink } from "@/components/view-transition";
 import type { AnalyticsSourceTab } from "@/lib/analytics-context";
 
 interface StoreNavigationLinkProps {
@@ -58,7 +58,7 @@ export function StoreNavigationLink({
   source,
 }: StoreNavigationLinkProps) {
   return (
-    <Link
+    <TransitionLink
       href={href}
       className={className}
       onClick={() =>
@@ -73,7 +73,7 @@ export function StoreNavigationLink({
       }
     >
       {children}
-    </Link>
+    </TransitionLink>
   );
 }
 

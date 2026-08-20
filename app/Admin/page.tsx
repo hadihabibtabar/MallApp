@@ -14,6 +14,7 @@ import type {
   AdminStore,
 } from "@/types/admin";
 import { isGoldProductTag } from "@/lib/format";
+import { useViewTransition } from "@/components/view-transition";
 
 type AdminTab = "stores" | "products" | "deals";
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -160,6 +161,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
+  const runViewTransition = useViewTransition();
 
   const categoryOptions = useMemo(() => {
     const values = new Set<string>();
@@ -274,38 +276,82 @@ export default function AdminPage() {
     setSaveState("idle");
   };
 
-  const selectStore = (store: AdminStore) => {
+  const applyStoreSelection = (store: AdminStore) => {
     setSelectedStoreId(store.id);
     setStoreDraft(store);
   };
 
-  const selectProduct = (product: AdminProduct) => {
+  const selectStore = (store: AdminStore) => {
+    if (selectedStoreId === store.id) {
+      return;
+    }
+
+    runViewTransition(() => applyStoreSelection(store));
+  };
+
+  const applyProductSelection = (product: AdminProduct) => {
     setSelectedProductId(product.id);
     setProductDraft(product);
   };
 
-  const selectDeal = (deal: AdminDeal) => {
+  const selectProduct = (product: AdminProduct) => {
+    if (selectedProductId === product.id) {
+      return;
+    }
+
+    runViewTransition(() => applyProductSelection(product));
+  };
+
+  const applyDealSelection = (deal: AdminDeal) => {
     setSelectedDealId(deal.id);
     setDealDraft(deal);
   };
 
-  const startNewStore = () => {
+  const selectDeal = (deal: AdminDeal) => {
+    if (selectedDealId === deal.id) {
+      return;
+    }
+
+    runViewTransition(() => applyDealSelection(deal));
+  };
+
+  const applyNewStore = () => {
     setSelectedStoreId(null);
     setStoreDraft(emptyStore());
   };
 
-  const startNewProduct = () => {
+  const startNewStore = () => {
+    runViewTransition(applyNewStore);
+  };
+
+  const applyNewProduct = () => {
     const defaultStoreId = catalog?.stores[0]?.id || "";
 
     setSelectedProductId(null);
     setProductDraft(emptyProduct(defaultStoreId));
   };
 
-  const startNewDeal = () => {
+  const startNewProduct = () => {
+    runViewTransition(applyNewProduct);
+  };
+
+  const applyNewDeal = () => {
     const defaultProduct = catalog?.products[0];
 
     setSelectedDealId(null);
     setDealDraft(emptyDeal(defaultProduct?.storeId || "", defaultProduct?.id || ""));
+  };
+
+  const startNewDeal = () => {
+    runViewTransition(applyNewDeal);
+  };
+
+  const selectAdminTab = (tab: AdminTab) => {
+    if (activeTab === tab) {
+      return;
+    }
+
+    runViewTransition(() => setActiveTab(tab));
   };
 
   const saveStoreDraft = () => {

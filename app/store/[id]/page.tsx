@@ -5,6 +5,10 @@ import { StoreOpenedTracker } from "@/components/analytics-trackers";
 import { StoreNavigationButton } from "@/components/store-navigation-cta";
 import { toPersianDigits } from "@/lib/format";
 import { normalizeAnalyticsSourceTab } from "@/lib/analytics-context";
+import {
+  getStoreHeroTransitionName,
+  getStoreTitleTransitionName,
+} from "@/lib/view-transitions";
 import { getStoreById, getStoreProducts } from "@/lib/mock-data";
 
 interface StorePageProps {
@@ -34,6 +38,8 @@ export default async function StorePage({
     gishe724: "/images/gishe724.webp",
   };
   const paymentMethods = store.paymentMethods ?? [];
+  const storeHeroTransitionName = getStoreHeroTransitionName(store.id);
+  const storeTitleTransitionName = getStoreTitleTransitionName(store.id);
   return (
     <main className="mx-auto min-h-screen w-full max-w-md space-y-5 px-4 pb-10 pt-4 md:max-w-2xl md:px-6 md:py-8 lg:max-w-5xl lg:px-8">
       <StoreOpenedTracker
@@ -45,7 +51,10 @@ export default async function StorePage({
       />
 
       <section className="overflow-hidden rounded-3xl bg-white shadow-soft ring-1 ring-slate-900/5">
-        <div className="relative h-56 w-full md:h-64 lg:h-80">
+        <div
+          className="relative h-56 w-full md:h-64 lg:h-80"
+          style={{ viewTransitionName: storeHeroTransitionName }}
+        >
           <SmartImage
             src={store.heroImage}
             alt={store.name}
@@ -62,7 +71,10 @@ export default async function StorePage({
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
           <div className="absolute bottom-4 right-4 text-white md:bottom-6 md:right-6">
             <p className="text-xs text-white/90 md:text-sm">{store.category}</p>
-            <h1 className="text-2xl font-black md:text-3xl lg:text-4xl">
+            <h1
+              className="text-2xl font-black md:text-3xl lg:text-4xl"
+              style={{ viewTransitionName: storeTitleTransitionName }}
+            >
               {store.name}
             </h1>
             <p className="text-white/90 md:text-sm">{store.floor}</p>

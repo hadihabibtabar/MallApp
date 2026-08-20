@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { TabOpenedTracker } from "@/components/analytics-trackers";
 import { StoreCard } from "@/components/store-card";
+import { useViewTransition } from "@/components/view-transition";
 import {
   FLOOR_LEVELS,
   getFloorLabel,
@@ -27,6 +28,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
     StoreCategory | "همه"
   >("همه");
   const [selectedFloor, setSelectedFloor] = useState<FloorFilterValue>("all");
+  const runViewTransition = useViewTransition();
   const isSearching = query.trim().length > 0;
 
   const filteredStores = useMemo(() => {
@@ -72,11 +74,22 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
   };
 
   const handleCategoryClick = (category: StoreCategory | "همه") => {
-    setSelectedCategory(category);
+    if (selectedCategory !== category) {
+      runViewTransition(() => setSelectedCategory(category));
+    }
+
     trackCategoryChipClicked({
       source_tab: "stores",
       category,
     });
+  };
+
+  const handleFloorClick = (floor: FloorFilterValue) => {
+    if (selectedFloor === floor) {
+      return;
+    }
+
+    runViewTransition(() => setSelectedFloor(floor));
   };
 
   return (
@@ -107,7 +120,8 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
           <span className="text-[11px] font-bold text-slate-500">طبقه:</span>
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
-              onClick={() => setSelectedFloor("all")}
+              type="button"
+              onClick={() => handleFloorClick("all")}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 selectedFloor === "all"
                   ? "bg-slate-900 text-white"
@@ -119,7 +133,8 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
             {FLOOR_LEVELS.map((floorLevel) => (
               <button
                 key={floorLevel}
-                onClick={() => setSelectedFloor(floorLevel)}
+                type="button"
+                onClick={() => handleFloorClick(floorLevel)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedFloor === floorLevel
                     ? "bg-slate-900 text-white"
@@ -138,6 +153,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
           </span>
           <div className="flex gap-2 overflow-x-auto pb-1">
             <button
+              type="button"
               onClick={() => handleCategoryClick("همه")}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                 selectedCategory === "همه"
@@ -150,6 +166,7 @@ export function StoresDirectory({ stores, categories }: StoresDirectoryProps) {
             {categories.map((category) => (
               <button
                 key={category}
+                type="button"
                 onClick={() => handleCategoryClick(category)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
                   selectedCategory === category

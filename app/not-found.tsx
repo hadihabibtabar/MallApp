@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { TransitionLink } from "@/components/view-transition";
 
 export default function NotFoundPage() {
   return (
@@ -9,12 +9,12 @@ export default function NotFoundPage() {
           ممکن است آدرس تغییر کرده باشد. از مسیر زیر وارد داشبورد همیلا سنتر
           شوید.
         </p>
-        <Link
+        <TransitionLink
           href="/deals"
           className="mt-5 inline-block rounded-2xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-700"
         >
           بازگشت به تخفیف‌ها
-        </Link>
+        </TransitionLink>
       </section>
     </main>
   );

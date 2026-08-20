@@ -1,4 +1,3 @@
-﻿import Link from "next/link";
 import type { Product, Store } from "@/types";
 import {
   discountedPrice,
@@ -7,8 +6,13 @@ import {
   toPersianDigits,
 } from "@/lib/format";
 import { buildSourceTabHref } from "@/lib/analytics-context";
+import {
+  getProductImageTransitionName,
+  getProductTitleTransitionName,
+} from "@/lib/view-transitions";
 import { CatalogResultCard } from "@/components/catalog-result-card";
 import { SmartImage } from "@/components/smart-image";
+import { TransitionLink } from "@/components/view-transition";
 import type { AnalyticsSourceTab } from "@/lib/analytics-context";
 
 interface ProductCardProps {
@@ -54,15 +58,20 @@ export function ProductCard({
   }
 
   const productHref = buildSourceTabHref(`/product/${product.id}`, sourceTab);
+  const productImageTransitionName = getProductImageTransitionName(product.id);
+  const productTitleTransitionName = getProductTitleTransitionName(product.id);
 
   return (
-    <Link
+    <TransitionLink
       href={productHref}
       className="group block overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/5 transition hover:-translate-y-0.5 hover:shadow-md lg:rounded-xl"
       onClick={onProductClick}
     >
       <article>
-        <div className="relative h-40 w-full md:h-48 lg:h-44">
+        <div
+          className="relative h-40 w-full md:h-48 lg:h-44"
+          style={{ viewTransitionName: productImageTransitionName }}
+        >
           <SmartImage
             src={product.image}
             alt={product.name}
@@ -94,7 +103,10 @@ export function ProductCard({
         </div>
 
         <div className="space-y-2 p-3 md:p-4">
-          <h3 className="line-clamp-2 text-sm font-bold text-slate-900 md:text-base">
+          <h3
+            className="line-clamp-2 text-sm font-bold text-slate-900 md:text-base"
+            style={{ viewTransitionName: productTitleTransitionName }}
+          >
             {product.name}
           </h3>
 
@@ -128,6 +140,6 @@ export function ProductCard({
           </span>
         </div>
       </article>
-    </Link>
+    </TransitionLink>
   );
 }
